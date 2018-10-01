@@ -1,0 +1,9 @@
+program refParams
+global
+  var g:int;
+  proc p(out copy var r:int) do r init := 15 endproc
+do
+  ? g init;
+  call p(g);
+  ! g
+endprogram

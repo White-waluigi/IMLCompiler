@@ -1,0 +1,47 @@
+program Overflow(out var x1:int32, out var x2:int32, out var b1:bool)
+global
+  fun f(x:int32) returns y:int32
+  do y init := 0
+  endfun;
+  dimdi:int32;
+  dimdi__ding_:int32;
+  dimdi''ding':int32;
+  dimdi'_'ding'_':int32
+do
+  x1 init := +2'147'483'647;
+  x1 := 4''611'686'018''427'387'904;
+  x1 := 9''223'372'036''854'775'807;
+  x1 := x1 - 1;
+  debugout x1;
+  x1 := x1 - x1;
+  debugout x1;
+  x1      := 0'0'0'2'''''0'''0;
+  debugout x1;
+  // credit cards
+  x1      := 1234'123456'12345 + 123412345612345;
+  debugout x1;
+  x1      := 1234'1234'1234'1234 - 1234123412341234;
+  debugout x1;
+  x1      := -2'147'483'648;
+  x1      := -1 + -2''147'483'648 * 2''147'483'648 +
+                   4''611'686'018''427'387'904;
+  debugout x1;
+  x1      := ---++--+2147483647;
+  debugout x1;
+  x2 init := 1;
+  x1      := ++x2 * (- 2 * 1024 * 1024 * 1024 - 0);
+  debugout x1;
+  x1      := 0;
+  b1 init := 1 < 0 &? 2147483648 * 1024 divE 1 = 0;
+  b1      := 1 < 0 &? x1 < x2;
+  x1      := 1;
+  b1      := 1 modE x1 = 1 &? false;
+  b1      := not (not (not false));
+  debugout b1;
+  if false then
+    x1 := 1 divE 1 // 0
+  else
+    skip
+  endif;
+  x1 := f(1'000'000'000'000'000'000'000'000 * 10)
+endprogram

@@ -1,0 +1,24 @@
+program test02
+global
+  var g:int32;
+
+  proc p(in copy const x:int32)
+  global
+    inout g
+  do
+    call q(x)
+  endproc;
+
+  proc q(in copy const x:int32)
+  global
+    inout var g
+  do
+    g := g + x
+  endproc
+do
+  g init := 1;
+  call p(3);
+  debugout g;
+  call p(5);
+  debugout g
+endprogram

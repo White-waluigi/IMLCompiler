@@ -1,0 +1,18 @@
+program test08
+global
+  g1:int32; var g2:int32; g3:int32; g4:int32; g5:int32; g6:int32;
+
+  proc p1()
+  global g1, inout g2, out g3, g4, g5
+  do
+    call p2() init g4
+  endproc;
+
+  proc p2()
+  global in g1, inout g2, out g3, out g4
+  do
+    skip
+  endproc
+do
+  call p1()
+endprogram

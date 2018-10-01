@@ -1,0 +1,22 @@
+program test
+global
+  fun f(in copy x:int) returns h:int
+  global f, g
+  do
+    h := f(h) + g();
+    x := h
+  endfun;
+
+  fun g() returns h:int
+  global f, g, in x
+  do
+    h := f(h) + g();
+    h := x + 1
+  endfun;
+
+  var x:int;
+  var y:int
+do
+  ?x;
+  !f(x) + g()
+endprogram

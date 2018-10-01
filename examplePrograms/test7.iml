@@ -1,0 +1,30 @@
+program test7
+global
+  output (g1, g3);
+
+  fun f(in copy const x:int32, x2:bool) returns x7:int32
+  global in g1, g3, g2, x17
+  local
+    x6:bool; y:int8
+  do
+    y := x init;
+    call g(x6, x6 init) init g3
+  endfun;
+
+  proc g(in copy x:int32, out ref y:bool)
+  global out g3, out const g2, in x17
+  do y := x ; call h() init g3 endproc;
+
+  proc h() global out g3 do skip endproc;
+
+  x17:int32;
+  g1:int32;
+  input (g2, g3);
+  var g2:int32;
+  const g3:bool
+do
+  g1 := 5;
+  g2 init := f(f(g1, g1), g1);
+  call g(2, g2 init) init g2, g3;
+  debugout g2
+endprogram

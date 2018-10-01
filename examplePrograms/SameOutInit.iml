@@ -1,0 +1,45 @@
+program SameOutInit(in a:int32, out b:int32, out c:int32)
+global
+  proc p(in copy x:int32, out copy    y:int32,
+                          out copy    z:int32,
+                          out ref var u:int32)
+  do
+    u init := x + 17 ; // assignment 1
+    z init := x + 1 ;
+    y init := x ;
+    u := u + 17        // assignment 2
+  endproc
+  ;
+  proc q(in copy x:int32, out copy y:int32,
+                          out copy z:int32)
+  global
+    out var c
+  do
+    c init := x + 17 ; // assignment 1
+    z init := x + 1 ;
+    y init := x ;
+    c := c + 17        // assignment 2
+  endproc
+do
+  call p(a, b init, // assignment 3
+            b init, // assignment 4
+            b init)
+  ;
+  call q(a, c init, // assignment 3
+            c init) // assignment 4
+            init c
+
+  // The call of p initializes global b.
+  // But which of the three occurrences of b does the actual initialization?
+  // Actually, there are 4 assignments to global b; they are enumerated in
+  // the comments in the order in which they are executed.
+  // Thus, the rightmost occurrence of b does the actual initialization.
+  // But the net effect for global b of the call to p is given by the last
+  // assignment performed.
+  // In this sense, the middle occurrence of b does the initialization.
+  // The notation just states that b is initialized.
+  // It does not state which occurrence actually does it.
+  // In view of the previous discussion this seems to be quite wise.
+
+  // q as p, but with a global variable instead of a reference parameter.
+endprogram

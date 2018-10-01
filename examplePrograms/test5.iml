@@ -1,0 +1,12 @@
+program test5
+global
+  proc f(in copy x:int, inout copy var y:int)
+  do
+    skip
+  endproc;
+
+  var x:int;
+  var y:int
+do
+  call f(x, y)
+endprogram

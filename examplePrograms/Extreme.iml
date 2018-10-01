@@ -1,0 +1,15 @@
+program Extreme(in x:int32)
+global
+  fun fLeft(x:int32) returns y:int32
+  do
+    y init := ((((x + x) + x) + x) + x) + x
+  endfun
+  ;
+  fun fRight(x:int32) returns y:int32
+  do
+    y init := x + (x + (x + (x + (x + x))))
+  endfun
+do
+  debugout fLeft(fLeft(fLeft(fLeft(fLeft(x)))));
+  debugout fRight(x)
+endprogram

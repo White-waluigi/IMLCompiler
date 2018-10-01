@@ -1,0 +1,33 @@
+program EuclidExtended
+  (in a:int32, in b:int32,
+   out g:int32, out u:int32, out v:int32, out u':int32, out v':int32)
+global
+  proc euclidExtendedWOSign
+    (in copy const a:int32, in copy const b:int32,
+     out copy var g :int32,
+     out copy var u :int32, out copy var v :int32,
+     out copy var u':int32, out copy var v':int32)
+    //pre a >= 0 &? b >= 0
+    //post g = gcd(a, b)
+    //post g = u  * a + v  * b
+    //post 0 = u' * a + v' * b
+  local
+    var g':int32 ; var q:int32
+  do
+    g init := a ; g' init := b ;
+    q init := 0 ; // local
+    u init := 1 ; v init := 0 ; u' init := 0 ; v' init := 1 ;
+    while g' /= 0 do
+      q := g divE g' ;
+      g := g - q * g' ; u := u - q * u' ; v := v - q * v' ;
+      call swap(g, g') ; call swap(u, u') ; call swap(v, v')
+    endwhile
+  endproc ;
+
+  proc swap(inout ref var x:int32, inout ref var y:int32)
+  local const h:int32
+  do h init := x ; x := y ; y := h endproc
+do
+  call euclidExtendedWOSign
+    (a, b, g init, u init, v init, u' init, v' init)
+endprogram

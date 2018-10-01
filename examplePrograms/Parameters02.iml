@@ -1,0 +1,32 @@
+program Parameters02()
+  global
+    var g1:int32;
+    g2:int32;
+
+    proc p1(inout ref x:int32, out y:int32)
+    do
+      // though x can be used for inout, it is in fact just used as in
+      y init := x
+    endproc;
+
+    proc p2(inout ref x:int32, in y:int32)
+    do
+      // though x can be used for inout, it is in fact just used as out
+      x := y
+    endproc;
+
+    proc p3(inout ref x:int32)
+    do
+      // though x can be used for inout, it remains in fact unused
+      skip
+    endproc
+do
+  debugin g1 init;
+  call p1(g1, g2 init);
+  debugout g1;
+  debugout g2;
+  call p2(g1, 17);
+  debugout g1;
+  call p3(g1);
+  debugout g1
+endprogram

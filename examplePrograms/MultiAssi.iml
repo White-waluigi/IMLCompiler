@@ -1,0 +1,24 @@
+program MultiAssi(in x:int32, out y:int32, out z:int32)
+  //ensures y = 4 * x;
+  //ensures z = 3 * x
+global
+  proc p1(in a:int32, out b:int32, out ref c:int32, out d:int32)
+    //ensures b = 2 * a && c = 3 * a && d = 4 * a
+  do
+    b init := 2 * a;
+    c init := 3 * a;
+    d init := 4 * a
+  endproc;
+  proc p2(in a:int32, out b:int32, out c:int32, out ref d:int32)
+    //ensures b = 2 * a && c = 3 * a && d = 4 * a
+  do
+    b init := 2 * a;
+    c init := 3 * a;
+    d init := 4 * a
+  endproc
+do
+  call p1(x, y init, y init, y init);
+  //assert y = 4 * x;
+  call p2(x, z init, z init, z init)//;
+  //assert z = 3 * x
+endprogram

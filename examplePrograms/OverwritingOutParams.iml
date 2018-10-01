@@ -1,0 +1,12 @@
+program OverwritingOutParams(out var a:int32)
+global
+  //proc p(out copy y:int32, out copy x:int32)
+  proc p(out copy x:int32, out copy y:int32)
+  do
+    y init := 6;
+    x init := 5
+  endproc
+do
+  a init := 0;
+  call p(a, a)
+endprogram

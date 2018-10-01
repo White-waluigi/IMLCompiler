@@ -1,0 +1,10 @@
+program test6
+global
+  var g:int;
+  proc p(inout ref r:int) do skip endproc
+do
+  ? g;
+  g := g + 1;
+  call p(g);
+  ! g
+endprogram

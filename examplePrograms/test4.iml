@@ -1,0 +1,42 @@
+program intDiv
+global
+  proc inc(inout ref n:int) do n := n + 1 endproc ;
+
+  proc p(in copy x:int, out copy y:int, inout copy z:int, inout ref v:int)
+    global inc, inout g
+    local var l:int
+  do
+    l := x + z ;
+    y := l ;
+    call inc (l) ;
+    v := l ;
+    g := g + l
+  endproc ;
+
+  fun fib(ref n:int) returns r:int
+    global fib
+    local var n1:int ; var n2:int
+  do
+    if n = 0 then r := 0 else
+      if n = 1 then r := 1 else
+        n1 := n-1 ; n2 := n-2 ;
+        r := fib(n1) + fib(n2)
+      endif
+    endif
+  endfun ;
+
+  var g:int ;
+  var y:int ;
+  var z:int ;
+  var v:int
+do
+  ? g init ;
+  z := 10 ;
+  call p(50, y, z, v) ;
+  ! y ;
+  ! z ;
+  ! v ;
+  ! g ;
+  v := 7 ;
+  ! fib (v)
+endprogram

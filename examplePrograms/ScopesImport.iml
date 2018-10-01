@@ -1,0 +1,27 @@
+program ScopesImport()
+global
+    proc p1()
+        global inout g1, inout g2, inout g3
+    do
+        g1 := 1 ;
+        call p2()
+    endproc ;
+
+    proc p2()
+        global inout g2, inout g3
+    do
+        g2 := 2 ; g3 := 3 //; call p1()
+    endproc ;
+
+    var g1:int32 ;
+    var g2:int32 ;
+    var g3:int32
+do
+    g1 init := 0;
+    g2 init := 0;
+    g3 init := 0;
+    call p1();
+    debugout(g1);
+    debugout(g2);
+    debugout(g3)
+endprogram

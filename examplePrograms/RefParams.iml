@@ -1,0 +1,16 @@
+program RefParams(inout var g1:int32)
+global
+  var g2:int32;
+
+  proc p(inout var r:int32) global in g2
+    do r := r + g2 ; call q(r, r)
+  endproc;
+
+  proc q(inout ref r:int32, in copy c:int32)
+    do r := r + c
+  endproc
+do
+  g2 init := g1;
+  g1 := g1 + 1;
+  call p(g1)
+endprogram

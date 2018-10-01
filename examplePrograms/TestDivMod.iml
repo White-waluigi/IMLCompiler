@@ -1,0 +1,78 @@
+program TestDivMod
+global
+  output (t0, tE, tF, tT, t0n, tEn, tFn, tTn);
+
+  var t0:bool;
+  var tE:bool;
+  var tF:bool;
+  var tT:bool;
+  var n:int32;
+  var t0n:bool;
+  var tEn:bool;
+  var tFn:bool;
+  var tTn:bool
+do
+  t0 init :=
+    +6 divE +3 = +2 &? +6 modE +3 = 0 &?
+    -6 divE +3 = -2 &? -6 modE +3 = 0 &?
+    +6 divE -3 = -2 &? +6 modE -3 = 0 &?
+    -6 divE -3 = +2 &? -6 modE -3 = 0 &?
+
+    +6 divT +3 = +2 &? +6 modT +3 = 0 &?
+    -6 divT +3 = -2 &? -6 modT +3 = 0 &?
+    +6 divT -3 = -2 &? +6 modT -3 = 0 &?
+    -6 divT -3 = +2 &? -6 modT -3 = 0 &?
+
+    +6 divF +3 = +2 &? +6 modF +3 = 0 &?
+    -6 divF +3 = -2 &? -6 modF +3 = 0 &?
+    +6 divF -3 = -2 &? +6 modF -3 = 0 &?
+    -6 divF -3 = +2 &? -6 modF -3 = 0 ;
+  tE init :=
+    +7 divE +3 = +2 &? +7 modE +3 = 1 &?
+    -7 divE +3 = -3 &? -7 modE +3 = 2 &?
+    +7 divE -3 = -2 &? +7 modE -3 = 1 &?
+    -7 divE -3 = +3 &? -7 modE -3 = 2 ;
+  tF init :=
+    +7 divF +3 = +2 &? +7 modF +3 = +1 &?
+    -7 divF +3 = -3 &? -7 modF +3 = +2 &?
+    +7 divF -3 = -3 &? +7 modF -3 = -2 &?
+    -7 divF -3 = +2 &? -7 modF -3 = -1 ;
+  tT init :=
+    +7 divT +3 = +2 &? +7 modT +3 = +1 &?
+    -7 divT +3 = -2 &? -7 modT +3 = -1 &?
+    +7 divT -3 = -2 &? +7 modT -3 = +1 &?
+    -7 divT -3 = +2 &? -7 modT -3 = -1 ;
+
+  n init := 6 ;
+  t0n init :=
+    +n divE +3 = +2 &? +n modE +3 = 0 &?
+    -n divE +3 = -2 &? -n modE +3 = 0 &?
+    +n divE -3 = -2 &? +n modE -3 = 0 &?
+    -n divE -3 = +2 &? -n modE -3 = 0 &?
+
+    +n divT +3 = +2 &? +n modT +3 = 0 &?
+    -n divT +3 = -2 &? -n modT +3 = 0 &?
+    +n divT -3 = -2 &? +n modT -3 = 0 &?
+    -n divT -3 = +2 &? -n modT -3 = 0 &?
+
+    +n divF +3 = +2 &? +n modF +3 = 0 &?
+    -n divF +3 = -2 &? -n modF +3 = 0 &?
+    +n divF -3 = -2 &? +n modF -3 = 0 &?
+    -n divF -3 = +2 &? -n modF -3 = 0 ;
+  n := 7 ;
+  tEn init :=
+    +n divE +3 = +2 &? +n modE +3 = 1 &?
+    -n divE +3 = -3 &? -n modE +3 = 2 &?
+    +n divE -3 = -2 &? +n modE -3 = 1 &?
+    -n divE -3 = +3 &? -n modE -3 = 2 ;
+  tFn init :=
+    +n divF +3 = +2 &? +n modF +3 = +1 &?
+    -n divF +3 = -3 &? -n modF +3 = +2 &?
+    +n divF -3 = -3 &? +n modF -3 = -2 &?
+    -n divF -3 = +2 &? -n modF -3 = -1 ;
+  tTn init :=
+    +n divT +3 = +2 &? +n modT +3 = +1 &?
+    -n divT +3 = -2 &? -n modT +3 = -1 &?
+    +n divT -3 = -2 &? +n modT -3 = +1 &?
+    -n divT -3 = +2 &? -n modT -3 = -1
+endprogram

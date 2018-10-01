@@ -1,0 +1,41 @@
+program TypeConversions()
+  global
+    var _i:int64;
+    c:int32;
+  fun int2bool(x:int32) returns y:int32
+  do
+    y init := toInt32(x+1)//;
+    //call toInt32(x) init x
+  endfun;
+  fun toInt63(x:int32) returns y:int32
+  do
+    y init := toInt32(toInt64(x+1))
+  endfun;
+  proc toInt1023(out ref x:int32, out ref y:int32)
+  do x init := 0; y init := 0 endproc
+do
+  c init := 0;
+  //c := c;
+  _i init := toInt64(c + +++---+-100 + 2000000000000000000000000000000000000000 divE 2);
+  //i := toInt32(-2) + toInt32(3)
+  debugout -200000000000000000000;
+  debugout _i+1+1;
+  debugout 1+1+_i//;
+  //call toInt1023(i, i)
+  ;
+  _i := - 17;
+  if _i > 0 then
+    _i := _i + 1
+  else
+    _i := _i + 2
+  endif;
+  if _i > 0 then
+    _i := _i + 1
+  endif;
+  debugout _i;
+  _i := 1'000'000'000 * 1'000'000'000;
+  //_i := _i * _i;
+  debugout _i;
+  debugin _i;
+  debugout _i
+endprogram

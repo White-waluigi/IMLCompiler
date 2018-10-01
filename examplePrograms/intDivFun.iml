@@ -1,0 +1,32 @@
+program intDiv
+global
+  fun divFun(in copy m:int, in copy n:int) returns var q:int
+  local var r:int
+  do
+    q init := 0;
+    r init := m;
+    while r >= n do
+      q := q + 1;
+      r := r - n
+    endwhile
+  endfun;
+
+  fun modFun(in copy m:int, in copy n:int) returns var r:int
+  local var q:int
+  do
+    q init := 0;
+    r init := m;
+    while r >= n do
+      q := q + 1;
+      r := r - n
+    endwhile
+  endfun;
+
+  const m:int;
+  const n:int
+do
+  ? m init;
+  ? n init;
+  ! divFun(m, n);
+  ! modFun(m, n)
+endprogram

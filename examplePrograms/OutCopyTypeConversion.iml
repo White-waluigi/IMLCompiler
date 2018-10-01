@@ -1,0 +1,19 @@
+program OutCopyTypeConversion(in x:int32, out y:int1024)
+global
+  var g1:int32;
+  var g2:int64;
+  var b:bool;
+  proc p(in x:int64, out copy y:int64)
+  do
+    y init := x
+  endproc
+do
+  call p(x, y init);
+  g1 init := 0;
+  g2 init := 0;
+  b init := false
+  //g2 := g1;
+  //b := g1;
+  //g1 := b;
+  //g1 := g2
+endprogram

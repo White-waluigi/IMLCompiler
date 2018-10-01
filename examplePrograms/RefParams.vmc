@@ -1,0 +1,52 @@
+Code for "main"
+
+(0,Alloc 1),
+(1,IntLoad 0),
+(2,Input IntTy),
+(3,IntLoad 0),
+(4,Deref),
+(5,IntLoad 1),
+(6,IntAdd),
+(7,IntLoad 0),
+(8,Store),
+(9,Alloc 0),
+(10,IntLoad 0),
+(11,Call 16),
+(12,IntLoad 0),
+(13,Deref),
+(14,Output IntTy),
+(15,Stop),
+
+Code for p
+
+(16,Enter 0 0),
+(17,LoadRel (-1)),
+(18,Deref),
+(19,Deref),
+(20,IntLoad 1),
+(21,IntAdd),
+(22,LoadRel (-1)),
+(23,Deref),
+(24,Store),
+(25,Alloc 0),
+(26,LoadRel (-1)),
+(27,Deref),
+(28,LoadRel (-1)),
+(29,Deref),
+(30,Deref),
+(31,Call 33),
+(32,Return 1),
+
+Code for q
+
+(33,Enter 0 0),
+(34,LoadRel (-2)),
+(35,Deref),
+(36,Deref),
+(37,LoadRel (-1)),
+(38,Deref),
+(39,IntAdd),
+(40,LoadRel (-2)),
+(41,Deref),
+(42,Store),
+(43,Return 2)

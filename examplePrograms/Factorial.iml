@@ -1,0 +1,40 @@
+program Factorial(in n:int32, out f:int1024)
+global
+  fun fact32(n:int32) returns var fact:int32
+  local
+    var i:int32
+  do
+    fact init := 1;
+    i    init := 2;
+    while i <= n do
+      fact := fact * i;
+      i    := i + 1
+    endwhile
+  endfun;
+
+  fun fact64(n:int32) returns var fact:int64
+  local
+    var i:int32
+  do
+    fact init := 1;
+    i    init := 2;
+    while i <= n do
+      fact := fact * i;
+      i    := i + 1
+    endwhile
+  endfun;
+
+  fun fact1024(n:int32) returns var fact:int1024
+  local
+    var i:int32
+  do
+    fact init := 1;
+    i    init := 2;
+    while i <= n do
+      fact := fact * i;
+      i    := i + 1
+    endwhile
+  endfun
+do
+  f init := fact1024(n)
+endprogram

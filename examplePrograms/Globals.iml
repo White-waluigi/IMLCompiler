@@ -1,0 +1,24 @@
+program Globals()
+  global g1:int32; var g2:int32; g3:int32;
+
+  proc p()
+    global in g1, inout g2, out var g3
+    //global in g1, out var g3
+    //local g2:int32
+  do
+    call q() init g3;
+    call q()
+  endproc;
+
+  proc q()
+    global in g1, inout g2, out g3
+  do
+    g2 := g2 + g1;
+    g3 init := g2
+  endproc
+do
+  g1 init := 17;
+  g2 init := 19;
+  call p() init g3;
+  debugout g3
+endprogram

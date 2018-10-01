@@ -1,0 +1,14 @@
+program Expr(in var x:bool, in var y:int32)
+global
+  dimdi:int32;
+  fun f(x:int32, y:int32, z:int32) returns r:int32 do r init := 0 endfun;
+  fun g(x:int32, y:int32) returns r:int32 do r init := 0 endfun;
+  proc p(x:int32, y:int32, z:int32) do skip endproc
+do
+  x := (((17 + 3 +-5))) * 3 >= 5 &? 3 = 4 + f(12 + y, g(+-7100, 66), 17);
+  dimdi init := 99;
+  while 3 = 4 do
+    y := 2 + 3
+  endwhile;
+  call p(dimdi, 3 + 3, g(dimdi, y))
+endprogram

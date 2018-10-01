@@ -1,0 +1,16 @@
+program test01
+global
+  var g:int32;
+
+  proc p(in copy const x:int32)
+  global
+    out const g
+  do
+    g init := x + 1
+  endproc
+do
+  call p(3) init g;
+  debugout g;
+  call p(5);
+  debugout g
+endprogram

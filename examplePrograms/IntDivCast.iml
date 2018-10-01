@@ -1,0 +1,19 @@
+program intDivCast(in  m:int1024, in  n:int32,
+                   out q:int32, out r:int32)
+global
+  m':int32;
+  proc divide(in copy const m:int32, in copy const n:int32,
+              out ref var   q:int32, out ref var   r:int32)
+  do
+    q init := 0;
+    r init := m;
+    while r >= n do
+      q := q + 1;
+      r := r - n
+    endwhile
+  endproc
+do
+  debugout true;
+  m' init := toInt32(toInt32(m));
+  call divide(m', n, q init, r init)
+endprogram

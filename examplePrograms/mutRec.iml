@@ -1,0 +1,28 @@
+program mutRec
+global
+  var i:int32;
+
+  proc p1()
+  global inout var i
+  do
+    if i > 0 then
+      debugout 10;
+      debugout i;
+      call p2()
+    else
+      skip
+    endif
+  endproc;
+
+  proc p2()
+  global inout var i
+  do
+    i := i - 1;
+    debugout 20;
+    debugout i;
+    call p1()
+  endproc
+do
+  i init := 5;
+  call p1()
+endprogram

@@ -1,0 +1,137 @@
+// Edgar F.A. Lederer, FHNW and Uni Basel
+// June 2016
+
+// the RSA example from Gallier (pp. 313--314)
+// mada FS 2016 Uebung 8 Aufgabe 5
+
+program RSAExampleGallier(in isDebugout:bool)
+global
+
+  proc euclidExt
+    (in copy a:int64, in copy b:int64,
+     out copy var g :int64,
+     out copy var u :int64, out copy var v :int64,
+     out copy var u':int64, out copy var v':int64)
+  global in isDebugout
+    //requires 0 <= a &? 0 <= b
+    //ensures 0 <= g = gcd(a, b)
+    //ensures u * a + v * b = g
+    //ensures u'* a + v'* b = 0
+  local
+    var g':int64;
+    var q:int64 // local variable used in loop body
+  do
+    g init := a; g' init := b;
+    u init := 1; u' init := 0;
+    v init := 0; v' init := 1;
+    q init := -1; // dummy initialization
+    while g' > 0
+      //invar 0 <= g &? 0 <= g'
+      //invar gcd(g, g') = gcd(a, b)
+      //invar u * a + v * b = g
+      //invar u'* a + v'* b = g'
+    do
+      q := g divE g';
+      g := g - q * g'; call optDebugout(g);
+      u := u - q * u'; call optDebugout(u);
+      v := v - q * v'; call optDebugout(v);
+      call swap(g, g');
+      call swap(u, u');
+      call swap(v, v')
+    endwhile
+  endproc;
+
+  proc swap(inout ref var x:int64, inout ref var y:int64)
+    //requires true
+    //ensures x = old(y) &? y = old(x)
+  local const h:int64
+  do h init := x ; x := y ; y := h endproc;
+
+  proc modInverse
+    (in copy a:int64, in copy m:int64,
+     out copy const exists:bool, out copy var aInv:int64)
+  global in isDebugout
+    //requires 2 <= m
+    //requires 0 <= a < m
+    //ensures exists <==> gcd(a, m) = 1
+    //ensures exists ==> 1 <= aInv < m &? (a * aInv) modE m = 1
+  local
+    const g:int64;
+    const u:int64;
+    const u':int64;
+    const v':int64
+  do
+    call euclidExt(m, a, g init, u init, aInv init, u' init, v' init);
+    exists init := g = 1;
+    aInv := aInv modE m
+  endproc;
+
+  fun powerDijkstra(x:int64, n:int32, m:int64) returns var p:int64
+  global in isDebugout
+    //requires 0 <= x < m
+    //requires n >= 0
+    //ensures p = x^n modE m
+  local
+    var e:int32 ; var q:int64
+  do
+    e init := n; call optDebugout(e);
+    q init := x; call optDebugout(q);
+    p init := 1; call optDebugout(p);
+    while e > 0
+      // invar q^e * p = x^n (modE m) &? e >= 0
+    do
+      while e modE 2 = 0
+        // invar q^e * p = x^n (modE m) &? e >= 1
+      do
+        e := e divE 2;       call optDebugout(e);
+        q := (q * q) modE m; call optDebugout(q)
+      endwhile;
+      e := e - 1;          call optDebugout(e);
+      p := (q * p) modE m; call optDebugout(p)
+    endwhile
+  endfun;
+
+  proc optDebugout(in copy x:int64)
+  global in isDebugout
+  do if isDebugout then debugout x endif endproc;
+
+  const pA:int64;
+  const qA:int64;
+  const mA:int64;
+  const phiA:int64;
+  const eA:int64;
+  const exists:bool;
+  const dA:int64;
+  var y:int64; // cypher text
+  var x:int64; // plain text
+  var y':int64 // cypher text (for checking)
+do
+  //pA init := 12'553; // prime
+  pA init := 12'553'000'000; // to demonstrate overflow checking
+  qA init := 13'007; // prime
+  mA init := pA * qA; // public
+  phiA init := (pA - 1) * (qA - 1);
+  eA init := 79'921; // public
+  call modInverse(eA, phiA, exists init, dA init);
+  debugout exists; debugout dA;
+
+  y init := 145'387'828;
+  x init := powerDijkstra(y, toInt32(dA), mA); debugout x;
+  y' init := powerDijkstra(x, toInt32(eA), mA); debugout y' = y;
+
+  y := 47'164'891;
+  x := powerDijkstra(y, toInt32(dA), mA); debugout x;
+  y' := powerDijkstra(x, toInt32(eA), mA); debugout y' = y;
+
+  y := 152'020'614;
+  x := powerDijkstra(y, toInt32(dA), mA); debugout x;
+  y' := powerDijkstra(x, toInt32(eA), mA); debugout y' = y;
+
+  y := 27'279'275;
+  x := powerDijkstra(y, toInt32(dA), mA); debugout x;
+  y' := powerDijkstra(x, toInt32(eA), mA); debugout y' = y;
+
+  y := 35'356'191;
+  x := powerDijkstra(y, toInt32(dA), mA); debugout x;
+  y' := powerDijkstra(x, toInt32(eA), mA); debugout y' = y
+endprogram

@@ -1,0 +1,38 @@
+program test
+global
+  fun f(copy var m:int, ref n:int, ref p:int) returns q:int
+  global r, divide
+  local
+    var q1:int
+  do
+    m := m + 1;
+    q := q + 1
+  endfun;
+
+  proc divide(in copy var m:int, in copy const n:int, out ref q:int, out ref r:int)
+  global inout r1, inout const r2, divide
+  local var f:int
+  do
+    f init := 0;
+    r init := m;
+    while r >= n do
+      q := q + 1;
+      r := r - n
+    endwhile
+  endproc;
+
+  var m:int;
+  var n:int;
+  const q:int;
+  var r:int;
+  var r1:bool;
+  const r2:bool;
+  var t:int
+do
+  ? m init;
+  ? n init;
+  call divide(m, n, q init, r init);
+  r := f(m, m, m);
+  ! q;
+  ! r
+endprogram

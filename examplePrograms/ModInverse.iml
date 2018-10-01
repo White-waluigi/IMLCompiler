@@ -1,0 +1,52 @@
+program ModInverse
+global
+  const m:int32 ; const a:int32 ;
+  input(m, a) ;
+  //requires 0 <= a < m;
+  //ensures g == 1 ==> (1 == u * m + v * a && 0 <= v < m);
+  //ensures g == gcd(m, a) > 0;
+  //ensures g == u  * m + v  * a;
+  //ensures 0 == u' * m + v' * a;
+  //ensures abs(u') * g == a;
+  //ensures abs(v') * g == m;
+  //ensures 0 <= v < abs(v');
+
+  const g :int32 ;
+  const u :int32 ; const v :int32 ;
+  const u':int32 ; const v':int32 ;
+  output(g, u, v, u', v') ;
+
+  proc ModInverse
+    (in copy const m:int32, in copy const a:int32,
+     out copy var g :int32,
+     out copy var u :int32, out copy var v :int32,
+     out copy var u':int32, out copy var v':int32)
+  local
+    var g':int32 ; var q:int32
+  do
+    g init := m ; g' init := a ;
+    q init := 0 ; // local
+    u  init := 1 ; v  init := 0 ;
+    u' init := 0 ; v' init := 1 ;
+    while g' /= 0 do
+      q := g divE g' ;
+      g := g - q * g' ; u := u - q * u' ; v := v - q * v' ;
+      call swap(g, g') ; call swap(u, u') ; call swap(v, v')
+    endwhile ;
+    //q := v divE v' ;
+    //u := u + q * u' ;
+    //v := v - q * v'
+    if v < 0 then
+      u := u + u' ; v := v + v'
+    else
+      skip
+    endif
+  endproc ;
+
+  proc swap(inout ref var x:int32, inout ref var y:int32)
+  local const h:int32
+  do h init := x ; x := y ; y := h endproc
+do
+  call ModInverse
+    (m, a, g init, u init, v init, u' init, v' init)
+endprogram

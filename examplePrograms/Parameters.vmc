@@ -1,0 +1,123 @@
+program Parameters(in x:int32, inout var y:int32, inout var z:int32, inout var u:int32)
+global
+  var g:int32;
+
+  proc p(in copy var x:int32, inout copy y:int32, out copy var z:int32, inout ref u:int32)
+  global inout g
+  local l:int32
+  do
+    z init := x;
+    call q(x, x);
+    call q(y, y);
+    call q(z, z);
+    call q(u, u)
+  endproc;
+
+  proc q(inout copy a:int32, inout ref b:int32)
+  do
+    a := a + 1;
+    b := b + 1
+  endproc
+do
+  g init := 0;
+  call p(x, y, z, u)
+endprogram
+
+// begin of program
+(0,AllocBlock 5),
+(1,AllocStack 9),
+(2,LoadIm IntVmTy (IntVmVal 0)),
+(3,Input (IntTy 32) (1:23) "x"),
+(4,LoadIm IntVmTy (IntVmVal 1)),
+(5,Input (IntTy 32) (1:42) "y"),
+(6,LoadIm IntVmTy (IntVmVal 2)),
+(7,Input (IntTy 32) (1:61) "z"),
+(8,LoadIm IntVmTy (IntVmVal 3)),
+(9,Input (IntTy 32) (1:80) "u"),
+(10,LoadIm IntVmTy (IntVmVal 4)),
+(11,LoadIm Int32VmTy (Int32VmVal (Int32 {val32 = 0}))),
+(12,Store),
+
+// begin call of p
+(13,AllocBlock 0),
+(14,LoadIm IntVmTy (IntVmVal 2)),
+(15,AllocBlock 1),
+(16,LoadIm IntVmTy (IntVmVal 1)),
+(17,Dup),
+(18,Deref),
+(19,LoadIm IntVmTy (IntVmVal 0)),
+(20,Deref),
+(21,LoadIm IntVmTy (IntVmVal 3)),
+(22,Call 35),
+(23,Store),
+(24,Store),
+// end call of p
+
+(25,LoadIm IntVmTy (IntVmVal 1)),
+(26,Deref),
+(27,Output (IntTy 32) "<rExpr>"),
+(28,LoadIm IntVmTy (IntVmVal 2)),
+(29,Deref),
+(30,Output (IntTy 32) "<rExpr>"),
+(31,LoadIm IntVmTy (IntVmVal 3)),
+(32,Deref),
+(33,Output (IntTy 32) "<rExpr>"),
+(34,Stop),
+
+// begin of p
+(35,AllocBlock 1),
+(36,AllocStack 6),
+(37,LoadAddrRel (-5)),
+(38,LoadAddrRel (-2)),
+(39,Deref),
+(40,Store),
+(41,AllocBlock 0),
+(42,LoadAddrRel (-2)),
+(43,Dup),
+(44,Deref),
+(45,LoadAddrRel (-2)),
+(46,Call 72),
+(47,Store),
+(48,AllocBlock 0),
+(49,LoadAddrRel (-3)),
+(50,Dup),
+(51,Deref),
+(52,LoadAddrRel (-3)),
+(53,Call 72),
+(54,Store),
+(55,AllocBlock 0),
+(56,LoadAddrRel (-5)),
+(57,Dup),
+(58,Deref),
+(59,LoadAddrRel (-5)),
+(60,Call 72),
+(61,Store),
+(62,AllocBlock 0),
+(63,LoadAddrRel (-1)),
+(64,Deref),
+(65,Dup),
+(66,Deref),
+(67,LoadAddrRel (-1)),
+(68,Deref),
+(69,Call 72),
+(70,Store),
+(71,Return 2),
+
+// begin of q
+(72,AllocBlock 0),
+(73,AllocStack 3),
+(74,LoadAddrRel (-2)),
+(75,LoadAddrRel (-2)),
+(76,Deref),
+(77,LoadIm Int32VmTy (Int32VmVal (Int32 {val32 = 1}))),
+(78,Add Int32VmTy (22:10-14)),
+(79,Store),
+(80,LoadAddrRel (-1)),
+(81,Deref),
+(82,LoadAddrRel (-1)),
+(83,Deref),
+(84,Deref),
+(85,LoadIm Int32VmTy (Int32VmVal (Int32 {val32 = 1}))),
+(86,Add Int32VmTy (23:10-14)),
+(87,Store),
+(88,Return 1)

@@ -1,0 +1,41 @@
+program Parameters(out var gy:int32, out var gz:int32, out var gu:int32, out var g:int32)
+  // output: gy = 6, gz = 8, gu = 6, g = 10
+global
+  gx:int32;
+  gv:int32;
+
+  proc p(in copy var x:int32, inout copy y:int32, out copy var z:int32, inout ref u:int32, in ref v:int32)
+    global inout g
+    local var l:int32
+  do
+    call q(x, x)   // x = 6, g = 6
+    ; l init := x  // l = 6
+    ; call q(l, l) // l = 7, g = 7
+    ; z init := l  // z = 7
+    ; call q(z, z) // z = 8, g = 8
+    ; call q(y, y) // y = 6, g = 9
+    ; call q(u, u) // u = 6, g = 10
+    //; call q(g, g) // g = 6
+  endproc;
+
+  proc q(out ref a:int32, in copy b:int32)
+    global inout g
+  do
+    a init := b + 1;
+    g := g + 1
+  endproc;
+
+  fun f() returns r:int32
+  do
+    r init := 17
+  endfun
+do
+  gx init := 5;
+  gy init := gx;
+  gz init := gx;
+  gu init := gx;
+  gv init := q();
+  g init := gx;
+  call p(gx, gy, gz, gu, gv)
+  //call f()
+endprogram

@@ -1,0 +1,27 @@
+program TruthTable()
+  global var i:int32;
+
+  fun prop(p:bool, q:bool, r:bool, s:bool) returns t:bool
+  do
+    //t init := q
+    //t init := p &? q &? r |? s // parsing error
+    //t init := p |? q |? r &? s // parsing error
+    //t init := p &? q |? r &? s // parsing error
+    t init := (p &? q) |? (r &? s)
+    //t init := p &? (q |? r) &? s
+    //t init := ((p &? q) |? r) &? s
+    //t init := p &? (q |? (r &? s))
+  endfun;
+
+  fun int2bool(i:int32, pow:int32) returns b:bool
+  do
+    b init := (i divE pow) modE 2 = 1
+  endfun
+do
+  i init := 0;
+  while i < 16 do
+    debugout
+      prop(int2bool(i,8), int2bool(i,4), int2bool(i,2), int2bool(i,1));
+    i := i + 1
+  endwhile
+endprogram

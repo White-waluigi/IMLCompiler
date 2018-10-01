@@ -1,0 +1,18 @@
+program test
+global
+  fun f() returns rf:int
+  global f, g
+  do
+    rf := g() + f()
+  endfun;
+
+  var result:int;
+
+  fun g() returns rg:int
+  global f, g
+  do
+    rg := f() + g()
+  endfun
+do
+  result := f() + g()
+endprogram

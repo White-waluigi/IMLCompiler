@@ -1,0 +1,28 @@
+program ScopesImportInit()
+global
+    proc p1()
+        global out var g1
+    do
+        //g1 init := 5; // local init of g1
+        //call p2()
+        call p2() init g1 // local init of g1
+    endproc ;
+
+    proc p2()
+        global out g1
+    do
+        g1 init := 1 // local init of g1
+    endproc ;
+
+    var g1:int32
+do
+    call p1() init g1;
+    debugout(g1);
+    g1 := 17;
+    debugout(g1);
+    call p1();
+    debugout(g1);
+    call p1();
+    call p1();
+    debugout(g1)
+endprogram
