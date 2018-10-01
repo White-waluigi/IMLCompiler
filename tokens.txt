@@ -1,0 +1,110 @@
+(
+LPAREN
+)
+RPAREN
+,
+COMMA
+;
+SEMICOLON
+:
+COLON
+:=
+BECOMES
+*
+(MULTOPR, TIMES)
++
+(ADDOPR, PLUS)
+-
+(ADDOPR, MINUS)
+=
+(RELOPR, EQ)
+/=
+(RELOPR, NE)
+<
+(RELOPR, LT)
+>
+(RELOPR, GT)
+<=
+(RELOPR, LE)
+>=
+(RELOPR, GE)
+&&
+(BOOLOPR, AND)
+||
+(BOOLOPR, OR)
+&?
+(BOOLOPR, CAND)
+|?
+(BOOLOPR, COR)
+bool
+(TYPE, BOOL)
+call
+CALL
+const
+(CHANGEMODE, CONST)
+copy
+(MECHMODE, COPY)
+debugin
+DEBUGIN
+debugout
+DEBUGOUT
+divE
+(MULTOPR, DIV_E)
+do
+DO
+else
+ELSE
+endfun
+ENDFUN
+endif
+ENDIF
+endproc
+ENDPROC
+endprogram
+ENDPROGRAM
+endwhile
+ENDWHILE
+false
+(LITERAL, BoolVal false)
+fun
+FUN
+global
+GLOBAL
+if
+IF
+in
+(FLOWMODE, IN)
+init
+INIT
+inout
+(FLOWMODE, INOUT)
+int32
+(TYPE, INT32)
+int64
+(TYPE, INT64)
+local
+LOCAL
+modE
+(MULTOPR, MOD_E)
+not
+NOTOPR
+out
+(FLOWMODE, OUT)
+proc
+PROC
+program
+PROGRAM
+ref
+(MECHMODE, REF)
+returns
+RETURNS
+skip
+SKIP
+then
+THEN
+true
+(LITERAL, BoolVal true)
+var
+(CHANGEMODE, VAR)
+while
+WHILE
