@@ -1,4 +1,4 @@
-package imlcompiler;
+package imlcompiler.Scanner;
 
 import java.util.LinkedList;
 
@@ -19,8 +19,8 @@ public class TokenList {
         StringBuilder sb = new StringBuilder();
 
         for (Token t: list){
-            sb.append(t.toString());
-            sb.append(" ");
+        	sb.append(t.toString());
+      
         }
 
         return sb.toString();
