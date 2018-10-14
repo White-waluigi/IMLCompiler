@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import imlcompiler.CompileErrorException;
 
 public class ScannerAutomaton {
-	private final static Logger LOGGER = Logger.getLogger(ScannerAutomaton.class.getName());
 	
 	String currentToken = "";
 	char[] illegalChars = { '@' };
@@ -223,38 +222,37 @@ public class ScannerAutomaton {
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 		int c;
-		
-		while ((c = bufferedReader.read()) != -1) {
+		while ((c = bufferedReader.read()) != -1){
 			
 			char a = (char)c;
+
+			
+			next= enterAutomaton(next,a);
+
+			currentToken += a;
+			
 			if('\n'==a) {
 				cline++;
 				cpos=0;
 			}else {
 				cpos++;
 			}
-			
-			
-			switch (next) {
-			case 0:
-				next = State0(a);
-				break;
-			case 1:
-				next = State1(a);
-				break;
-			case 2:
-				next = State2(a);
-				break;
-			case 3:
-				next = State3(a);
-				break;
-			default:
-				next = StateError(a);
-				break;
-			}
-			currentToken += a;
-
 		}
-		bufferedReader.close();
+		next= enterAutomaton(next,' ');
+	
+	}
+	int enterAutomaton(int next,char a) {
+		switch (next) {
+		case 0:
+			return State0(a);
+		case 1:
+			return State1(a);
+		case 2:
+			return State2(a);
+		case 3:
+			return State3(a);
+		default:
+			return StateError(a);
+		}
 	}
 }

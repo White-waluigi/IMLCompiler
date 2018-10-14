@@ -13,7 +13,7 @@ public class Compiler {
     	String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/EuclidExtended.iml";
+        	file="examplePrograms/k.iml";
         }else {
         	file=args[0];
         }

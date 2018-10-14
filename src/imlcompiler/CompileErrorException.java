@@ -1,5 +1,5 @@
 package imlcompiler;
-
+//todo change to Scanner
 public class CompileErrorException extends RuntimeException {
 
 	/**
