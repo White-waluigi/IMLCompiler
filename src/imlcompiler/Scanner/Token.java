@@ -119,9 +119,6 @@ public class Token {
 			case "-":
 				op = Lexeme.MINUS;
 				break;
-			case "/=":
-				op = Lexeme.DIV;
-				break;
 			case "divE":
 				op = Lexeme.DIVE;
 				break;
@@ -144,7 +141,7 @@ public class Token {
 			case "=":
 				op = Lexeme.EQ;
 				break;
-			case "!=":
+			case "/=":
 				op = Lexeme.NE;
 				break;
 			case "<":
