@@ -1,12 +1,12 @@
-package imlcompiler;
+package imlcompiler.Scanner;
 //todo change to Scanner
-public class CompileErrorException extends RuntimeException {
+public class ScannerErrorException extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public CompileErrorException(String s) {
+	public ScannerErrorException(String s) {
 		super(s);	
 		if(s==null||s=="null"||s=="") {
 			throw new RuntimeException();

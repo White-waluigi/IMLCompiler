@@ -1,74 +1,116 @@
-#FLOWMODETOKEN
-in
-out
-inout
-#MECHMODETOKEN
-ref
-copy
-#INTSOPERATORTOKEN
-*
-+
--
-divE
-#CHANGEMODETOKEN
-const
-var
-#LITERALTOKEN
-false
-true
-#TYPETOKEN
-int
-bool
-#IOTOKEN
-debugin
-debugout
-#FLOWCONTROLTOKEN
-while,
-endwhile,
-if
-endif
-then
-else
-fun
-endfun
-proc
-endproc
-skip
-return
-program
-endprogram
-local
-global
-#DOTOKEN
-do
-#INITTOKEN
-init
-#INTSTOBOOLOPERATORTOKEN
-<
->
-<=
->=
-=
-/=
-#BOOLEANSOPERATORTOKEN
-&&
-||
-|?
-&?
-#DELIMITERTOKEN
-[
-]
-{
-}
-(
-)
+#LPAREN
+§(
+#RPAREN
+§)
+#COMMA
 ,
-"
-"
-:
+#SEMICOLON
 ;
-#BECOMETOKEN
+#COLON
+:
+#BECOMES
 :=
-#SINGLEBOOLEANOPERATORTOKEN
+#MULTOPR
+	@TIMES
+	*
+	@DIV_E
+	divE
+	@MOD_E
+	modE
+#ADDOPR
+	@PLUS
+	+
+	@MINUS
+	-
+#RELOPR
+	@EQ
+	=
+	@NE
+	/=
+	@LT
+	<
+	@GT
+	>
+	@LE
+	<=
+	@GE
+	>=
+#BOOLOPR
+	@AND
+	&&
+	@OR
+	||
+	@CAND
+	&?
+	@COR
+	|?
+#TYPE
+	@BOOL
+	bool
+	@INT
+	int
+#CALL
+#CHANGEMODE
+	@CONST
+	const
+	@VAR
+	var
+#MECHMODE
+	@COPY
+	copy
+	@REF
+	ref
+#LITERAL
+	@TRUE
+	true
+	@TRUE
+	false
+#DEBUGIN
+debugin
+#DEBUGOUT
+debugout	
+#DO
+do
+#ELSE
+else
+#ENDFUN
+endfun
+#ENDIF
+endif
+#ENDPROC
+endproc
+#ENDPROGRAM
+endprogram
+#ENDWHILE
+endwhile
+#FUN
+fun
+#GLOBAL
+global
+#IF
+if
+#FLOWMODE
+	@IN
+	in
+	@OUT
+	out
+	@INOUT
+	out
+#INIT
+init
+#LOCAL
+local
+#NOTOPR
 not
-
+#PROC
+proc
+#PROGRAM
+program
+#RETURNS
+returns
+#SKIP
+skip
+#THEN
+then
+#WHILE
+while

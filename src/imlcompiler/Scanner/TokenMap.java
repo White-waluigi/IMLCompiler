@@ -6,22 +6,33 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import imlcompiler.CompileErrorException;
-
 public class TokenMap {
+	ArrayList<Character> delimiters=new ArrayList<>();
 	public class Element {
 		String group;
+		String attribute;
 		String lexeme;
-		public Element(String group, String lexeme) {
+		
+
+		
+		public Element(String group, String lexeme, String attribute) {
 			this.group = group;
 			this.lexeme = lexeme;
+			this.attribute=attribute;
 			if (lexeme==null|| group==null){
-				throw new CompileErrorException("Token Template has no group or Lexeme:\n"+lexeme+"\t"+group);
+				throw new ScannerErrorException("Token Template has no group or Lexeme:\n"+lexeme+"\t"+group);
 			}
 		}
 		
 	}
+	public boolean isDelimiter(char a) {
+		if(delimiters.contains(a)) {
+			return true;
+		}
+		return false;
+	}
 	ArrayList<Element> elements=new ArrayList<>();
+	private String currentAttribute;
 	
 	public String GetGroupOfElement(String lexeme) {
 		for(Element e: elements) {
@@ -31,17 +42,35 @@ public class TokenMap {
 		}
 		return null;
 	}
-	
+	public String GetAttributeOfElement(String lexeme) {
+		for(Element e: elements) {
+			if(e.lexeme.equals(lexeme)) {
+				return e.attribute;
+			}
+		}
+		return null;
+	}
 	public TokenMap(String a) {
 		
 		String currentGroup=null;
 		try (BufferedReader br = new BufferedReader(new FileReader(a))) {
 		    String line;
 		    while ((line = br.readLine()) != null) {
+		    	line=line.replaceAll("\\s+","");
+		    	
 		    	if(line.startsWith("#")) {
-		    		currentGroup=line.substring(1);		
+		    		currentGroup=line.substring(1);	
+		    		currentAttribute=null;
+
+		    	}else if(line.startsWith("@")) {
+		    		currentAttribute=line.substring(1);
 		    	}else {
-		    		elements.add(new Element(currentGroup, line));
+		    		if(line.startsWith("§")) {
+		    			line=line.substring(1);
+		    			this.delimiters.add(line.charAt(0));
+		    			
+		    		}
+		    		elements.add(new Element(currentGroup, line, currentAttribute));
 		    	}
 		    	
 		    }
@@ -53,4 +82,6 @@ public class TokenMap {
 			e.printStackTrace();
 		}
 	}
+
+
 }

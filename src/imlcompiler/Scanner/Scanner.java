@@ -1,192 +1,156 @@
 package imlcompiler.Scanner;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.StringCharacterIterator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import imlcompiler.CompileErrorException;
-import imlcompiler.Scanner.Token.LiteralToken;
 
 public class Scanner {
-
-	String imlCode;
-	// todo More chars
-	// enum State{ZERO,ONE,TWO,THREE}
-
-
-	public Scanner(String path) {
-
-		this.imlCode = path;
+	public String currentWord;
+	private int cline;
+	private int cpos;
+	private TokenList tokenList;
+	TokenMap tm=new TokenMap("tokenClass.cmp");
+	private String filename;
+//	char[] illegalChars= {'@'};
+	public Scanner(String filename) {
+		this.filename=filename;
+		tokenList=new TokenList();
 	}
 
-
-
-	public String toString() {
-
-		return this.imlCode;
+	private void clearWord() {
+		currentWord="";
 	}
-
-	//todo charwise readin?
-	private String readFile(String fileName) {
-
-       
-		String line = null;
-		StringBuilder stringBuilder = new StringBuilder();
-
-		try {
-
-			FileReader fileReader = new FileReader(fileName);
-
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-			while ((line = bufferedReader.readLine()) != null) {
-				stringBuilder.append(line);
-			}
-
-			bufferedReader.close();
-		} catch (FileNotFoundException ex) {
-			System.out.println("Unable to open file '" + fileName + "'");
-		} catch (IOException ex) {
-			System.out.println("Error reading file '" + fileName + "'");
+	private void addToken(Token token) {
+		if(token!=null) {
+			tokenList.add(token);
 		}
-
-		return stringBuilder.toString();
+		clearWord();
 	}
-
-	private HashMap<String, String> readTokens(String fileName) {
-
-		String keyword = null;
-		HashMap<String, String> hashMap = new HashMap<>();
-
-		try {
-
-			FileReader fileReader = new FileReader(fileName);
-
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-			while ((keyword = bufferedReader.readLine()) != null) {
-				hashMap.put(keyword, bufferedReader.readLine());
-			}
-
-			bufferedReader.close();
-		} catch (FileNotFoundException ex) {
-			System.out.println("Unable to open file '" + fileName + "'");
-		} catch (IOException ex) {
-			System.out.println("Error reading file '" + fileName + "'");
+	private boolean addToken(String lexeme) {
+		String group=tm.GetGroupOfElement(lexeme);
+		String attribute=tm.GetAttributeOfElement(lexeme);
+		if(group==null) {
+			return false;
 		}
-
-		return hashMap;
+		addToken( new Token(Token.Terminal.valueOf(group),Token.getAttributeEnum(attribute),currentWord) );
+		return true;
 	}
-
-
-
-
-	
-	
-	public TokenList run() throws Exception {
-
-//		HashMap<String, String> hashMap = readTokens("tokens.txt");
-
-//		TokenList tokenList = new TokenList();
-//
-//		// todo: finish scanning algorithm
-//
-//		StringBuilder identifier = new StringBuilder();
-//		StringBuilder literal = new StringBuilder();
-//		StringBuilder operator = new StringBuilder();
-
-		ScannerAutomaton auto=new ScannerAutomaton();
+	private boolean contains(char c, char[] array) {
+		for (char x : array) {
+			if (x == c) {
+				return true;
+			}
+		}
+		return false;
+	}
+	//symbols and whitespaces
+	public int State0(char a) {
+		if("//".equals(currentWord+a)) {
+			return 3;	
+		}
+		addToken(currentWord);
+		clearWord();
 		
-		auto.start(imlCode);
-		// List<Character> code=(Char.asList(imlCode.toCharArray()));
-
-		// for( int i = 0; i < this.imlCode.length(); i++){
-		//
-		// char c = this.imlCode.charAt(i);
-		//
-		//
-		//
-		// if (c == '\n' || c == '\b'){
-		// state = State.ZERO;
-		// }
-		// else if(Character.isLetter(c) && state == State.ZERO){
-		// state = State.ONE;
-		// identifier.append(c);
-		//
-		// }
-		// else if (Character.isLetterOrDigit(c) && state == State.ONE){
-		// identifier.append(c);
-		// }
-		// else if (!Character.isLetterOrDigit(c) && state == State.ONE){
-		// state = State.ZERO;
-		// if (hashMap.containsKey(identifier.toString())){
-		// tokenList.add(new Token(hashMap.get(identifier.toString())));
-		// }
-		// else {
-		// tokenList.add(new Token("(IDENT," + identifier.toString() + ")"));
-		//
-		// }
-		// identifier.delete(0, identifier.length());
-		// i--;
-		// }
-		// else if (Character.isDigit(c) && state == State.ZERO){
-		// state = State.TWO;
-		// literal.append(c);
-		// }
-		// else if (Character.isDigit(c) && state == State.TWO) {
-		// literal.append(c);
-		// }
-		// else if (!Character.isDigit(c) && state == State.TWO) {
-		// tokenList.add(new Token("(LITERAL," + literal.toString()+")"));
-		// literal.delete(0, literal.length());
-		// state = State.ZERO;
-		// // i--;
-		// }
-		// else if (c == '<' && state == State.ZERO){
-		// operator.append(c);
-		// state = State.THREE;
-		// }
-		// else if (c == '=' && state == State.THREE){
-		// operator.append('=');
-		// state = State.ZERO;
-		// }
-		// else if (c != '=' && state == State.THREE) {
-		// if (hashMap.containsKey(operator.toString())){
-		// tokenList.add(new Token(hashMap.get(operator.toString())));
-		// }
-		// operator.delete(0, operator.length()) ;
-		// state = State.ZERO;
-		// // i--;
-		// }
-		// else if (c == ':' && state == State.ZERO){
-		//
-		// }
-		// else if (c == '\t'){
-		// throw new Exception("tab in iml code not allowed");
-		//
-		// }
-		// else if (c == '(' && state == State.ZERO){
-		// tokenList.add(new Token(hashMap.get("(")));
-		// }
-		// else if (c == ')' && state == State.ZERO){
-		// tokenList.add(new Token(hashMap.get(")")));
-		// }
-		//
-		// else{
-		//
-		// }
-		// }
-
-		return auto.tl;
+		if(Character.isDigit(a)) {
+			return 2;
+		}
+		if(Character.isLetter(a)) {
+			return 1;
+		}
+		return 0;
 	}
 
+
+	//letters
+	public int State1(char a) {
+		if(  !(Character.isLetterOrDigit(a)) ) {
+			if(!addToken(currentWord)) {
+				addToken(new Token(Token.Terminal.IDENT, new Token.IdentAttribute(currentWord), currentWord));
+			}
+			
+			return 0;
+		}
+		
+
+		return 1;
+		
+		
+	}
+	//numbers
+	public int State2(char a) {
+
+		if(!(Character.isLetterOrDigit(a))) {
+			
+			addToken(new Token(Token.Terminal.LITERAL, new Token.IntAttribute(Integer.parseInt(currentWord)), currentWord));
+			return 0;
+		}
+		return 2;
+	}
+	//comments
+	public int State3(char a) {
+		if('\n'==a) {
+			clearWord();
+			return 0;
+		}
+		return 3;
+	}
+	
+	//Error
+	public int StateE(char a) {
+		throw new ScannerErrorException("Compiler has entered Error state near token:\t"+currentWord+"\t"+cline+":"+cpos);
+	}
+	public TokenList run() throws IOException {
+		
+//		Iterator<Character> c = code.chars().mapToObj(cc -> (char) cc).collect(Collectors.toList()).iterator();
+		int next=0;
+		cline=0;
+		cpos=0;
+		clearWord();
+		
+		FileReader fileReader = new FileReader(filename);
+
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+		int c = 0;
+		while (c != -1){
+			c = bufferedReader.read();
+			char a = (char)c;
+
+			next=enterAutomaton(a,next);
+
+			currentWord += a;
+			
+			if('\n'==a) {
+				cline++;
+				cpos=0;
+			}else {
+				cpos++;
+			}
+		}
+		
+		bufferedReader.close();
+		tokenList.add(new Token(Token.Terminal.SENTINEL));
+		return tokenList;
+	}
+	int enterAutomaton(char a , int next) {
+		switch(next) {
+		case 0:
+			next=State0(a);
+			break;
+		case 1:
+			next=State1(a);
+			break;
+		case 2:
+			next=State2(a);
+			break;
+		case 3:
+			next=State3(a);
+			break;
+		default:
+			next=StateE(a);
+			break;
+		}
+		
+		return next;
+	}
 }

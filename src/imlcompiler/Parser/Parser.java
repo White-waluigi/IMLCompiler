@@ -1,23 +1,24 @@
 package imlcompiler.Parser;
 
-import imlcompiler.CompileErrorException;
+import imlcompiler.Scanner.ScannerErrorException;
 import imlcompiler.Scanner.Token;
+import imlcompiler.Scanner.Token.Terminal;
 import imlcompiler.Scanner.TokenList;
 
 public class Parser {
 
     TokenList tokenList;
     Token token;
-    String tokenClass;
+    Terminal tokenTerminal;
 
     public Parser(TokenList tl){
         this.tokenList = tl;
         this.tokenList.reset();
         this.token = this.tokenList.nextToken();
-        this.tokenClass = this.token.getClass().getSimpleName();
+        this.tokenTerminal = this.token.getTerminal();
     }
 
-    public ConcreteSyntaxTree.Program parse() throws CompileErrorException {
+    public ConcreteSyntaxTree.Program parse() throws ScannerErrorException {
         // parsing the start symbol ...
         ConcreteSyntaxTree.Program program = program();
         // ... and then consuming the SENTINEL (erst ganz am Schluss :-) )
@@ -26,28 +27,28 @@ public class Parser {
         return program;
     }
 
-    private Token consume(String expectedTerminal) throws CompileErrorException {
-        if (this.tokenClass.equals(expectedTerminal)) {
+    private Token consume(Terminal terminal) throws ScannerErrorException {
+        if (this.tokenTerminal==terminal) {
 
             Token consumedToken = this.token;
 
-            if (this.tokenClass != "SentinelToken") {
+            if (this.token.is(Token.Terminal.SENTINEL)) {
                 this.token = tokenList.nextToken();
-                this.tokenClass = token.getClass().getSimpleName();
+                this.tokenTerminal = token.getTerminal();
             }
             return consumedToken;
         }
         else
         {
-            throw new CompileErrorException("terminal expected: " + expectedTerminal +
-                    ", terminal found: " + this.tokenClass);
+            throw new ScannerErrorException("terminal expected: " + terminal +
+                    ", terminal found: " + this.tokenTerminal);
         }
     }
 
     private ConcreteSyntaxTree.Program program(){
         System.out.println("Program Token consumed");
-        System.out.println(this.tokenClass);
-        consume("FlowControlToken");
+        System.out.println(this.tokenTerminal);
+        consume(Terminal.PROGRAM);
         //consume("FlowControlToken");
         return null;
     }

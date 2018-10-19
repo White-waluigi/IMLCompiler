@@ -22,7 +22,7 @@ public class TokenList {
 
         for (Token t: list){
         	sb.append(t.toString());
-      
+        	sb.append("\n");
         }
 
         return sb.toString();
@@ -35,5 +35,8 @@ public class TokenList {
     public void reset(){
         this.index = 0;
     }
+
+
+
 
 }
