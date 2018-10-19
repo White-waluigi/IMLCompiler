@@ -1,5 +1,6 @@
 package imlcompiler;
 
+import imlcompiler.Parser.Parser;
 import imlcompiler.Scanner.Scanner;
 import imlcompiler.Scanner.TokenList;
 
@@ -29,6 +30,11 @@ public class Compiler {
         catch (Exception e){
             e.printStackTrace();
         }
+
+        Parser parser = new Parser(tokenList);
+
+        parser.parse();
+
         //System.out.println(tokenList.toString());
 
     }

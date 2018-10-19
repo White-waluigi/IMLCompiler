@@ -294,6 +294,9 @@ public class Token {
 			case "program":
 				mode = Lexeme.PROGRAM;
 				break;
+			case "endprogram":
+				mode = Lexeme.ENDPROGRAM;
+				break;
 			case "local":
 				mode = Lexeme.LOCAL;
 				break;
@@ -306,7 +309,7 @@ public class Token {
 		}
 
 		public static enum Lexeme {
-			WHILE, ENDWHILE, IF, ENDIF, THEN, ELSE, FUN, ENDFUN, PROC, ENDPROC, SKIP, RETURN, PROGRAM, LOCAL, GLOBAL,
+			WHILE, ENDWHILE, IF, ENDIF, THEN, ELSE, FUN, ENDFUN, PROC, ENDPROC, SKIP, RETURN, PROGRAM, ENDPROGRAM, LOCAL, GLOBAL,
 
 		};
 
@@ -366,4 +369,9 @@ public class Token {
 		Lexeme op;
 	}
 
+	public static class SentinelToken extends Token {
+		public SentinelToken(String s){
+			super(s);
+		}
+	}
 }
