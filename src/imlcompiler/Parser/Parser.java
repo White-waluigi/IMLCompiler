@@ -48,7 +48,7 @@ public class Parser {
         System.out.println("Program Token consumed");
         System.out.println(this.tokenClass);
         consume("FlowControlToken");
-        consume("FlowControlToken");
+        //consume("FlowControlToken");
         return null;
     }
 

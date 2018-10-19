@@ -36,6 +36,7 @@ endproc
 skip
 return
 program
+endprogram
 local
 global
 #DOTOKEN
