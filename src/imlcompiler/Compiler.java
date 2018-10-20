@@ -14,7 +14,7 @@ public class Compiler {
     	String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/EuclidExtended.iml";
+        	file="examplePrograms/k.iml";
         }else {
         	file=args[0];
         }
@@ -31,9 +31,9 @@ public class Compiler {
             e.printStackTrace();
         }
 
-        Parser parser = new Parser(tokenList);
+//        Parser parser = new Parser(tokenList);
 
-        parser.parse();
+        //parser.parse();
 
         //System.out.println(tokenList.toString());
 
