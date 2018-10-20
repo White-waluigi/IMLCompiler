@@ -49,6 +49,8 @@
 	bool
 	@INT
 	int
+	int32
+	int64
 #CALL
 #CHANGEMODE
 	@CONST
