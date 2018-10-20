@@ -31,9 +31,9 @@ public class Compiler {
             e.printStackTrace();
         }
 
-//        Parser parser = new Parser(tokenList);
+        Parser parser = new Parser(tokenList);
 
-        //parser.parse();
+        parser.parse();
 
         //System.out.println(tokenList.toString());
 

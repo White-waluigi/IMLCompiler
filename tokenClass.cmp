@@ -47,9 +47,9 @@
 #TYPE
 	@BOOL
 	bool
-	@INT
-	int
+	@INT32
 	int32
+	@INT64
 	int64
 #CALL
 #CHANGEMODE
@@ -65,7 +65,7 @@
 #LITERAL
 	@TRUE
 	true
-	@TRUE
+	@FALSE
 	false
 #DEBUGIN
 debugin

@@ -1,0 +1,47 @@
+// BasicIML V01
+// Edgar F.A. Lederer, FHNW, 2017
+
+program EuclidExtendedNat
+  (in a:int64, in b:int64,
+   out g:int64, out u:int64, out v:int64, out u':int64, out v':int64,
+   out sign:int32, out numIt:int32)
+global
+  proc euclidExtendedNatWOSign
+    (in copy const a:int64, in copy const b:int64,
+     out copy var g :int64,
+     out copy var u :int64, out copy var v :int64,
+     out copy var u':int64, out copy var v':int64,
+     out copy var sign:int32, out var numIt:int32)
+    //pre 0 <= a &? 0 <= b
+    //post 0 <= g = gcd(a, b)
+    //post |sign| = 1
+    //Pu':   post -sign * u' * g = b
+    //Pv':   post +sign * v' * g = a
+    //Puv:   post u  * a + v  * b = g
+    //Pu'v': post u' * a + v' * b = 0
+    //Psign: post u * v' - u' * v = sign
+  local
+    var g':int64 ; var q:int64
+  do
+    g init := a ; g' init := b ;
+    u init := 1 ; u' init := 0 ;
+    v init := 0 ; v' init := 1 ;
+    sign init := 1;
+    numIt init:= 0;
+    q init := 0 ; // local
+    while g' > 0 do
+      q := g divE g' ;
+      g := g - q * g'  ; u := u - q * u'  ; v := v - q * v' ;
+      call swap(g, g') ; call swap(u, u') ; call swap(v, v') ;
+      sign := -sign ;
+      numIt := numIt + 1
+    endwhile
+  endproc ;
+
+  proc swap(inout ref var x:int64, inout ref var y:int64)
+  local const h:int64
+  do h init := x ; x := y ; y := h endproc
+do
+  call euclidExtendedNatWOSign
+    (a, b, g init, u init, v init, u' init, v' init, sign init, numIt init)
+endprogram

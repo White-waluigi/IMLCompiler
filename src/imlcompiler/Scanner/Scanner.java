@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.CompilerException;
 
 public class Scanner {
 	public String currentWord;
@@ -52,6 +51,7 @@ public class Scanner {
 	boolean isState0Char(char a){
 		return Character.isWhitespace(a)|| tm.isDelimiter(a) || ((char)-1)==a;
 	}
+
 	public int State0(char a) {
 
 		addToken(currentWord);
@@ -72,7 +72,9 @@ public class Scanner {
 
 	//letters
 	public int State1(char a) {
-		if(  !(Character.isLetterOrDigit(a)) ) {
+		if( !(a + "" ).matches("[a-zA-Z]|[0-9]|'| _" ))
+			//!(Character.isLetterOrDigit(a)) )
+		{
 			if(!addToken(currentWord)) {
 				addToken(new Token(Token.Terminal.IDENT, new Token.IdentAttribute(currentWord), currentWord));
 			}

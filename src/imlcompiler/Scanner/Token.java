@@ -19,7 +19,7 @@ public class Token {
 			this.value = value;
 		}
 		public String toString(){
-			return "INT: "+"\""+value+"\"";
+			return "INT: "+value;
 		}
 	};
 	public static class OtherAttribute extends Attribute{
@@ -136,14 +136,16 @@ public class Token {
 		COR,
 		
 		BOOL,
-		
+		INT32,
+		INT64,
+
 		CONST,
 		COPY,
 		
 		DIV_E,
 		
 		IN,
-		INOÛT,
+		INOUT,
 		
 		MOD_E,
 		
