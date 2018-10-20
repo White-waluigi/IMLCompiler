@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.CompilerException;
+
 public class Scanner {
 	public String currentWord;
 	private int cline;
@@ -11,6 +13,8 @@ public class Scanner {
 	private TokenList tokenList;
 	TokenMap tm=new TokenMap("tokenClass.cmp");
 	private String filename;
+	
+	int next_=0;
 //	char[] illegalChars= {'@'};
 	public Scanner(String filename) {
 		this.filename=filename;
@@ -27,7 +31,7 @@ public class Scanner {
 		clearWord();
 	}
 	private boolean addToken(String lexeme) {
-//		System.out.println("adding:\t"+lexeme);
+		//System.out.println(next_+" adding:\t"+lexeme);
 		String group=tm.GetGroupOfElement(lexeme);
 		String attribute=tm.GetAttributeOfElement(lexeme);
 		if(group==null) {
@@ -103,7 +107,9 @@ public class Scanner {
 			return 4;	
 		}
 		if(isState0Char(a)||Character.isLetterOrDigit(a)) {
-			addToken(currentWord);
+			if(!addToken(currentWord)) 
+				throw new ScannerErrorException("Unrecognized Token: "+currentWord);
+			
 			
 			if(isState0Char(a))
 				return 0;
@@ -147,7 +153,7 @@ public class Scanner {
 			char a = (char)c;
 
 			next=enterAutomaton(a,next);
-
+			next_=next;
 			currentWord += a;
 			
 			if('\n'==a) {
