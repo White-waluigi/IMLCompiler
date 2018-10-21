@@ -11,13 +11,23 @@ public class Compiler {
 
     public static void main(String[] args){
     	
-    	String file;
+ 
+//        Parser parser = new Parser(tokenList);
+
+        //parser.parse();
+
+        //System.out.println(tokenList.toString());
+       	String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
         	file="examplePrograms/Cube.iml";
         }else {
         	file=args[0];
         }
+        parse(file,true);
+    }
+    public static void parse(String file,boolean printtokenlist){
+
         
         Scanner scanner = new Scanner(file);
 
@@ -25,17 +35,14 @@ public class Compiler {
 
         try {
             tokenList = scanner.run();
-            System.out.println(tokenList);
+            if(printtokenlist)
+            	System.out.println(tokenList);
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
-//        Parser parser = new Parser(tokenList);
-
-        //parser.parse();
-
-        //System.out.println(tokenList.toString());
-
     }
+    
+    
 }

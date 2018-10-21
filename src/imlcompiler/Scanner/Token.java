@@ -136,6 +136,9 @@ public class Token {
 		COR,
 		
 		BOOL,
+		INT,
+		INT64,
+		INT32,
 		
 		CONST,
 		COPY,

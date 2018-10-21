@@ -60,7 +60,7 @@ public class Scanner {
 		if(Character.isDigit(a)) {
 			return 2;
 		}
-		if(Character.isLetter(a)) {
+		if(Character.isLetter(a)||a=='_') {
 			return 1;
 		}
 		if(!isState0Char(a)) {
@@ -72,7 +72,7 @@ public class Scanner {
 
 	//letters
 	public int State1(char a) {
-		if(  !(Character.isLetterOrDigit(a)) ) {
+		if(  !(Character.isLetterOrDigit(a)||a=='_') ) {
 			if(!addToken(currentWord)) {
 				addToken(new Token(Token.Terminal.IDENT, new Token.IdentAttribute(currentWord), currentWord));
 			}
@@ -90,7 +90,7 @@ public class Scanner {
 	//numbers
 	public int State2(char a) {
 
-		if(!(Character.isLetterOrDigit(a))) {
+		if(!(Character.isLetterOrDigit(a)||a=='_')) {
 			
 			addToken(new Token(Token.Terminal.LITERAL, new Token.IntAttribute(Integer.parseInt(currentWord)), currentWord));
 			
@@ -106,7 +106,7 @@ public class Scanner {
 		if("//".equals(currentWord+a)) {
 			return 4;	
 		}
-		if(isState0Char(a)||Character.isLetterOrDigit(a)) {
+		if(isState0Char(a)||Character.isLetterOrDigit(a)||a=='_') {
 			if(!addToken(currentWord)) 
 				throw new ScannerErrorException("Unrecognized Token: "+currentWord);
 			
