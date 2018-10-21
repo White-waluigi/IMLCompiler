@@ -136,16 +136,10 @@ public class Token {
 		COR,
 		
 		BOOL,
-<<<<<<< HEAD
-		INT,
-		INT64,
-		INT32,
-		
-=======
+
 		INT32,
 		INT64,
 
->>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
 		CONST,
 		COPY,
 		
