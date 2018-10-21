@@ -57,10 +57,10 @@ public class Scanner {
 		addToken(currentWord);
 		clearWord();
 
-		if(Character.isDigit(a)) {
+		if(isDigit(a)) {
 			return 2;
 		}
-		if(Character.isLetter(a)||a=='_') {
+		if(isLetter(a)||a=='_') {
 			return 1;
 		}
 		if(!isState0Char(a)) {
@@ -69,12 +69,20 @@ public class Scanner {
 		return 0;
 	}
 
+	public boolean isLetterOrDigit(char a) {
+		return isLetter(a)|| isDigit(a);
+	}
+	public boolean isLetter(char a) {
+		return (a + "" ).matches("[a-zA-Z]|'|_" );
+	}
+	public boolean isDigit(char a) {
+		return (a + "" ).matches("[0-9]" );
+	}
 
 	//letters
 	public int State1(char a) {
 
-		if( !(a + "" ).matches("[a-zA-Z]|[0-9]|'| _" ))
-			//!(Character.isLetterOrDigit(a)) )
+		if( !isLetterOrDigit(a))
 		{
 
 			if(!addToken(currentWord)) {
@@ -94,7 +102,7 @@ public class Scanner {
 	//numbers
 	public int State2(char a) {
 
-		if(!(Character.isLetterOrDigit(a)||a=='_')) {
+		if(!(isLetterOrDigit(a))) {
 			
 			addToken(new Token(Token.Terminal.LITERAL, new Token.IntAttribute(Integer.parseInt(currentWord)), currentWord));
 			
@@ -110,14 +118,14 @@ public class Scanner {
 		if("//".equals(currentWord+a)) {
 			return 4;	
 		}
-		if(isState0Char(a)||Character.isLetterOrDigit(a)||a=='_') {
+		if(isState0Char(a)||isLetterOrDigit(a)||a=='_') {
 			if(!addToken(currentWord)) 
 				throw new ScannerErrorException("Unrecognized Token: "+currentWord);
 			
 			
 			if(isState0Char(a))
 				return 0;
-			else if(Character.isDigit(a))
+			else if(isDigit(a))
 				return 2;
 			else
 				return 1;
