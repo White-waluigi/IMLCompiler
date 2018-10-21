@@ -42,10 +42,10 @@ public class Compiler {
             e.printStackTrace();
         }
 
-//
-//        Parser parser = new Parser(tokenList);
-//
-//        parser.parse();
+
+        Parser parser = new Parser(tokenList);
+
+        parser.parse();
 
         //System.out.println(tokenList.toString());
 

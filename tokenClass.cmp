@@ -47,7 +47,6 @@
 #TYPE
 	@BOOL
 	bool
-
 	@INT32
 	int32
 	@INT64

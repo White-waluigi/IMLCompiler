@@ -32,7 +32,7 @@ public class Parser {
 
             Token consumedToken = this.token;
 
-            if (this.token.is(Token.Terminal.SENTINEL)) {
+            if (!this.token.is(Terminal.SENTINEL)) {
                 this.token = tokenList.nextToken();
                 this.tokenTerminal = token.getTerminal();
             }
@@ -47,9 +47,9 @@ public class Parser {
 
     private ConcreteSyntaxTree.Program program(){
         System.out.println("Program Token consumed");
-        System.out.println(this.tokenTerminal);
+        //System.out.println(this.tokenTerminal);
         consume(Terminal.PROGRAM);
-        //consume("FlowControlToken");
+        consume(Terminal.ENDPROGRAM);
         return null;
     }
 
