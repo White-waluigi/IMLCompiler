@@ -42,6 +42,15 @@ public class Compiler {
             e.printStackTrace();
         }
 
+<<<<<<< HEAD
+=======
+        Parser parser = new Parser(tokenList);
+
+        parser.parse();
+
+        //System.out.println(tokenList.toString());
+
+>>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
     }
     
     

@@ -47,8 +47,11 @@
 #TYPE
 	@BOOL
 	bool
+<<<<<<< HEAD
 	@INT
 	int
+=======
+>>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
 	@INT32
 	int32
 	@INT64
@@ -67,7 +70,7 @@
 #LITERAL
 	@TRUE
 	true
-	@TRUE
+	@FALSE
 	false
 #DEBUGIN
 debugin

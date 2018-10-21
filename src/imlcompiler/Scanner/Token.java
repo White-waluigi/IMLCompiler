@@ -19,7 +19,7 @@ public class Token {
 			this.value = value;
 		}
 		public String toString(){
-			return "INT: "+"\""+value+"\"";
+			return "INT: "+value;
 		}
 	};
 	public static class OtherAttribute extends Attribute{
@@ -136,17 +136,23 @@ public class Token {
 		COR,
 		
 		BOOL,
+<<<<<<< HEAD
 		INT,
 		INT64,
 		INT32,
 		
+=======
+		INT32,
+		INT64,
+
+>>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
 		CONST,
 		COPY,
 		
 		DIV_E,
 		
 		IN,
-		INOÛT,
+		INOUT,
 		
 		MOD_E,
 		
