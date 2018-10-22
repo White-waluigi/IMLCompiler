@@ -1,2 +1,4 @@
-program
+program testParser //paramlist omitted
+    do
+    skip; skip
 endprogram

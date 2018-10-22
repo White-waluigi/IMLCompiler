@@ -10,7 +10,7 @@ public class CompilerTest {
 		File[] listOfFiles = folder.listFiles();
 
 		for (int i = 0; i < listOfFiles.length; i++) {
-		  if (listOfFiles[i].isFile() &&listOfFiles[i].getName().endsWith(".iml")) {
+		  if (listOfFiles[i].isFile() &&listOfFiles[i].getName().endsWith(".iml") && listOfFiles[i].getName().startsWith("00")) {
 			System.out.println("testing\t"+listOfFiles[i].getName());
 		    Compiler.parse("examplePrograms/"+listOfFiles[i].getName(),false);
 		  } 

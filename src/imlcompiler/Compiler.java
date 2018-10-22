@@ -1,8 +1,12 @@
 package imlcompiler;
 
+import imlcompiler.Parser.ImlComponent;
+import imlcompiler.Parser.ImlComposite;
 import imlcompiler.Parser.Parser;
 import imlcompiler.Scanner.Scanner;
 import imlcompiler.Scanner.TokenList;
+
+import java.util.Iterator;
 
 public class Compiler {
 
@@ -11,13 +15,7 @@ public class Compiler {
 
     public static void main(String[] args){
     	
- 
-//        Parser parser = new Parser(tokenList);
-
-        //parser.parse();
-
-        //System.out.println(tokenList.toString());
-       	String file;
+        String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
         	file="examplePrograms/Cube.iml";
@@ -42,12 +40,18 @@ public class Compiler {
             e.printStackTrace();
         }
 
+        System.out.println("---> Started Parsing the Program");
 
         Parser parser = new Parser(tokenList);
 
-        parser.parse();
+        ImlComponent concreteSyntaxTree = parser.parse();
 
-        //System.out.println(tokenList.toString());
+        Iterator<ImlComponent> iterator = concreteSyntaxTree.createIterator();
+
+        while (iterator.hasNext()){
+            ImlComponent imlComponent = iterator.next();
+            imlComponent.print();
+        }
 
     }
     

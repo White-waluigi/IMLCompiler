@@ -18,12 +18,11 @@ public class Parser {
         this.tokenTerminal = this.token.getTerminal();
     }
 
-    public ConcreteSyntaxTree.Program parse() throws ScannerErrorException {
+    public ImlComponent parse() throws ScannerErrorException {
         // parsing the start symbol ...
-        ConcreteSyntaxTree.Program program = program();
-        // ... and then consuming the SENTINEL (erst ganz am Schluss :-) )
-        // todo SENTINEL
-        // consume(Terminals.SENTINEL);
+        ImlComponent program = program();
+        // ... and then consuming the SENTINEL
+        consume(Terminal.SENTINEL);
         return program;
     }
 
@@ -40,17 +39,51 @@ public class Parser {
         }
         else
         {
-            throw new ScannerErrorException("terminal expected: " + terminal +
+            throw new ParserErrorException("terminal expected: " + terminal +
                     ", terminal found: " + this.tokenTerminal);
         }
     }
 
-    private ConcreteSyntaxTree.Program program(){
-        System.out.println("Program Token consumed");
-        //System.out.println(this.tokenTerminal);
-        consume(Terminal.PROGRAM);
-        consume(Terminal.ENDPROGRAM);
-        return null;
+
+    /*
+    *   program ::= PROGRAM IDENT progParamList [GLOBAL cpsDecl] DO cpsCmd ENDPROGRAM
+    */
+    private ImlComponent program(){
+
+        ImlComponent program = new ImlComposite("program");
+
+        program.add(new ImlItem(consume(Terminal.PROGRAM)));
+        program.add(new ImlItem(consume(Terminal.IDENT)));
+        //progParamList
+        //[GLOBAL cpsDecl]
+        program.add(new ImlItem(consume(Terminal.DO)));
+        program.add(cpsCmd());
+        program.add(new ImlItem(consume(Terminal.ENDPROGRAM)));
+
+        return program;
     }
 
+    //cpsCmd ::= cmd {SEMICOLON cmd}
+    private ImlComponent cpsCmd(){
+        ImlComponent cpsCmd = new ImlComposite("cpsCmd");
+        cpsCmd.add(cmd());
+        cpsCmd.add(new ImlItem(consume(Terminal.SEMICOLON)));
+        cpsCmd.add(cmd());
+        return cpsCmd;
+    }
+
+    /*
+        cmd ::= SKIP
+            | expr BECOMES expr
+            | IF expr THEN cpsCmd ELSE cpsCmd ENDIF | WHILE expr DO cpsCmd ENDWHILE
+            | CALL IDENT exprList [globInits]
+            | DEBUGIN expr
+            | DEBUGOUT expr
+    */
+    private ImlComponent cmd(){
+        ImlComponent cmd = new ImlComposite("cmd");
+        cmd.add(new ImlItem(consume(Terminal.SKIP)));
+
+        return cmd;
+    }
 }
