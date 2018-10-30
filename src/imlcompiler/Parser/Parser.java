@@ -53,14 +53,106 @@ public class Parser {
 
         program.add(new ImlItem(consume(Terminal.PROGRAM)));
         program.add(new ImlItem(consume(Terminal.IDENT)));
-        //todo progParamList
+        program.add(progParamList());
         //todo [GLOBAL cpsDecl]
+        if (this.tokenTerminal == Terminal.GLOBAL){
+            program.add(new ImlItem(consume(Terminal.GLOBAL)));
+            //program.add(cpsDecl());
+        }
         program.add(new ImlItem(consume(Terminal.DO)));
         program.add(cpsCmd());
         program.add(new ImlItem(consume(Terminal.ENDPROGRAM)));
 
         return program;
     }
+
+
+   /*
+    progParamList ::= LPAREN [progParam {COMMA progParam}] RPAREN
+
+    progParam ::= [FLOWMODE] [CHANGEMODE] typedIdent
+
+    paramList ::= LPAREN [param {COMMA param}] RPAREN
+
+    param ::= [FLOWMODE] [MECHMODE] [CHANGEMODE] typedIdent
+
+    typedIdent ::= IDENT COLON ATOMTYPE
+
+    */
+
+    private ImlComponent progParamList(){
+        ImlComponent progParamList = new ImlComposite("progParamList");
+        progParamList.add(new ImlItem(consume(Terminal.LPAREN)));
+        if (this.tokenTerminal == Terminal.FLOWMODE || this.tokenTerminal == Terminal.CHANGEMODE ||
+                this.tokenTerminal == Terminal.IDENT) {
+            progParamList.add(progParam());
+            while (this.tokenTerminal == Terminal.COMMA){
+                progParamList.add(new ImlItem(consume(Terminal.COMMA)));
+                progParamList.add(progParam());
+            }
+        }
+        progParamList.add(new ImlItem(consume(Terminal.RPAREN)));
+        return progParamList;
+    }
+
+    private ImlComponent progParam(){
+        ImlComponent progParam = new ImlComposite("progParam");
+        if (this.tokenTerminal == Terminal.FLOWMODE){
+            progParam.add(new ImlItem(consume(Terminal.FLOWMODE)));
+        }
+        if (this.tokenTerminal == Terminal.CHANGEMODE){
+            progParam.add(new ImlItem(consume(Terminal.CHANGEMODE)));
+        }
+        progParam.add(typedIdent());
+        return progParam;
+    }
+
+    private ImlComponent typedIdent(){
+        ImlComponent typedIdent = new ImlComposite("typedIdent");
+        typedIdent.add(new ImlItem(consume(Terminal.IDENT)));
+        typedIdent.add(new ImlItem(consume(Terminal.COLON)));
+        typedIdent.add(new ImlItem(consume(Terminal.TYPE)));   //shold be ATOMTYPE
+        return typedIdent;
+    }
+
+
+    private ImlComponent paramList(){
+        ImlComponent paramList = new ImlComposite("paramList");
+        paramList.add(new ImlItem(consume(Terminal.LPAREN)));
+        if (this.tokenTerminal == Terminal.FLOWMODE || this.tokenTerminal == Terminal.MECHMODE ||
+                this.tokenTerminal == Terminal.CHANGEMODE || this.tokenTerminal == Terminal.IDENT){
+            paramList.add(param());
+            while(this.tokenTerminal == Terminal.COMMA){
+                paramList.add(new ImlItem(consume(Terminal.COMMA)));
+                paramList.add(param());
+
+            }
+        }
+        paramList.add(new ImlItem(consume(Terminal.RPAREN)));
+        return paramList;
+    }
+
+    private ImlComponent param(){
+        ImlComponent param = new ImlComposite("param");
+        if (this.tokenTerminal == Terminal.FLOWMODE ){
+            param.add(new ImlItem(consume(Terminal.FLOWMODE)));
+        }
+        if (this.tokenTerminal == Terminal.MECHMODE ){
+            param.add(new ImlItem(consume(Terminal.MECHMODE)));
+        }
+        if (this.tokenTerminal == Terminal.CHANGEMODE ){
+            param.add(new ImlItem(consume(Terminal.CHANGEMODE)));
+        }
+        param.add(typedIdent());
+        return param;
+    }
+
+
+
+
+
+
+
 
     /*
     cpsCmd ::= cmd {SEMICOLON cmd}
@@ -134,30 +226,6 @@ public class Parser {
             return cmd;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /*
@@ -279,6 +347,27 @@ public class Parser {
         }
         return monadicOpr;
     }
+
+    /*
+    decl ::= stoDecl
+            | funDecl
+            | procDecl
+
+    stoDecl ::= [CHANGEMODE] typedIdent
+
+    funDecl ::= FUN IDENT paramList RETURNS stoDecl [GLOBAL globImps] [LOCAL cpsStoDecl] DO cpsCmd ENDFUN
+
+    procDecl::= PROC IDENT paramList [GLOBAL globImps] [LOCAL cpsStoDecl] DO cpsCmd ENDPROC
+
+    globImps ::= globImp {COMMA globImp}
+    globImp ::= [FLOWMODE] [CHANGEMODE] IDENT
+    cpsDecl ::= decl {SEMICOLON decl}
+    cpsStoDecl ::= stoDecl {SEMICOLON stoDecl}
+
+    */
+
+
+
 
 
 
