@@ -1,4 +1,5 @@
 program testParser //paramlist omitted
     do
-    skip; skip; skip
+    skip; skip; skip;
+    call divide(m, n, q init, r init)
 endprogram

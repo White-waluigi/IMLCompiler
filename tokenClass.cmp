@@ -52,6 +52,7 @@
 	@INT64
 	int64
 #CALL
+    call
 #CHANGEMODE
 	@CONST
 	const
