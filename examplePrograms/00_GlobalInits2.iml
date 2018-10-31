@@ -1,0 +1,27 @@
+// BasicIML V01
+// Edgar F.A. Lederer, FHNW, October 2018
+
+program GlobalInits2()
+global
+  var g1:int32 ;
+  var g2:int32 ;
+
+  proc p(in copy const x:int32)
+    global out const g1, out const g2
+  do
+    g1 init := x * x ;
+    g2 init := -g1
+  endproc ;
+
+  proc q(in copy const x:int32)
+    global out var g1, out var g2
+  do
+    call p(x) init g1, g2 ;
+    call p(x+1)
+  endproc
+do
+  call q(5) init g1, g2 ;   debugout g1 ; debugout g2 ;
+  call q(6) ;               debugout g1 ; debugout g2
+endprogram
+
+// The same as GloablInits1, but with an additional intermediate procedure q.

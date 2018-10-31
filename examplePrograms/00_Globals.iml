@@ -1,0 +1,36 @@
+// BasicIML V01
+// Edgar F.A. Lederer, FHNW, October 2018
+
+program Globals()
+  global const g1:int32 ; var g2:int32 ; const g3:int32 ;
+
+  proc p()
+    global in const g1, inout var g2, out var g3
+    // The following does not work:
+    // global in const g1, out var g3
+  do
+    // Here, the global stores g1 and g2 are accessed, but invisible
+    //   (g3 IS visible).
+    // However, they must be declared as global imports.
+    // So the whole communications interface becomes visible
+    //   (in the header of the procedure).
+    call q() init g3 ;
+    call q()
+  endproc ;
+
+  proc q()
+    global in const g1, inout var g2, out const g3
+  do
+    // g1 is in and thus already initialized; here it is read and not updated
+    // g2 is inout and thus already initialized;
+    //   here it is read and then updated and then read again
+    // g3 is out and thus not yet initialized; here it is initialized
+    g2 := g2 + g1 ;
+    g3 init := g2
+  endproc
+do
+  g1 init := 3 ;
+  g2 init := 5 ;
+  call p() init g3 ;
+  debugout g1 ; debugout g2 ; debugout g3
+endprogram

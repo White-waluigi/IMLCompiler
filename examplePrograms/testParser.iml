@@ -1,6 +1,9 @@
 program intDiv(in  m:int32, in  n:int32,
                out q:int32, out r:int32)
+    global
     do
     skip; skip; skip;
-    call divide(m, n, q init, r init)
+    while true do
+        call divide(m, n, q init, r init)
+    endwhile
 endprogram

@@ -54,10 +54,9 @@ public class Parser {
         program.add(new ImlItem(consume(Terminal.PROGRAM)));
         program.add(new ImlItem(consume(Terminal.IDENT)));
         program.add(progParamList());
-        //todo [GLOBAL cpsDecl]
         if (this.tokenTerminal == Terminal.GLOBAL){
             program.add(new ImlItem(consume(Terminal.GLOBAL)));
-            //program.add(cpsDecl());
+            program.add(cpsDecl());
         }
         program.add(new ImlItem(consume(Terminal.DO)));
         program.add(cpsCmd());
@@ -147,24 +146,15 @@ public class Parser {
         return param;
     }
 
-
-
-
-
-
-
-
     /*
     cpsCmd ::= cmd {SEMICOLON cmd}
      */
     private ImlComponent cpsCmd(){ // [[DONE]]
         ImlComponent cpsCmd = new ImlComposite("cpsCmd");
         cpsCmd.add(cmd());
-        if (this.tokenTerminal == Terminal.SEMICOLON) {
-            while (this.tokenTerminal == Terminal.SEMICOLON) {
-                cpsCmd.add(new ImlItem(consume(Terminal.SEMICOLON)));
-                cpsCmd.add(cmd());
-            }
+        while (this.tokenTerminal == Terminal.SEMICOLON) {
+            cpsCmd.add(new ImlItem(consume(Terminal.SEMICOLON)));
+            cpsCmd.add(cmd());
         }
         return cpsCmd;
     }
@@ -206,7 +196,9 @@ public class Parser {
             cmd.add(new ImlItem(consume(Terminal.CALL)));
             cmd.add(new ImlItem(consume(Terminal.IDENT)));
             cmd.add(exprList());
-            //todo [globInits]
+            if (this.tokenTerminal == Terminal.INIT ){
+                cmd.add(globInits());
+            }
             return cmd;
         }
         else if (this.tokenTerminal == Terminal.DEBUGIN){
@@ -227,6 +219,18 @@ public class Parser {
         }
     }
 
+    //globInits ::= INIT IDENT { COMMA IDENT }
+
+    private ImlComponent globInits(){
+        ImlComponent globInits = new ImlComposite("globInits");
+        globInits.add(new ImlItem(consume(Terminal.INIT)));
+        globInits.add(new ImlItem(consume(Terminal.IDENT)));
+        while (this.tokenTerminal == Terminal.COMMA){
+            globInits.add(new ImlItem(consume(Terminal.COMMA)));
+            globInits.add(new ImlItem(consume(Terminal.IDENT)));
+        }
+        return globInits;
+    }
 
     /*
         expr    ::= term1 {BOOLOPR term1}
@@ -244,11 +248,9 @@ public class Parser {
     private ImlComponent expr(){   // [[DONE]]
         ImlComponent expr = new ImlComposite("expr");
         expr.add(term1());
-        if (this.tokenTerminal == Terminal.BOOLOPR){
-            while (this.tokenTerminal == Terminal.BOOLOPR){
-                expr.add(new ImlItem(consume(Terminal.BOOLOPR)));
-                expr.add(term1());
-            }
+        while (this.tokenTerminal == Terminal.BOOLOPR){
+            expr.add(new ImlItem(consume(Terminal.BOOLOPR)));
+            expr.add(term1());
         }
         return expr;
     }
@@ -266,11 +268,9 @@ public class Parser {
     private ImlComponent term2(){ //[[DONE]]
         ImlComponent term2 = new ImlComposite("term2");
         term2.add(term3());
-        if (this.tokenTerminal == Terminal.ADDOPR){
-            while(this.tokenTerminal == Terminal.ADDOPR){
-                term2.add(new ImlItem(consume(Terminal.ADDOPR)));
-                term2.add(term3());
-            }
+        while(this.tokenTerminal == Terminal.ADDOPR){
+            term2.add(new ImlItem(consume(Terminal.ADDOPR)));
+            term2.add(term3());
         }
         return term2;
     }
@@ -278,16 +278,19 @@ public class Parser {
     private ImlComponent term3(){ //[[DONE]]
         ImlComponent term3 = new ImlComposite("term3");
         term3.add(factor());
-        if (this.tokenTerminal == Terminal.MULTOPR){
-            while(this.tokenTerminal == Terminal.MULTOPR){
-                term3.add(new ImlItem(consume(Terminal.MULTOPR)));
-                term3.add(factor());
-            }
+        while(this.tokenTerminal == Terminal.MULTOPR){
+            term3.add(new ImlItem(consume(Terminal.MULTOPR)));
+            term3.add(factor());
         }
         return factor();
     }
-
-    private ImlComponent factor(){ //[[DONE]]
+    /*
+        factor  ::=   LITERAL
+                    | IDENT [INIT | exprList]
+                    | monadicOpr factor
+                    | LPAREN expr RPAREN
+    */
+    private ImlComponent factor(){
         ImlComponent factor = new ImlComposite("factor");
         if (this.tokenTerminal == Terminal.LITERAL){
             factor.add(new ImlItem(consume(Terminal.LITERAL)));
@@ -318,14 +321,11 @@ public class Parser {
     private ImlComponent exprList(){ //[[DONE]]
         ImlComponent exprList = new ImlComposite("exprList");
         exprList.add(new ImlItem(consume(Terminal.LPAREN)));
-
         if (this.tokenTerminal != Terminal.RPAREN){
             exprList.add(expr());
-            if(this.tokenTerminal == Terminal.COMMA) {
-                while (this.tokenTerminal == Terminal.COMMA) {
-                    exprList.add(new ImlItem(consume(Terminal.COMMA)));
-                    exprList.add(expr());
-                }
+            while (this.tokenTerminal == Terminal.COMMA) {
+                exprList.add(new ImlItem(consume(Terminal.COMMA)));
+                exprList.add(expr());
             }
             //else throw new ParserErrorException("error in exprList");
         }
@@ -352,23 +352,133 @@ public class Parser {
     decl ::= stoDecl
             | funDecl
             | procDecl
-
-    stoDecl ::= [CHANGEMODE] typedIdent
-
-    funDecl ::= FUN IDENT paramList RETURNS stoDecl [GLOBAL globImps] [LOCAL cpsStoDecl] DO cpsCmd ENDFUN
-
-    procDecl::= PROC IDENT paramList [GLOBAL globImps] [LOCAL cpsStoDecl] DO cpsCmd ENDPROC
-
-    globImps ::= globImp {COMMA globImp}
-    globImp ::= [FLOWMODE] [CHANGEMODE] IDENT
-    cpsDecl ::= decl {SEMICOLON decl}
-    cpsStoDecl ::= stoDecl {SEMICOLON stoDecl}
-
     */
+    private ImlComponent decl(){
+        ImlComponent decl = new ImlComposite("decl");
+        if (this.tokenTerminal == Terminal.CHANGEMODE || this.tokenTerminal == Terminal.IDENT){
+            decl.add(stoDecl());
+        }
+        else if (this.tokenTerminal == Terminal.FUN){
+            decl.add(funDecl());
+        }
+        else if (this.tokenTerminal == Terminal.PROC){
+            decl.add(procDecl());
+        }
+        else {
+            throw new ParserErrorException("error in decl");
+        }
+        return decl;
+    }
+
+    /*
+    stoDecl ::= [CHANGEMODE] typedIdent
+    */
+    private ImlComponent stoDecl(){
+        ImlComponent stoDecl = new ImlComposite("stoDecl");
+        if (this.tokenTerminal == Terminal.CHANGEMODE){
+            stoDecl.add(new ImlItem(consume(Terminal.CHANGEMODE)));
+        }
+        stoDecl.add(typedIdent());
+        return stoDecl;
+    }
+
+    /*
+    funDecl ::= FUN IDENT paramList RETURNS stoDecl [GLOBAL globImps] [LOCAL cpsStoDecl] DO cpsCmd ENDFUN
+    */
+    private ImlComponent funDecl(){
+        ImlComponent funDecl = new ImlComposite("funDecl");
+        funDecl.add(new ImlItem(consume(Terminal.FUN)));
+        funDecl.add(new ImlItem(consume(Terminal.IDENT)));
+        funDecl.add(paramList());
+        funDecl.add(new ImlItem(consume(Terminal.RETURNS)));
+        funDecl.add(stoDecl());
+        if (this.tokenTerminal == Terminal.GLOBAL){
+            funDecl.add(new ImlItem(consume(Terminal.GLOBAL)));
+            funDecl.add(globImps());
+        }
+        if (this.tokenTerminal == Terminal.LOCAL){
+            funDecl.add(new ImlItem(consume(Terminal.LOCAL)));
+            funDecl.add(cpsStoDecl());
+        }
+        funDecl.add(new ImlItem(consume(Terminal.DO)));
+        funDecl.add(cpsCmd());
+        funDecl.add(new ImlItem(consume(Terminal.ENDFUN)));
+        return  funDecl;
+    }
 
 
+    /*
+    procDecl::= PROC IDENT paramList [GLOBAL globImps] [LOCAL cpsStoDecl] DO cpsCmd ENDPROC
+    */
+    private ImlComponent procDecl() {
+        ImlComponent procDecl = new ImlComposite("funDecl");
+        procDecl.add(new ImlItem(consume(Terminal.PROC)));
+        procDecl.add(new ImlItem(consume(Terminal.IDENT)));
+        procDecl.add(paramList());
+        if (this.tokenTerminal == Terminal.GLOBAL){
+            procDecl.add(new ImlItem(consume(Terminal.GLOBAL)));
+            procDecl.add(globImps());
+        }
+        if (this.tokenTerminal == Terminal.LOCAL){
+            procDecl.add(new ImlItem(consume(Terminal.LOCAL)));
+            procDecl.add(cpsStoDecl());
+        }
+        procDecl.add(new ImlItem(consume(Terminal.DO)));
+        procDecl.add(cpsCmd());
+        procDecl.add(new ImlItem(consume(Terminal.ENDPROC)));
+        return procDecl;
+    }
+    /*
+    globImps ::= globImp {COMMA globImp}
+    */
+    private ImlComponent globImps(){
+        ImlComponent globImps = new ImlComposite("globImps");
+        globImps.add(globImp());
+        while (this.tokenTerminal == Terminal.COMMA){
+            globImps.add(new ImlItem(consume(Terminal.COMMA)));
+            globImps.add(globImp());
+        }
+        return globImps;
+    }
 
+    /*
+    globImp ::= [FLOWMODE] [CHANGEMODE] IDENT
+    */
+    private ImlComponent globImp() {
+        ImlComponent globImp = new ImlComposite("globImp");
+        if (this.tokenTerminal == Terminal.FLOWMODE) {
+            globImp.add(new ImlItem(consume(Terminal.FLOWMODE)));
+        }
+        if (this.tokenTerminal == Terminal.CHANGEMODE) {
+            globImp.add(new ImlItem(consume(Terminal.CHANGEMODE)));
+        }
+        globImp.add(new ImlItem(consume(Terminal.IDENT)));
+        return globImp;
+    }
 
+    /*
+    cpsDecl ::= decl {SEMICOLON decl}
+    */
+    private ImlComponent cpsDecl(){
+        ImlComponent cpsDecl = new ImlComposite("cpsDecl");
+        cpsDecl.add(decl());
+        while(this.tokenTerminal == Terminal.SEMICOLON){
+            cpsDecl.add(new ImlItem(consume(Terminal.SEMICOLON)));
+            cpsDecl.add(decl());
+        }
+        return cpsDecl;
+    }
 
-
+    /*
+    cpsStoDecl ::= stoDecl {SEMICOLON stoDecl}
+    */
+    private ImlComponent cpsStoDecl(){
+        ImlComponent cpsStoDecl = new ImlComposite("cpsStoDecl");
+        cpsStoDecl.add(stoDecl());
+        while(this.tokenTerminal == Terminal.SEMICOLON){
+            cpsStoDecl.add(new ImlItem(consume(Terminal.SEMICOLON)));
+            cpsStoDecl.add(stoDecl());
+        }
+        return cpsStoDecl;
+    }
 }

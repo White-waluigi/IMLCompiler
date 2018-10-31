@@ -1,0 +1,37 @@
+// BasicIML V01
+// Edgar F.A. Lederer, FHNW, October 2018
+
+program GlobalInits1()
+global
+  var g1:int32 ;
+  var g2:int32 ;
+
+  proc p(in copy const x:int32)
+    global out const g1, out const g2
+  do
+    g1 init := x * x ;
+    g2 init := -g1
+  endproc
+do
+  call p(5) init g1, g2 ;   debugout g1 ; debugout g2 ;
+  call p(6) ;               debugout g1 ; debugout g2
+endprogram
+
+// Procedure p writes to, but does not read from, global variables g1 and g2.
+// Therefore, they are declared with flow mode 'out'.
+// A call to p can thus be used to initialize (as the first call does)
+// or to update (as the second call does) g1 and g2.
+// In the procedure body of p, g1 and g2 are only initialized, but never updated.
+// Therefore, they are declared with change mode 'const'.
+
+// In practice, it might be the case that the values of global variables
+// are computed using some algorithm (here symbolized by computing a square),
+// or that the values of several global variables must satisfy certain
+// invariants (here symbolized by setting g2 to the negative of g1).
+// But the algorithm can be used for initialization as well as for updates,
+// and the invariants must hold after initialization and after each update.
+
+// At first glance it might look like the global variables are initialized
+// several times.
+// But in the context of each execution block, they are initialized just once
+// --- and that is the relevant restriction.

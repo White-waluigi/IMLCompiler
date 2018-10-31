@@ -1,0 +1,31 @@
+// BasicIML V01
+// Edgar F.A. Lederer, FHNW, October 2018
+
+program ParameterPassingInCopy()
+global
+  var y:int32 ; const a:int32 ; const b:int32 ;
+
+  proc p1(in copy const x:int32, out copy y:int32)
+  do
+    // x is accessible, but reading it is not enforced
+    y init := 0
+  endproc ;
+
+  proc p2(in copy const x:int32, out copy y:int32)
+  do
+    y init := x // x is read
+    //; x := x + 1 // illegal update access of constant
+  endproc ;
+
+  proc p3(in copy var x:int32, out copy y:int32)
+  do
+    x := x + 1 // x is read and then updated
+    ; y init := x
+  endproc
+do
+  a init := 5 ; b init := 7 ; y init := 0 ;
+  // calls with rExpr
+  call p1(a + b, y) ; debugout y ;
+  call p2(a + b, y) ; debugout y ;
+  call p3(9, y) ; debugout y
+endprogram

@@ -1,0 +1,24 @@
+// BasicIML V01
+// Edgar F.A. Lederer, FHNW, October 2018
+
+program GlobalInits3()
+global
+  var g1:int32 ;
+  var g2:int32 ;
+
+  proc p(in copy const x:int32, in copy const n:int32)
+    global out const g1, out const g2
+  do
+    if n = 0 then
+      g1 init := x * x ;
+      g2 init := -g1
+    else
+      call p(x+1, n-1) init g1, g2
+    endif
+  endproc
+do
+  call p(0, 5) init g1, g2 ;   debugout g1 ; debugout g2 ;
+  call p(1, 5) ;               debugout g1 ; debugout g2
+endprogram
+
+// The same as GloablInits1, but in a recursive setting.

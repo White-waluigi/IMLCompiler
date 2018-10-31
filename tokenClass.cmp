@@ -98,7 +98,7 @@ if
 	@OUT
 	out
 	@INOUT
-	out
+	inout
 #INIT
 init
 #LOCAL

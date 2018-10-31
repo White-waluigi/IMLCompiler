@@ -1,0 +1,31 @@
+// BasicIML V01
+// Edgar F.A. Lederer, FHNW, October 2018
+
+program ParameterPassingInRef()
+global
+  var y:int32 ; const a:int32 ; const b:int32 ;
+
+  proc p1(in ref const x:int32, out copy y:int32)
+  do
+    // x is accessible, but reading it is not enforced
+    y init := 0
+  endproc ;
+
+  proc p2(in ref const x:int32, out copy y:int32)
+  do
+    y init := x // x is read
+    //; x := x + 1 // illegal update access of constant
+  endproc
+
+  // change mode must be constant
+  //proc p3(in ref var x:int32, out copy y:int32)
+  //do
+    //skip
+  //endproc
+do
+  a init := 5 ; b init := 7 ; y init := 0 ;
+  // expression must be an lExpr
+  //call p1(a + b, y) ; debugout y ;
+  call p1(a, y) ; debugout y ;
+  call p2(a, y) ; debugout y
+endprogram
