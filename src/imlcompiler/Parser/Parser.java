@@ -110,7 +110,12 @@ public class Parser {
         ImlComponent typedIdent = new ImlComposite("typedIdent");
         typedIdent.add(new ImlItem(consume(Terminal.IDENT)));
         typedIdent.add(new ImlItem(consume(Terminal.COLON)));
-        typedIdent.add(new ImlItem(consume(Terminal.TYPE)));   //shold be ATOMTYPE
+        if (this.tokenTerminal == Terminal.TYPE) {
+            typedIdent.add(new ImlItem(consume(Terminal.TYPE)));   //shold be ATOMTYPE
+        }
+        else if (this.tokenTerminal == Terminal.TUP){
+            typedIdent.add(tupel());
+        }
         return typedIdent;
     }
 
@@ -241,6 +246,7 @@ public class Parser {
                     | IDENT [INIT | exprList]
                     | monadicOpr factor
                     | LPAREN expr RPAREN
+                    | tupel
 
         exprList ::= LPAREN [expr {COMMA expr}] RPAREN
         monadicOpr ::= NOT | ADDOPR
@@ -289,6 +295,7 @@ public class Parser {
                     | IDENT [INIT | exprList]
                     | monadicOpr factor
                     | LPAREN expr RPAREN
+                    | tupel
     */
     private ImlComponent factor(){
         ImlComponent factor = new ImlComposite("factor");
@@ -313,6 +320,9 @@ public class Parser {
         else if (this.tokenTerminal == Terminal.NOTOPR || this.tokenTerminal == Terminal.ADDOPR){
             factor.add(monadicOpr());
             factor.add(factor());
+        }
+        else if (this.tokenTerminal == Terminal.TUP){
+            factor.add(tupel());
         }
         else{}
         return factor;
@@ -481,4 +491,61 @@ public class Parser {
         }
         return cpsStoDecl;
     }
+
+    //TUPEL
+    /*
+    tupel ::= TUP LPAREN tail RPAREN
+    tail::=  element { COMMA element }
+    element ::= IDENT
+               | LITERAL
+               | tupel
+               | TYPE
+    */
+    private ImlComponent tupel(){
+        ImlComponent tupel = new ImlComposite("tupel");
+        tupel.add(new ImlItem(consume(Terminal.TUP)));
+        tupel.add(new ImlItem(consume(Terminal.LPAREN)));
+        tupel.add(tail());
+        tupel.add(new ImlItem(consume(Terminal.RPAREN)));
+        return tupel;
+    }
+
+    private ImlComponent tail(){
+        ImlComponent tail = new ImlComposite("tail");
+        tail.add(element());
+        while(this.tokenTerminal == Terminal.COMMA){
+            tail.add(new ImlItem(consume(Terminal.COMMA)));
+            tail.add(element());
+        }
+        return tail;
+    }
+
+    private ImlComponent element(){
+        ImlComponent element = new ImlComposite("element");
+        if (this.tokenTerminal == Terminal.IDENT){
+            element.add(new ImlItem(consume(Terminal.IDENT)));
+        }
+        else if (this.tokenTerminal == Terminal.LITERAL){
+            element.add(new ImlItem(consume(Terminal.LITERAL)));
+        }
+        else if (this.tokenTerminal == Terminal.TYPE){
+            element.add(new ImlItem(consume(Terminal.TYPE)));
+        }
+        else if (this.tokenTerminal == Terminal.TUP){
+            element.add(tupel());
+        }
+        else {
+            throw new ParserErrorException("error in Tupel declaration");
+        }
+        return element;
+    }
+
+
+
+
+
+
+
+
+
 }

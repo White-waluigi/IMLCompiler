@@ -117,6 +117,7 @@ public class Token {
 		WHILE, 
 		IDENT,
 		SENTINEL,
+		TUP
 	};
 	public enum EnumAttribute{
 		TIMES,
