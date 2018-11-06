@@ -49,7 +49,7 @@ public class Token {
 		return debugString;
 	}
 	Attribute attribute;
-	String debugString;
+	public String debugString;
 	
 	public Token(Terminal terminal, Attribute attribute, String debugString) {
 		super();
@@ -117,7 +117,7 @@ public class Token {
 		WHILE, 
 		IDENT,
 		SENTINEL,
-		TUP
+		TUP, RBRACK, LBRACK
 	};
 	public enum EnumAttribute{
 		TIMES,

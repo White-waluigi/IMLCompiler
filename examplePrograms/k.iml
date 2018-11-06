@@ -1,1 +1,11 @@
-))) := <= >= /= 34 09 2324 -4 99 asdfjasdfskaj in out out+((1+3) @@
+program intDiv(in  m:int32, in  n:int32,
+               out q:int32, out r:int32)
+global
+  proc divide(in copy const m:int32, in copy const n:int32,
+              out ref var   q:int32, out ref var   r:int32)
+  do
+  	q:=0
+  endproc
+do
+  p init := (a-b) * p +-k*k*k*k+b-c--d
+endprogram

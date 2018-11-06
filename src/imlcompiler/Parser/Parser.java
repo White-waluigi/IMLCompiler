@@ -27,20 +27,34 @@ public class Parser {
     }
 
     private Token consume(Terminal terminal) throws ScannerErrorException {
+    	String s="";
+    	
+    	for (int i = Thread.currentThread().getStackTrace().length-4; i >=2 ; i--) {
+			s+=">"+Thread.currentThread().getStackTrace()[i].getMethodName();
+			
+			
+		}
+        System.out.println("Consuming: "+ this.token+"\t"+s);
         if (this.tokenTerminal==terminal) {
 
             Token consumedToken = this.token;
+
+            
+
 
             if (!this.token.is(Terminal.SENTINEL)) {
                 this.token = tokenList.nextToken();
                 this.tokenTerminal = token.getTerminal();
             }
+
+            
             return consumedToken;
         }
         else
         {
+        
             throw new ParserErrorException("terminal expected: " + terminal +
-                    ", terminal found: " + this.tokenTerminal + "  " + this.token.toString());
+                    ", terminal found: " + this.tokenTerminal + "  " + this.token.toString() +"\t\""+token.debugString+"\"");
         }
     }
 
@@ -241,12 +255,15 @@ public class Parser {
         expr    ::= term1 {BOOLOPR term1}
         term1  ::= term2 [RELOPR term2]
         term2  ::= term3 {ADDOPR term3}
-        term3  ::= factor {MULTOPR factor}
+        term3  ::= factor {MULTOPR term3}
+       
         factor  ::= LITERAL
                     | IDENT [INIT | exprList]
                     | monadicOpr factor
                     | LPAREN expr RPAREN
-                    | tupel
+                    | factor LBRACK LITERAL TBRACK 
+
+
 
         exprList ::= LPAREN [expr {COMMA expr}] RPAREN
         monadicOpr ::= NOT | ADDOPR
@@ -273,10 +290,13 @@ public class Parser {
 
     private ImlComponent term2(){ //[[DONE]]
         ImlComponent term2 = new ImlComposite("term2");
-        term2.add(term3());
+        
+        term3();
+        
         while(this.tokenTerminal == Terminal.ADDOPR){
             term2.add(new ImlItem(consume(Terminal.ADDOPR)));
-            term2.add(term3());
+            //term2.add(term3());
+            term3();
         }
         return term2;
     }
@@ -284,11 +304,13 @@ public class Parser {
     private ImlComponent term3(){ //[[DONE]]
         ImlComponent term3 = new ImlComposite("term3");
         term3.add(factor());
+
         while(this.tokenTerminal == Terminal.MULTOPR){
             term3.add(new ImlItem(consume(Terminal.MULTOPR)));
-            term3.add(factor());
+            term3.add(term3());
+            return null;
         }
-        return factor();
+        return null;
     }
     /*
         factor  ::=   LITERAL
@@ -296,6 +318,7 @@ public class Parser {
                     | monadicOpr factor
                     | LPAREN expr RPAREN
                     | tupel
+                    | factor LBRACK LITERAL TBRACK  
     */
     private ImlComponent factor(){
         ImlComponent factor = new ImlComposite("factor");
@@ -325,6 +348,11 @@ public class Parser {
             factor.add(tupel());
         }
         else{}
+        if(this.tokenTerminal == Terminal.LBRACK) {
+        	consume(Terminal.LBRACK);
+        	consume(Terminal.LITERAL);
+        	consume(Terminal.RBRACK);	
+        }
         return factor;
     }
     //exprList ::= LPAREN [expr {COMMA expr}] RPAREN

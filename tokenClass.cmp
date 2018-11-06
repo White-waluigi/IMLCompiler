@@ -19,18 +19,18 @@
 	modE
 #ADDOPR
 	@PLUS
-	+
+	§+
 	@MINUS
-	-
+	§-
 #RELOPR
 	@EQ
 	=
 	@NE
 	/=
 	@LT
-	<
+	§<
 	@GT
-	>
+	§>
 	@LE
 	<=
 	@GE

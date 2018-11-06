@@ -18,7 +18,7 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/Cube.iml";
+        	file="examplePrograms/00_EuclidExtendedNat.iml";
         }else {
         	file=args[0];
         }
@@ -33,8 +33,8 @@ public class Compiler {
 
         try {
             tokenList = scanner.run();
-            if(printtokenlist)
-            	System.out.println(tokenList);
+            //if(printtokenlist)
+            	//System.out.println(tokenList);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -50,7 +50,7 @@ public class Compiler {
 
         while (iterator.hasNext()){
             ImlComponent imlComponent = iterator.next();
-            imlComponent.print();
+            //imlComponent.print();
         }
 
     }
