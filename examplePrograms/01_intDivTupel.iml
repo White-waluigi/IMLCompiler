@@ -3,7 +3,7 @@ global
  proc divide(in copy const m:tup(int32, int32),
              out ref var q:tup(int32, int32))
  do
-   q init := tup(0, m[0])
+   q init := tup(0, m[0]);
 
    while q[1] >= n do
      q[0] := q[0] + 1 ;

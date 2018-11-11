@@ -261,7 +261,7 @@ public class Parser {
                     | IDENT [INIT | exprList]
                     | monadicOpr factor
                     | LPAREN expr RPAREN
-                    | factor LBRACK LITERAL TBRACK 
+                    | index
 
 
 
@@ -290,13 +290,13 @@ public class Parser {
 
     private ImlComponent term2(){ //[[DONE]]
         ImlComponent term2 = new ImlComposite("term2");
-        
-        term3();
+
+        term2.add(term3());
         
         while(this.tokenTerminal == Terminal.ADDOPR){
             term2.add(new ImlItem(consume(Terminal.ADDOPR)));
-            //term2.add(term3());
-            term3();
+            term2.add(term3());
+            //term3();
         }
         return term2;
     }
@@ -307,10 +307,12 @@ public class Parser {
 
         while(this.tokenTerminal == Terminal.MULTOPR){
             term3.add(new ImlItem(consume(Terminal.MULTOPR)));
-            term3.add(term3());
-            return null;
+            /*term3.add(term3());
+            return null;*/
+            term3.add(factor());
         }
-        return null;
+        // return null;
+        return term3;
     }
     /*
         factor  ::=   LITERAL
@@ -318,7 +320,7 @@ public class Parser {
                     | monadicOpr factor
                     | LPAREN expr RPAREN
                     | tupel
-                    | factor LBRACK LITERAL TBRACK  
+                    | index
     */
     private ImlComponent factor(){
         ImlComponent factor = new ImlComposite("factor");
@@ -332,6 +334,9 @@ public class Parser {
             }
             else if (this.tokenTerminal == Terminal.LPAREN){
                 factor.add(exprList());
+            }
+            else if (this.tokenTerminal == Terminal.LBRACK){
+                factor.add(index());
             }
             else {}
         }
@@ -347,12 +352,10 @@ public class Parser {
         else if (this.tokenTerminal == Terminal.TUP){
             factor.add(tupel());
         }
-        else{}
-        if(this.tokenTerminal == Terminal.LBRACK) {
-        	consume(Terminal.LBRACK);
-        	consume(Terminal.LITERAL);
-        	consume(Terminal.RBRACK);	
+        else if(this.tokenTerminal == Terminal.LBRACK) {
+        	factor.add(index());
         }
+        else{}
         return factor;
     }
     //exprList ::= LPAREN [expr {COMMA expr}] RPAREN
@@ -524,10 +527,11 @@ public class Parser {
     /*
     tupel ::= TUP LPAREN tail RPAREN
     tail::=  element { COMMA element }
-    element ::= IDENT
+    element ::= IDENT [index]
                | LITERAL
                | tupel
                | TYPE
+    index ::= LBRACK LITERAL RBRACK
     */
     private ImlComponent tupel(){
         ImlComponent tupel = new ImlComposite("tupel");
@@ -552,6 +556,9 @@ public class Parser {
         ImlComponent element = new ImlComposite("element");
         if (this.tokenTerminal == Terminal.IDENT){
             element.add(new ImlItem(consume(Terminal.IDENT)));
+            if (this.tokenTerminal == Terminal.LBRACK){
+                element.add(index());
+            }
         }
         else if (this.tokenTerminal == Terminal.LITERAL){
             element.add(new ImlItem(consume(Terminal.LITERAL)));
@@ -568,7 +575,13 @@ public class Parser {
         return element;
     }
 
-
+    private ImlComponent index(){
+        ImlComponent index = new ImlComposite("index");
+        index.add(new ImlItem(consume(Terminal.LBRACK)));
+        index.add(new ImlItem(consume(Terminal.LITERAL)));
+        index.add(new ImlItem(consume(Terminal.RBRACK)));
+        return index;
+    }
 
 
 
