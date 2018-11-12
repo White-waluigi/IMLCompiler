@@ -35,4 +35,16 @@ public class ImlComposite extends ImlComponent{
         }
         return iterator;
     }
+
+    public ImlComponent toAbstract(){
+        ImlComponent abstractComposite = new ImlComposite("abstractComposite");
+        Iterator<ImlComponent> iterator = this.createIterator();
+        while (iterator.hasNext()){
+            ImlComponent component = iterator.next().toAbstract();
+            if (component != null){
+                abstractComposite.add(component);
+            }
+        }
+        return abstractComposite;
+    }
 }

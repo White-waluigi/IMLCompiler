@@ -19,4 +19,17 @@ public class ImlItem extends ImlComponent{
     public Iterator<ImlComponent> createIterator(){
         return new NullIterator();
     }
+
+    public ImlItem toAbstract(){
+        Token.Terminal _token = this.token.getTerminal();
+        if (_token == Token.Terminal.LPAREN){
+            System.out.println("-----> LPAREN eliminated");
+            return null;
+
+        }
+        else {
+            System.out.println("_token ------------ " +_token.toString());
+            return this;
+        }
+    }
 }

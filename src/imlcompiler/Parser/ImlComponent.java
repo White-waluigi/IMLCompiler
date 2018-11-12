@@ -16,6 +16,8 @@ public abstract class ImlComponent {
         throw new UnsupportedOperationException();
     }
 
+    public ImlComponent toAbstract() { throw new UnsupportedOperationException(); }
+
     //other methods
     public String getName(){
         throw new UnsupportedOperationException();

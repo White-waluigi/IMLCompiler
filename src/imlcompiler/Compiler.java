@@ -46,12 +46,23 @@ public class Compiler {
 
         ImlComponent concreteSyntaxTree = parser.parse();
 
+        ImlComponent abstractSyntaxTree = new ImlComposite("tree");
+
         Iterator<ImlComponent> iterator = concreteSyntaxTree.createIterator();
 
         while (iterator.hasNext()){
             ImlComponent imlComponent = iterator.next();
             //imlComponent.print();
+            abstractSyntaxTree.add(imlComponent.toAbstract());
         }
+
+        Iterator<ImlComponent> iterator2 = abstractSyntaxTree.createIterator();
+
+        while (iterator2.hasNext()){
+            ImlComponent imlComponent = iterator2.next();
+            imlComponent.print();
+        }
+
 
     }
     
