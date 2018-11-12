@@ -22,14 +22,15 @@ public class ImlItem extends ImlComponent{
 
     public ImlItem toAbstract(){
         Token.Terminal _token = this.token.getTerminal();
-        if (_token == Token.Terminal.LPAREN){
-            System.out.println("-----> LPAREN eliminated");
+        switch(_token) {
+            case LPAREN:
+            case RPAREN:
+            case COMMA:
+            case SEMICOLON:
+            case COLON:
+                System.out.println(_token.toString() + " eliminated");
             return null;
-
-        }
-        else {
-            System.out.println("_token ------------ " +_token.toString());
-            return this;
+            default: return this;
         }
     }
 }

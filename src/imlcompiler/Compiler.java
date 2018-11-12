@@ -58,6 +58,8 @@ public class Compiler {
 
         Iterator<ImlComponent> iterator2 = abstractSyntaxTree.createIterator();
 
+        System.out.println("---> Converting to Abstract Syntax Tree");
+
         while (iterator2.hasNext()){
             ImlComponent imlComponent = iterator2.next();
             imlComponent.print();
