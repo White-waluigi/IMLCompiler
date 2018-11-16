@@ -53,6 +53,11 @@ public class Parser {
         else
         {
         
+        	for(StackTraceElement a:Thread.currentThread().getStackTrace()) {
+        		System.out.print(a.getMethodName()+"<-");
+        	}
+        	System.out.println("\n"+this.token.getDebugString());
+        	
             throw new ParserErrorException("terminal expected: " + terminal +
                     ", terminal found: " + this.tokenTerminal + "  " + this.token.toString() +"\t\""+token.debugString+"\"");
         }
