@@ -1,0 +1,10 @@
+program test2()
+  global
+    a:tup(int32, int32, int32, bool, bool);
+    b:tup(tup(int32,int32), int32);
+    c:bool
+  do
+    a init := tup(1,2,3,false, true);
+    b init := tup(tup(1,2), 3);
+    c init := b[0][1] < 3
+endprogram

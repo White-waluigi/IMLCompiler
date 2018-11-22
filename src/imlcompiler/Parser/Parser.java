@@ -1,5 +1,6 @@
 package imlcompiler.Parser;
 
+import imlcompiler.Parser.treeVisualisation.Wrapper;
 import imlcompiler.Scanner.ScannerErrorException;
 import imlcompiler.Scanner.Token;
 import imlcompiler.Scanner.Token.Terminal;
@@ -10,6 +11,7 @@ public class Parser {
     TokenList tokenList;
     Token token;
     Terminal tokenTerminal;
+    Wrapper wrapper;
 
     public Parser(TokenList tl){
         this.tokenList = tl;
@@ -18,7 +20,8 @@ public class Parser {
         this.tokenTerminal = this.token.getTerminal();
     }
 
-    public ImlComponent parse() throws ScannerErrorException {
+    public ImlComponent parse(Wrapper wrapper) throws ScannerErrorException {
+        this.wrapper = wrapper;
         // parsing the start symbol ...
         ImlComponent program = program();
         // ... and then consuming the SENTINEL
@@ -68,7 +71,7 @@ public class Parser {
     */
     private ImlComponent program(){
 
-        ImlComponent program = new ImlComposite("program");
+        ImlComponent program = new ImlComposite("program", wrapper);
 
         program.add(new ImlItem(consume(Terminal.PROGRAM)));
         program.add(new ImlItem(consume(Terminal.IDENT)));
@@ -99,7 +102,7 @@ public class Parser {
     */
 
     private ImlComponent progParamList(){
-        ImlComponent progParamList = new ImlComposite("progParamList");
+        ImlComponent progParamList = new ImlComposite("progParamList", wrapper);
         progParamList.add(new ImlItem(consume(Terminal.LPAREN)));
         if (this.tokenTerminal == Terminal.FLOWMODE || this.tokenTerminal == Terminal.CHANGEMODE ||
                 this.tokenTerminal == Terminal.IDENT) {
@@ -114,7 +117,7 @@ public class Parser {
     }
 
     private ImlComponent progParam(){
-        ImlComponent progParam = new ImlComposite("progParam");
+        ImlComponent progParam = new ImlComposite("progParam", wrapper);
         if (this.tokenTerminal == Terminal.FLOWMODE){
             progParam.add(new ImlItem(consume(Terminal.FLOWMODE)));
         }
@@ -126,7 +129,7 @@ public class Parser {
     }
 
     private ImlComponent typedIdent(){
-        ImlComponent typedIdent = new ImlComposite("typedIdent");
+        ImlComponent typedIdent = new ImlComposite("typedIdent", wrapper);
         typedIdent.add(new ImlItem(consume(Terminal.IDENT)));
         typedIdent.add(new ImlItem(consume(Terminal.COLON)));
         if (this.tokenTerminal == Terminal.TYPE) {
@@ -140,7 +143,7 @@ public class Parser {
 
 
     private ImlComponent paramList(){
-        ImlComponent paramList = new ImlComposite("paramList");
+        ImlComponent paramList = new ImlComposite("paramList", wrapper);
         paramList.add(new ImlItem(consume(Terminal.LPAREN)));
         if (this.tokenTerminal == Terminal.FLOWMODE || this.tokenTerminal == Terminal.MECHMODE ||
                 this.tokenTerminal == Terminal.CHANGEMODE || this.tokenTerminal == Terminal.IDENT){
@@ -156,7 +159,7 @@ public class Parser {
     }
 
     private ImlComponent param(){
-        ImlComponent param = new ImlComposite("param");
+        ImlComponent param = new ImlComposite("param", wrapper);
         if (this.tokenTerminal == Terminal.FLOWMODE ){
             param.add(new ImlItem(consume(Terminal.FLOWMODE)));
         }
@@ -174,7 +177,7 @@ public class Parser {
     cpsCmd ::= cmd {SEMICOLON cmd}
      */
     private ImlComponent cpsCmd(){ // [[DONE]]
-        ImlComponent cpsCmd = new ImlComposite("cpsCmd");
+        ImlComponent cpsCmd = new ImlComposite("cpsCmd", wrapper);
         cpsCmd.add(cmd());
         while (this.tokenTerminal == Terminal.SEMICOLON) {
             cpsCmd.add(new ImlItem(consume(Terminal.SEMICOLON)));
@@ -193,7 +196,7 @@ public class Parser {
             | DEBUGOUT expr
     */
     private ImlComponent cmd(){
-        ImlComponent cmd = new ImlComposite("cmd");
+        ImlComponent cmd = new ImlComposite("cmd", wrapper);
         if(this.tokenTerminal == Terminal.SKIP) {
             cmd.add(new ImlItem(consume(Terminal.SKIP)));
             return cmd;
@@ -246,7 +249,7 @@ public class Parser {
     //globInits ::= INIT IDENT { COMMA IDENT }
 
     private ImlComponent globInits(){
-        ImlComponent globInits = new ImlComposite("globInits");
+        ImlComponent globInits = new ImlComposite("globInits", wrapper);
         globInits.add(new ImlItem(consume(Terminal.INIT)));
         globInits.add(new ImlItem(consume(Terminal.IDENT)));
         while (this.tokenTerminal == Terminal.COMMA){
@@ -266,6 +269,7 @@ public class Parser {
                     | IDENT [INIT | exprList]
                     | monadicOpr factor
                     | LPAREN expr RPAREN
+                    | tupel
                     | index
 
 
@@ -274,7 +278,7 @@ public class Parser {
         monadicOpr ::= NOT | ADDOPR
         */
     private ImlComponent expr(){   // [[DONE]]
-        ImlComponent expr = new ImlComposite("expr");
+        ImlComponent expr = new ImlComposite("expr", wrapper);
         expr.add(term1());
         while (this.tokenTerminal == Terminal.BOOLOPR){
             expr.add(new ImlItem(consume(Terminal.BOOLOPR)));
@@ -284,7 +288,7 @@ public class Parser {
     }
 
     private ImlComponent term1(){  // [[DONE]]
-        ImlComponent term1 = new ImlComposite("term1");
+        ImlComponent term1 = new ImlComposite("term1", wrapper);
         term1.add(term2());
         if (this.tokenTerminal == Terminal.RELOPR){
             term1.add(new ImlItem(consume(Terminal.RELOPR)));
@@ -294,7 +298,7 @@ public class Parser {
     }
 
     private ImlComponent term2(){ //[[DONE]]
-        ImlComponent term2 = new ImlComposite("term2");
+        ImlComponent term2 = new ImlComposite("term2", wrapper);
 
         term2.add(term3());
         
@@ -307,7 +311,7 @@ public class Parser {
     }
 
     private ImlComponent term3(){ //[[DONE]]
-        ImlComponent term3 = new ImlComposite("term3");
+        ImlComponent term3 = new ImlComposite("term3", wrapper);
         term3.add(factor());
 
         while(this.tokenTerminal == Terminal.MULTOPR){
@@ -325,10 +329,10 @@ public class Parser {
                     | monadicOpr factor
                     | LPAREN expr RPAREN
                     | tupel
-                    | index
+                    | index {index}
     */
     private ImlComponent factor(){
-        ImlComponent factor = new ImlComposite("factor");
+        ImlComponent factor = new ImlComposite("factor", wrapper);
         if (this.tokenTerminal == Terminal.LITERAL){
             factor.add(new ImlItem(consume(Terminal.LITERAL)));
         }
@@ -342,6 +346,9 @@ public class Parser {
             }
             else if (this.tokenTerminal == Terminal.LBRACK){
                 factor.add(index());
+                while(this.tokenTerminal == Terminal.LBRACK){
+                    factor.add(index());
+                }
             }
             else {}
         }
@@ -365,7 +372,7 @@ public class Parser {
     }
     //exprList ::= LPAREN [expr {COMMA expr}] RPAREN
     private ImlComponent exprList(){ //[[DONE]]
-        ImlComponent exprList = new ImlComposite("exprList");
+        ImlComponent exprList = new ImlComposite("exprList", wrapper);
         exprList.add(new ImlItem(consume(Terminal.LPAREN)));
         if (this.tokenTerminal != Terminal.RPAREN){
             exprList.add(expr());
@@ -380,7 +387,7 @@ public class Parser {
     }
 
     private ImlComponent monadicOpr(){ //[[DONE]]
-        ImlComponent monadicOpr = new ImlComposite("monadicOpr");
+        ImlComponent monadicOpr = new ImlComposite("monadicOpr" ,wrapper);
         if (this.tokenTerminal == Terminal.NOTOPR) {   //should be Terminal.NOT
             monadicOpr.add(new ImlItem(consume(Terminal.NOTOPR)));
         }
@@ -400,7 +407,7 @@ public class Parser {
             | procDecl
     */
     private ImlComponent decl(){
-        ImlComponent decl = new ImlComposite("decl");
+        ImlComponent decl = new ImlComposite("decl", wrapper);
         if (this.tokenTerminal == Terminal.CHANGEMODE || this.tokenTerminal == Terminal.IDENT){
             decl.add(stoDecl());
         }
@@ -411,7 +418,7 @@ public class Parser {
             decl.add(procDecl());
         }
         else {
-            throw new ParserErrorException("error in decl");
+            throw new ParserErrorException("error in decl:" + this.tokenTerminal);
         }
         return decl;
     }
@@ -420,7 +427,7 @@ public class Parser {
     stoDecl ::= [CHANGEMODE] typedIdent
     */
     private ImlComponent stoDecl(){
-        ImlComponent stoDecl = new ImlComposite("stoDecl");
+        ImlComponent stoDecl = new ImlComposite("stoDecl", wrapper);
         if (this.tokenTerminal == Terminal.CHANGEMODE){
             stoDecl.add(new ImlItem(consume(Terminal.CHANGEMODE)));
         }
@@ -432,7 +439,7 @@ public class Parser {
     funDecl ::= FUN IDENT paramList RETURNS stoDecl [GLOBAL globImps] [LOCAL cpsStoDecl] DO cpsCmd ENDFUN
     */
     private ImlComponent funDecl(){
-        ImlComponent funDecl = new ImlComposite("funDecl");
+        ImlComponent funDecl = new ImlComposite("funDecl" , wrapper);
         funDecl.add(new ImlItem(consume(Terminal.FUN)));
         funDecl.add(new ImlItem(consume(Terminal.IDENT)));
         funDecl.add(paramList());
@@ -457,7 +464,7 @@ public class Parser {
     procDecl::= PROC IDENT paramList [GLOBAL globImps] [LOCAL cpsStoDecl] DO cpsCmd ENDPROC
     */
     private ImlComponent procDecl() {
-        ImlComponent procDecl = new ImlComposite("funDecl");
+        ImlComponent procDecl = new ImlComposite("funDecl" , wrapper);
         procDecl.add(new ImlItem(consume(Terminal.PROC)));
         procDecl.add(new ImlItem(consume(Terminal.IDENT)));
         procDecl.add(paramList());
@@ -478,7 +485,7 @@ public class Parser {
     globImps ::= globImp {COMMA globImp}
     */
     private ImlComponent globImps(){
-        ImlComponent globImps = new ImlComposite("globImps");
+        ImlComponent globImps = new ImlComposite("globImps" , wrapper);
         globImps.add(globImp());
         while (this.tokenTerminal == Terminal.COMMA){
             globImps.add(new ImlItem(consume(Terminal.COMMA)));
@@ -491,7 +498,7 @@ public class Parser {
     globImp ::= [FLOWMODE] [CHANGEMODE] IDENT
     */
     private ImlComponent globImp() {
-        ImlComponent globImp = new ImlComposite("globImp");
+        ImlComponent globImp = new ImlComposite("globImp", wrapper);
         if (this.tokenTerminal == Terminal.FLOWMODE) {
             globImp.add(new ImlItem(consume(Terminal.FLOWMODE)));
         }
@@ -506,7 +513,7 @@ public class Parser {
     cpsDecl ::= decl {SEMICOLON decl}
     */
     private ImlComponent cpsDecl(){
-        ImlComponent cpsDecl = new ImlComposite("cpsDecl");
+        ImlComponent cpsDecl = new ImlComposite("cpsDecl", wrapper);
         cpsDecl.add(decl());
         while(this.tokenTerminal == Terminal.SEMICOLON){
             cpsDecl.add(new ImlItem(consume(Terminal.SEMICOLON)));
@@ -519,7 +526,7 @@ public class Parser {
     cpsStoDecl ::= stoDecl {SEMICOLON stoDecl}
     */
     private ImlComponent cpsStoDecl(){
-        ImlComponent cpsStoDecl = new ImlComposite("cpsStoDecl");
+        ImlComponent cpsStoDecl = new ImlComposite("cpsStoDecl", wrapper);
         cpsStoDecl.add(stoDecl());
         while(this.tokenTerminal == Terminal.SEMICOLON){
             cpsStoDecl.add(new ImlItem(consume(Terminal.SEMICOLON)));
@@ -532,14 +539,14 @@ public class Parser {
     /*
     tupel ::= TUP LPAREN tail RPAREN
     tail::=  element { COMMA element }
-    element ::= IDENT [index]
+    element ::= IDENT {index}
                | LITERAL
                | tupel
                | TYPE
     index ::= LBRACK LITERAL RBRACK
     */
     private ImlComponent tupel(){
-        ImlComponent tupel = new ImlComposite("tupel");
+        ImlComponent tupel = new ImlComposite("tupel" , wrapper);
         tupel.add(new ImlItem(consume(Terminal.TUP)));
         tupel.add(new ImlItem(consume(Terminal.LPAREN)));
         tupel.add(tail());
@@ -548,7 +555,7 @@ public class Parser {
     }
 
     private ImlComponent tail(){
-        ImlComponent tail = new ImlComposite("tail");
+        ImlComponent tail = new ImlComposite("tail" , wrapper);
         tail.add(element());
         while(this.tokenTerminal == Terminal.COMMA){
             tail.add(new ImlItem(consume(Terminal.COMMA)));
@@ -558,10 +565,10 @@ public class Parser {
     }
 
     private ImlComponent element(){
-        ImlComponent element = new ImlComposite("element");
+        ImlComponent element = new ImlComposite("element" ,wrapper);
         if (this.tokenTerminal == Terminal.IDENT){
             element.add(new ImlItem(consume(Terminal.IDENT)));
-            if (this.tokenTerminal == Terminal.LBRACK){
+            while (this.tokenTerminal == Terminal.LBRACK){
                 element.add(index());
             }
         }
@@ -581,7 +588,7 @@ public class Parser {
     }
 
     private ImlComponent index(){
-        ImlComponent index = new ImlComposite("index");
+        ImlComponent index = new ImlComposite("index" , wrapper);
         index.add(new ImlItem(consume(Terminal.LBRACK)));
         index.add(new ImlItem(consume(Terminal.LITERAL)));
         index.add(new ImlItem(consume(Terminal.RBRACK)));

@@ -1,0 +1,7 @@
+program treeEditor()
+    global
+        x:int32
+    do
+        x init := 42;
+        debugout x
+endprogram

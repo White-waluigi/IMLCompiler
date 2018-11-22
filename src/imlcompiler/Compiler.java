@@ -1,12 +1,19 @@
 package imlcompiler;
 
+import imlcompiler.Parser.CompositeIterator;
 import imlcompiler.Parser.ImlComponent;
 import imlcompiler.Parser.ImlComposite;
 import imlcompiler.Parser.Parser;
+import imlcompiler.Parser.treeVisualisation.Tree;
+import imlcompiler.Parser.treeVisualisation.TreeEditor;
+import imlcompiler.Parser.treeVisualisation.Wrapper;
 import imlcompiler.Scanner.Scanner;
 import imlcompiler.Scanner.TokenList;
 
+import java.awt.*;
 import java.util.Iterator;
+
+import static java.lang.Thread.sleep;
 
 public class Compiler {
 
@@ -18,15 +25,15 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/00_EuclidExtendedNat.iml";
+        	file="examplePrograms/02_testTreeEditor.iml";
         }else {
         	file=args[0];
         }
         parse(file,true);
     }
-    public static void parse(String file,boolean printtokenlist){
+    public static void parse(String file,boolean printtokenlist) {
 
-        
+
         Scanner scanner = new Scanner(file);
 
         TokenList tokenList = new TokenList();
@@ -34,9 +41,8 @@ public class Compiler {
         try {
             tokenList = scanner.run();
             //if(printtokenlist)
-            	//System.out.println(tokenList);
-        }
-        catch (Exception e){
+            //System.out.println(tokenList);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -44,29 +50,37 @@ public class Compiler {
 
         Parser parser = new Parser(tokenList);
 
-        ImlComponent concreteSyntaxTree = parser.parse();
+        Wrapper wrapper = new Wrapper();
 
-        ImlComponent abstractSyntaxTree = new ImlComposite("tree");
+        ImlComponent concreteSyntaxTree = parser.parse(wrapper);
 
+        //Visualisation of Syntax Tree
+        Frame f = new TreeEditor((Tree<String, ?>) concreteSyntaxTree, wrapper);
+        f.setSize(800, 800);
+        f.setVisible(true);
+
+
+        ImlComponent abstractSyntaxTree = concreteSyntaxTree.toAbstract();
+        /*
         Iterator<ImlComponent> iterator = concreteSyntaxTree.createIterator();
 
-        while (iterator.hasNext()){
-            ImlComponent imlComponent = iterator.next();
+        while (iterator.hasNext()) {
+            ImlComponent imlComponent = iterator.next().toAbstract();
             //imlComponent.print();
-            abstractSyntaxTree.add(imlComponent.toAbstract());
+            if (imlComponent != null) {
+                abstractSyntaxTree.add(imlComponent);
+            }
         }
+
+        */
 
         Iterator<ImlComponent> iterator2 = abstractSyntaxTree.createIterator();
 
         System.out.println("---> Converting to Abstract Syntax Tree");
-
-        while (iterator2.hasNext()){
+        while (iterator2.hasNext()) {
             ImlComponent imlComponent = iterator2.next();
             imlComponent.print();
         }
 
-
     }
-    
-    
 }
