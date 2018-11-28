@@ -1,0 +1,7 @@
+program testTupel3(in tup a:(int32, bool, (bool, int32)))
+   global
+       var tup a:(int32, (int32, bool), bool, (int32, int32, int32))
+   do
+       a init := tup( 5 , true);
+       debugout a
+endprogram

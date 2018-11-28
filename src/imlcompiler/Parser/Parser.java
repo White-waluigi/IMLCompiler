@@ -132,8 +132,8 @@ public class Parser {
 
         tupeltype ::= TUP LPAREN tupeltypelist RPAREN
 
-        tupeltypelist ::= ATOMTYPE {COMMA ATOMTYPE}
-				    | tupeltype {COMMA tupelype}
+        tupeltypelist ::= ATOMTYPE {COMMA tupeltypelist}
+				    | tupeltype {COMMA tupeltypelist}
 
      */
 
@@ -169,7 +169,7 @@ public class Parser {
             tupeltypelist.add(new ImlItem(consume(Terminal.TYPE)));
             while (this.tokenTerminal == Terminal.COMMA) {
                 tupeltypelist.add(new ImlItem(consume(Terminal.COMMA)));
-                tupeltypelist.add(new ImlItem(consume(Terminal.TYPE)));
+                tupeltypelist.add(tupeltypelist());
             }
         }
         else if (this.tokenTerminal == Terminal.LPAREN){
