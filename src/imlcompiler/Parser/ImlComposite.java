@@ -17,10 +17,6 @@ public class ImlComposite extends ImlComponent{
         this.name = name;
     }
 
-    public ArrayList<ImlComponent> getImlComponents() {
-        return imlComponents;
-    }
-
     public ImlComposite(String name, Wrapper wrapper){
         this.wrapper = wrapper;
         StringBuilder sb = new StringBuilder(name + wrapper.level);
@@ -44,6 +40,10 @@ public class ImlComposite extends ImlComponent{
 
     public ImlComponent getChild(int i){
         return imlComponents.get(i);
+    }
+
+    public ArrayList<ImlComponent> getImlComponents() {
+        return imlComponents;
     }
 
     public void print(){

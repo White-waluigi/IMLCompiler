@@ -1,7 +1,7 @@
-program intDivTupel(in m:tup(int32,  int32), out q:tup(int32, int32))
+program intDivTupel(in tup m:(int32,  int32), out tup q:(int32, int32))
 global
- proc divide(in copy const m:tup(int32, int32),
-             out ref var q:tup(int32, int32))
+ proc divide(in copy const tup m:(int32, int32),
+             out ref var tup q:(int32, int32))
  do
    q init := tup(0, m[0]);
 

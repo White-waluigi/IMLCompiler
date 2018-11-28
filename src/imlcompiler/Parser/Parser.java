@@ -97,8 +97,6 @@ public class Parser {
 
     param ::= [FLOWMODE] [MECHMODE] [CHANGEMODE] typedIdent
 
-    typedIdent ::= IDENT COLON ATOMTYPE
-
     */
 
     private ImlComponent progParamList(){
@@ -128,17 +126,63 @@ public class Parser {
         return progParam;
     }
 
+    /*
+        typedIdent ::= IDENT COLON ATOMTYPE
+			        |  TUP IDENT COLON tupeltype
+
+        tupeltype ::= TUP LPAREN tupeltypelist RPAREN
+
+        tupeltypelist ::= ATOMTYPE {COMMA ATOMTYPE}
+				    | tupeltype {COMMA tupelype}
+
+     */
+
+
     private ImlComponent typedIdent(){
         ImlComponent typedIdent = new ImlComposite("typedIdent", wrapper);
-        typedIdent.add(new ImlItem(consume(Terminal.IDENT)));
-        typedIdent.add(new ImlItem(consume(Terminal.COLON)));
-        if (this.tokenTerminal == Terminal.TYPE) {
+        if (this.tokenTerminal == Terminal.IDENT) {
+            typedIdent.add(new ImlItem(consume(Terminal.IDENT)));
+            typedIdent.add(new ImlItem(consume(Terminal.COLON)));
             typedIdent.add(new ImlItem(consume(Terminal.TYPE)));   //shold be ATOMTYPE
         }
         else if (this.tokenTerminal == Terminal.TUP){
-            typedIdent.add(tupel());
+            typedIdent.add(new ImlItem(consume(Terminal.TUP)));
+            typedIdent.add(new ImlItem(consume(Terminal.IDENT)));
+            typedIdent.add(new ImlItem(consume(Terminal.COLON)));
+            typedIdent.add(tupeltype());
         }
         return typedIdent;
+    }
+
+    private ImlComponent tupeltype(){
+        ImlComponent tupeltype = new ImlComposite("tupeltype", wrapper);
+        //tupeltype.add(new ImlItem(consume(Terminal.TUP)));
+        tupeltype.add(new ImlItem(consume(Terminal.LPAREN)));
+        tupeltype.add(tupeltypelist());
+        tupeltype.add(new ImlItem(consume(Terminal.RPAREN)));
+        return tupeltype;
+    }
+
+    private ImlComponent tupeltypelist(){
+        ImlComponent tupeltypelist = new ImlComposite("tupeltypelist", wrapper);
+        if (this.tokenTerminal == Terminal.TYPE) {
+            tupeltypelist.add(new ImlItem(consume(Terminal.TYPE)));
+            while (this.tokenTerminal == Terminal.COMMA) {
+                tupeltypelist.add(new ImlItem(consume(Terminal.COMMA)));
+                tupeltypelist.add(new ImlItem(consume(Terminal.TYPE)));
+            }
+        }
+        else if (this.tokenTerminal == Terminal.LPAREN){
+            tupeltypelist.add(tupeltype());
+            while(this.tokenTerminal == Terminal.COMMA){
+                tupeltypelist.add(new ImlItem(consume((Terminal.COMMA))));
+                tupeltypelist.add(tupeltypelist());
+            }
+        }
+        else {
+            throw new ParserErrorException("Error in tupeltypelist: Syntax of Declaration");
+        }
+        return tupeltypelist;
     }
 
 
@@ -418,7 +462,7 @@ public class Parser {
             decl.add(procDecl());
         }
         else {
-            throw new ParserErrorException("error in decl:" + this.tokenTerminal);
+            throw new ParserErrorException("error in decl: " + this.tokenTerminal);
         }
         return decl;
     }
@@ -540,9 +584,8 @@ public class Parser {
     tupel ::= TUP LPAREN tail RPAREN
     tail::=  element { COMMA element }
     element ::= IDENT {index}
-               | LITERAL
+               | LITERAL  //should also allow expr (expressions)
                | tupel
-               | TYPE
     index ::= LBRACK LITERAL RBRACK
     */
     private ImlComponent tupel(){
@@ -575,14 +618,11 @@ public class Parser {
         else if (this.tokenTerminal == Terminal.LITERAL){
             element.add(new ImlItem(consume(Terminal.LITERAL)));
         }
-        else if (this.tokenTerminal == Terminal.TYPE){
-            element.add(new ImlItem(consume(Terminal.TYPE)));
-        }
         else if (this.tokenTerminal == Terminal.TUP){
             element.add(tupel());
         }
         else {
-            throw new ParserErrorException("error in Tupel declaration");
+            throw new ParserErrorException("error in Tupel statement");
         }
         return element;
     }

@@ -1,4 +1,4 @@
-program test1(out t:tup(int32, int32))
+program test1(out tup t:(int32, int32))
   do
     s init := tup(1, true);
     t init := s;

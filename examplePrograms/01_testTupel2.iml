@@ -1,7 +1,7 @@
 program test2()
   global
-    a:tup(int32, int32, int32, bool, bool);
-    b:tup(tup(int32,int32), int32);
+    var tup a:(int32, int32, int32, bool, bool);
+    var tup b:((int32,int32), int32);
     c:bool
   do
     a init := tup(1,2,3,false, true);

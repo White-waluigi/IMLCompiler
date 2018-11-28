@@ -25,7 +25,7 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/02_testTreeEditor.iml";
+        	file="examplePrograms/01_testTupel1.iml.iml";
         }else {
         	file=args[0];
         }
@@ -55,10 +55,11 @@ public class Compiler {
         ImlComponent concreteSyntaxTree = parser.parse(wrapper);
 
         //Visualisation of Syntax Tree
+        /*
         Frame f = new TreeEditor((Tree<String, ?>) concreteSyntaxTree, wrapper);
         f.setSize(800, 800);
         f.setVisible(true);
-
+        */
 
         ImlComponent abstractSyntaxTree = concreteSyntaxTree.toAbstract();
         /*
