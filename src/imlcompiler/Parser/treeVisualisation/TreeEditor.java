@@ -10,6 +10,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import javax.management.RuntimeErrorException;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,6 +26,7 @@ public class TreeEditor extends JFrame {
 	static Wrapper wrapper;
 
 	public TreeEditor(Tree<String, ?> t, Wrapper wrapper) {
+		
 		this. wrapper = wrapper;
 		setTitle("Parse Tree Editor (" + t.getClass().getName() + ")");
 		treeModel = t;
@@ -65,8 +68,10 @@ public class TreeEditor extends JFrame {
 
 
 		void drawTree(Graphics g, Tree.Node<String, ?> t, int x, int y, int dx,
-				int dy, int c) {
+				int dy, int c,int depth) {
 
+	    	
+	    	
 			if(t == null) return;
 
 			int numberOfChildren = t.getNumberOfChildren();
@@ -74,16 +79,16 @@ public class TreeEditor extends JFrame {
 
 			for (int i = 0 ; i < numberOfChildren ; i++) {
 
-				spread = -(numberOfChildren-1) * 30;
+				spread = -(numberOfChildren-1) * 120;
 				Tree.Node next = t.getNext();
 
 				g.drawLine(x, y, x + spread + i * 60 , y + dy);
-				drawTree(g, next, x + spread + i * 60, y + dy, dx / 2, dy, c);
+				drawTree(g, next, x + spread + i * 60, y + dy, dx / 2, dy, c,depth);
 
 
 				for(ImlComponent.Node n : wrapper.wrapperArray){
 					if (n != null && n.getKey().equals(next.getKey())){
-						drawTree(g, n, x + spread + i * 60 , y + dy, dx / 2, depth, c);
+						drawTree(g, n, x + spread + i * 100 , y + dy, dx / 2, depth, c,depth);
 						depth += 2;
 						col -= 1;
 					}
@@ -106,7 +111,7 @@ public class TreeEditor extends JFrame {
 		void drawTree2(Graphics g, Tree.Node<String, ?> t, int x, int y, int dx,
 					  int dy, int c) {
 
-			drawTree(g, wrapper.wrapperArray[0], x, y, dx, dy, c);
+			drawTree(g, wrapper.wrapperArray[0], x, y, dx, dy, c,0);
 		}
 
 
@@ -118,7 +123,7 @@ public class TreeEditor extends JFrame {
 			int dy = 70;//h / (1 + Math.max(MIN_HEIGHT, treeModel.height()));
 			int y = dy / 2;
 			int c = y / 2;
-			int x = w/2;
+			int x = w/2+600;
 			int dx = (x - c) / 2;
 			g.setFont(font = new Font("Helvetica", Font.BOLD, 11));
 			drawTree2(g, null, x, y, dx, dy, c);

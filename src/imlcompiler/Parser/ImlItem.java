@@ -35,22 +35,39 @@ public class ImlItem extends ImlComponent{
     public Iterator<ImlComponent> createIterator(){
         return new NullIterator();
     }
-
-    public ImlComponent toAbstract(){
+    public boolean destructable() {
         Token.Terminal _token = this.token.getTerminal();
-        switch(_token) {
-            case PROGRAM:
-            case LPAREN:
-            case RPAREN:
-            case COMMA:
-            case SEMICOLON:
-            case COLON:
-            case LBRACK:
-            case RBRACK:
-                System.out.println(_token.toString() + " eliminated");
-                return null;
-            default: return this;
-        }
+        
+      if(token.isOperator()) {
+      	return true;
+      
+      }
+      switch(_token) {
+          case PROGRAM:
+          case LPAREN:
+          case RPAREN:
+          case COMMA:
+          case SEMICOLON:
+          case COLON:
+          case LBRACK:
+          case RBRACK:
+          case ENDFUN:
+          case ENDPROC:
+          case ENDPROGRAM:
+          case ENDWHILE:
+          case ENDIF:
+          case DO:
+              return true;
+          default: return false;
+      }
+    }
+    public ImlComponent toAbstract(){
+    	if(destructable()) {
+            System.out.println(this.token.getTerminal().toString() + " eliminated");
+
+    		return null;
+    	}
+    	return this;
     }
 
 

@@ -13,6 +13,8 @@ import imlcompiler.Scanner.TokenList;
 import java.awt.*;
 import java.util.Iterator;
 
+import TreeList.TreeList;
+
 import static java.lang.Thread.sleep;
 
 public class Compiler {
@@ -25,7 +27,7 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/01_testTupel1.iml.iml";
+        	file="examplePrograms/01_testTupel1.iml";
         }else {
         	file=args[0];
         }
@@ -62,6 +64,15 @@ public class Compiler {
         */
 
         ImlComponent abstractSyntaxTree = concreteSyntaxTree.toAbstract();
+
+       TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
+        
+        //Visualisation of Syntax Tree
+//        
+//        Frame f = new TreeEditor((Tree<String, ?>) abstractSyntaxTree, wrapper);
+//        f.setSize(800, 800);
+//        f.setVisible(true);
+        
         /*
         Iterator<ImlComponent> iterator = concreteSyntaxTree.createIterator();
 

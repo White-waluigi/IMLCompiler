@@ -19,7 +19,7 @@ public class ImlComposite extends ImlComponent{
 
     public ImlComposite(String name, Wrapper wrapper){
         this.wrapper = wrapper;
-        StringBuilder sb = new StringBuilder(name + wrapper.level);
+        StringBuilder sb = new StringBuilder(name +" "+ wrapper.level);
         this.name = sb.toString();
         wrapper.wrapperArray[wrapper.level] = new Node(this.name, this);
         wrapper.level++;
@@ -49,7 +49,9 @@ public class ImlComposite extends ImlComponent{
     public void print(){
         System.out.println(this.name);
     }
-
+    public void setName(String s){
+        this.name=s;
+    }
     public String getName(){
         return this.name;
     }
@@ -62,14 +64,40 @@ public class ImlComposite extends ImlComponent{
     }
 
     public ImlComponent toAbstract(){
-        ImlComponent abstractComposite = new ImlComposite("abstractComposite", wrapper);
+        
+    	
+    	ImlComponent abstractComposite = new ImlComposite(this.name, wrapper);
         Iterator<ImlComponent> iterator = this.createIterator();
+        int ctr=0;
+        	if(name.equals("expr 14")) {
+        		ctr=0;
+        	}
+        ImlComponent component=null;
         while (iterator.hasNext()){
-            ImlComponent component = iterator.next().toAbstract();
+        	component = iterator.next().toAbstract();
+
             if (component != null){
                 abstractComposite.add(component);
+                ctr++;
+
             }
 
+            
+            
+        }
+
+
+        iterator =  new CompositeIterator(imlComponents.iterator());
+
+        while(iterator.hasNext()) {
+            ImlComponent c = iterator.next();
+            if(c instanceof ImlItem&& (((ImlItem)c).token.isOperator()  )) {
+            	((ImlComposite)abstractComposite).setName(((ImlItem)c).token.toShortString());
+            	ctr++;
+            }   
+        }
+        if(ctr==1) {
+        	return component;
         }
         return abstractComposite;
     }

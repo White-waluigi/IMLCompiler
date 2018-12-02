@@ -167,6 +167,47 @@ public class Token {
 		}
 		return ((OtherAttribute)this.attribute).value==attr;
 	}
+	public boolean isInfixOperator() {
+
+
+
+
+		
+		switch (terminal) {
+		case MULTOPR:
+		case ADDOPR:
+		case RELOPR:
+		case BOOLOPR:
+			
+		return true;
+
+		default:return false;
+		}
+	}
+	public boolean isOperator() {
+		return isInfixOperator()||isPrefixOperator();
+	}
+
+
+	private boolean isPrefixOperator() {
+		switch (terminal) {
+		case TUP:
+		case INIT:
+		case BECOMES:
+		case DEBUGIN:
+		case DEBUGOUT:
+
+			
+		return true;
+
+		default:return false;
+		}
+	}
+
+
+	public String toShortString() {
+		return terminal.toString();
+	}
 
 }
 

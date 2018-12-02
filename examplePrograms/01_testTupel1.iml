@@ -2,5 +2,6 @@ program test1(out tup t:(int32, int32))
   do
     s init := tup(1, true);
     t init := s;
+    b init := 3*4*5*(3-2*(3-3 * 1));
     debugout t
 endprogram
