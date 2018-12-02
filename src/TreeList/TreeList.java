@@ -178,15 +178,7 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 	}
 
 	private void initHelp() {
-		String s = "TreeDemoHelp.html";
-		helpURL = getClass().getResource(s);
-		if (helpURL == null) {
-			System.err.println("Couldn't open help file: " + s);
-		} else if (DEBUG) {
-			System.out.println("Help URL is " + helpURL);
-		}
 
-		displayURL(helpURL);
 	}
 
 	private void displayURL(URL url) {

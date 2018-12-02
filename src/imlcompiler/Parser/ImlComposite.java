@@ -69,15 +69,14 @@ public class ImlComposite extends ImlComponent{
     	ImlComponent abstractComposite = new ImlComposite(this.name, wrapper);
         Iterator<ImlComponent> iterator = this.createIterator();
         int ctr=0;
-        	if(name.equals("expr 14")) {
-        		ctr=0;
-        	}
-        ImlComponent component=null;
+
+        ImlComponent last=null;
         while (iterator.hasNext()){
-        	component = iterator.next().toAbstract();
+        	ImlComponent component = iterator.next().toAbstract();
 
             if (component != null){
                 abstractComposite.add(component);
+                last=component;
                 ctr++;
 
             }
@@ -88,7 +87,6 @@ public class ImlComposite extends ImlComponent{
 
 
         iterator =  new CompositeIterator(imlComponents.iterator());
-
         while(iterator.hasNext()) {
             ImlComponent c = iterator.next();
             if(c instanceof ImlItem&& (((ImlItem)c).token.isOperator()  )) {
@@ -96,9 +94,15 @@ public class ImlComposite extends ImlComponent{
             	ctr++;
             }   
         }
+        
         if(ctr==1) {
-        	return component;
+        		
+
+        		return last;
+
         }
+    	((ImlComposite)abstractComposite).setName(ctr+"."+((ImlComposite)abstractComposite).getName());
+
         return abstractComposite;
     }
 
