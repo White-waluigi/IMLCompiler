@@ -27,7 +27,7 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/01_testTupel1.iml";
+        	file="examplePrograms/00_ParameterPassingInRef.iml";
         }else {
         	file=args[0];
         }

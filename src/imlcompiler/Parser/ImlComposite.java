@@ -87,21 +87,31 @@ public class ImlComposite extends ImlComponent{
 
 
         iterator =  new CompositeIterator(imlComponents.iterator());
+        boolean merge=false;
         while(iterator.hasNext()) {
             ImlComponent c = iterator.next();
             if(c instanceof ImlItem&& (((ImlItem)c).token.isOperator()  )) {
             	((ImlComposite)abstractComposite).setName(((ImlItem)c).token.toShortString());
-            	ctr++;
+            	merge=true;
+            	
             }   
         }
         
         if(ctr==1) {
-        		
+        		if(merge) {
+        			if(last instanceof ImlComposite) {
+        				((ImlComposite)last).setName(((ImlComposite)abstractComposite).getName());
+        				return last;
+        			}
+        			
+        		}else {
+        			return last;
+        		}
 
-        		return last;
-
+        }else if(merge) {
+        	
         }
-    	((ImlComposite)abstractComposite).setName(ctr+"."+((ImlComposite)abstractComposite).getName());
+    	//((ImlComposite)abstractComposite).setName(ctr+"."+((ImlComposite)abstractComposite).getName());
 
         return abstractComposite;
     }
