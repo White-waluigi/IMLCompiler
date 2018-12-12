@@ -1,5 +1,9 @@
 package imlcompiler;
 
+import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
+import ch.fhnw.lederer.virtualmachineFS2015.IVirtualMachine;
+import ch.fhnw.lederer.virtualmachineFS2015.VirtualMachine;
+import imlcompiler.Codegenerator.Codegenerator;
 import imlcompiler.Parser.CompositeIterator;
 import imlcompiler.Parser.ImlComponent;
 import imlcompiler.Parser.ImlComposite;
@@ -93,6 +97,21 @@ public class Compiler {
             ImlComponent imlComponent = iterator2.next();
             imlComponent.print();
         }
+
+        Codegenerator codegenerator = new Codegenerator(abstractSyntaxTree);
+
+        CodeArray codeArray = codegenerator.getCode();
+
+        int size = codegenerator.getCodeSize();
+
+        try {
+
+            VirtualMachine vm = new VirtualMachine(codeArray, size);
+
+        } catch (IVirtualMachine.ExecutionError executionError) {
+            executionError.printStackTrace();
+        }
+
 
     }
 }
