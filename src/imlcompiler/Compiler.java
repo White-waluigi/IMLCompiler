@@ -1,6 +1,7 @@
 package imlcompiler;
 
 import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
+import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.IVirtualMachine;
 import ch.fhnw.lederer.virtualmachineFS2015.VirtualMachine;
 import imlcompiler.Codegenerator.Codegenerator;
@@ -98,7 +99,12 @@ public class Compiler {
             imlComponent.print();
         }
 
-        Codegenerator codegenerator = new Codegenerator(abstractSyntaxTree);
+        Codegenerator codegenerator = null;
+        try {
+            codegenerator = new Codegenerator(abstractSyntaxTree);
+        } catch (ICodeArray.CodeTooSmallError codeTooSmallError) {
+            codeTooSmallError.printStackTrace();
+        }
 
         CodeArray codeArray = codegenerator.getCode();
 
