@@ -18,7 +18,7 @@ public class Codegenerator {
     }
 
 
-    public int getCodeSize(){
+    public int getStoreSize(){
         // todo
         return 0;
     }

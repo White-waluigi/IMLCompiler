@@ -102,11 +102,11 @@ public class Compiler {
 
         CodeArray codeArray = codegenerator.getCode();
 
-        int size = codegenerator.getCodeSize();
+        int storeSize = codegenerator.getStoreSize();
 
         try {
 
-            VirtualMachine vm = new VirtualMachine(codeArray, size);
+            VirtualMachine vm = new VirtualMachine(codeArray, storeSize);
 
         } catch (IVirtualMachine.ExecutionError executionError) {
             executionError.printStackTrace();
