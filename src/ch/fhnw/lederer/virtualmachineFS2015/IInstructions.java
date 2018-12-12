@@ -214,8 +214,8 @@ public interface IInstructions {
         protected int jumpAddr;
         public CondJump(int jumpAddr) { this.jumpAddr= jumpAddr; }
         public String toString() { return "CondJump(" + jumpAddr + ")"; }
-        public IExecInstr toExecInstr(VirtualMachine vm) {
-            return vm.new CondJumpExec(jumpAddr);
+        public IExecInstr toExecInstr(VirtualMachine vm) {         
+        	return vm.new CondJumpExec(jumpAddr);
         }
     }
 

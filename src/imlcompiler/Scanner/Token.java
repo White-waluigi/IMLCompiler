@@ -1,5 +1,7 @@
 package imlcompiler.Scanner;
 
+import com.sun.org.apache.bcel.internal.generic.Instruction;
+
 public class Token {
 	public static class Attribute{}
 	public static class IdentAttribute extends Attribute{

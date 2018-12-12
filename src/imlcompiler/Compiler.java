@@ -14,6 +14,7 @@ import java.awt.*;
 import java.util.Iterator;
 
 import TreeList.TreeList;
+import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 
 import static java.lang.Thread.sleep;
 
@@ -27,7 +28,7 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/00_ParameterPassingInRef.iml";
+        	file="examplePrograms/01_testTupel1.iml";
         }else {
         	file=args[0];
         }
@@ -93,6 +94,7 @@ public class Compiler {
             ImlComponent imlComponent = iterator2.next();
             imlComponent.print();
         }
-
+        
+        
     }
 }

@@ -19,9 +19,8 @@ public class ImlComposite extends ImlComponent{
 
     public ImlComposite(String name, Wrapper wrapper){
         this.wrapper = wrapper;
-        StringBuilder sb = new StringBuilder(name +" "+ wrapper.level);
-        this.name = sb.toString();
-        wrapper.wrapperArray[wrapper.level] = new Node(this.name, this);
+        this.name = name;
+        wrapper.wrapperArray[wrapper.level] = new Node(this.name+"", this);
         wrapper.level++;
     }
 
@@ -66,7 +65,7 @@ public class ImlComposite extends ImlComponent{
     public ImlComponent toAbstract(){
         
     	
-    	ImlComponent abstractComposite = new ImlComposite(this.name, wrapper);
+    	ImlComponent abstractComposite = new ImlComposite(null, wrapper);
         Iterator<ImlComponent> iterator = this.createIterator();
         int ctr=0;
 
@@ -85,7 +84,6 @@ public class ImlComposite extends ImlComponent{
             
         }
 
-
         iterator =  new CompositeIterator(imlComponents.iterator());
         boolean merge=false;
         while(iterator.hasNext()) {
@@ -93,26 +91,26 @@ public class ImlComposite extends ImlComponent{
             if(c instanceof ImlItem&& (((ImlItem)c).token.isOperator()  )) {
             	((ImlComposite)abstractComposite).setName(((ImlItem)c).token.toShortString());
             	merge=true;
-            	
             }   
         }
         
         if(ctr==1) {
         		if(merge) {
-        			if(last instanceof ImlComposite) {
+        			if(last instanceof ImlComposite && ((ImlComposite)last).getName()==null) {
         				((ImlComposite)last).setName(((ImlComposite)abstractComposite).getName());
-        				return last;
+        				abstractComposite= last;
         			}
         			
         		}else {
-        			return last;
+        			abstractComposite= last;
         		}
-
+        	
         }else if(merge) {
         	
         }
     	//((ImlComposite)abstractComposite).setName(ctr+"."+((ImlComposite)abstractComposite).getName());
-
+//        if(((ImlComposite)abstractComposite).getName()==null)
+//        	throw new ParserErrorException("AST Element not properly identifiable");
         return abstractComposite;
     }
 
