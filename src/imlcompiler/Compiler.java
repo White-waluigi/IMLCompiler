@@ -99,10 +99,7 @@ public class Compiler {
             ImlComponent imlComponent = iterator2.next();
             imlComponent.print();
         }
-<<<<<<< HEAD
-        
-        
-=======
+
 
         Codegenerator codegenerator = null;
         try {
@@ -124,6 +121,5 @@ public class Compiler {
         }
 
 
->>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
     }
 }
