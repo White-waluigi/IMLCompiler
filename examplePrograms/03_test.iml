@@ -1,0 +1,6 @@
+program test()
+    global
+        a : int32
+    do
+      debugout a + a
+endprogram

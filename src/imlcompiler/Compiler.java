@@ -1,5 +1,10 @@
 package imlcompiler;
 
+import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
+import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
+import ch.fhnw.lederer.virtualmachineFS2015.IVirtualMachine;
+import ch.fhnw.lederer.virtualmachineFS2015.VirtualMachine;
+import imlcompiler.Codegenerator.Codegenerator;
 import imlcompiler.Parser.CompositeIterator;
 import imlcompiler.Parser.ImlComponent;
 import imlcompiler.Parser.ImlComposite;
@@ -94,7 +99,31 @@ public class Compiler {
             ImlComponent imlComponent = iterator2.next();
             imlComponent.print();
         }
+<<<<<<< HEAD
         
         
+=======
+
+        Codegenerator codegenerator = null;
+        try {
+            codegenerator = new Codegenerator(abstractSyntaxTree);
+        } catch (ICodeArray.CodeTooSmallError codeTooSmallError) {
+            codeTooSmallError.printStackTrace();
+        }
+
+        CodeArray codeArray = codegenerator.getCode();
+
+        int storeSize = codegenerator.getStoreSize();
+
+        try {
+
+            VirtualMachine vm = new VirtualMachine(codeArray, storeSize);
+
+        } catch (IVirtualMachine.ExecutionError executionError) {
+            executionError.printStackTrace();
+        }
+
+
+>>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
     }
 }
