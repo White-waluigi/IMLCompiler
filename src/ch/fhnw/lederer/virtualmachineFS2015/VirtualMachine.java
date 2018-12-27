@@ -14,10 +14,21 @@ public class VirtualMachine implements IVirtualMachine {
     private static final String EP_OVER_HP=
         "Extreme pointer over heap pointer.";
 
+
     // stores the program
     private IExecInstr[] code;
+    // stores the program
+    private IInstr[] codeParent;
 
-    // stores the data
+    public IInstr[] getCodeParent() {
+		return codeParent;
+	}
+
+	public void setCodeParent(IInstr[] codeParent) {
+		this.codeParent = codeParent;
+	}
+
+	// stores the data
     // - stack: index 0 upto sp-1
     // - heap: index store.length - 1 downto hp+1
     private Data.IBaseData[] store;
@@ -43,20 +54,25 @@ public class VirtualMachine implements IVirtualMachine {
     // - provides a reference to each routine incarnation
     private int fp;
 
-    public VirtualMachine(ICodeArray code, int storeSize)
+    public VirtualMachine(ICodeArray code, int storeSize,boolean manual)
             throws ExecutionError
     {
         loadProgram(code);
         store= new Data.IBaseData[storeSize];
-        execute();
+        if(!manual)
+        	execute();
     }
 
     // pre
     // - (forall i | 0 <= i < code.getSize() : code.get(i) != null)
     private void loadProgram(ICodeArray code) {
         this.code= new IExecInstr[code.getSize()];
+        this.codeParent= new IInstr[code.getSize()];
+        
         for (int i= 0; i < code.getSize(); i++) {
+        	
             this.code[i]= code.get(i).toExecInstr(this);
+            this.codeParent[i]=code.get(i);
         }
     }
 
@@ -73,7 +89,83 @@ public class VirtualMachine implements IVirtualMachine {
         }
     }
 
-    // stop instruction
+    public Data.IBaseData[] getStore() {
+		return store;
+	}
+
+	public void setStore(Data.IBaseData[] store) {
+		this.store = store;
+	}
+
+	public int getPc() {
+		return pc;
+	}
+
+	public void setPc(int pc) {
+		this.pc = pc;
+	}
+
+	public int getSp() {
+		return sp;
+	}
+
+	public void setSp(int sp) {
+		this.sp = sp;
+	}
+
+	public int getEp() {
+		return ep;
+	}
+
+	public void setEp(int ep) {
+		this.ep = ep;
+	}
+
+	public int getHp() {
+		return hp;
+	}
+
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
+
+	public int getFp() {
+		return fp;
+	}
+
+	public void setFp(int fp) {
+		this.fp = fp;
+	}
+
+	public void init() {
+        pc= 0;
+        sp= 0;
+        ep= 0;
+        hp= store.length - 1;
+        fp= 0;
+    }
+    public int step() throws ExecutionError {
+    	
+        if (pc <= -1)
+        	return -1;
+        
+        code[pc].execute();
+        
+        return 0;
+    	
+    }
+    
+
+    public IExecInstr[] getCode() {
+		return code;
+	}
+
+	public void setCode(IExecInstr[] code) {
+		this.code = code;
+	}
+
+
+	// stop instruction
     public class StopExec extends Stop implements IExecInstr {
         public void execute()
         {

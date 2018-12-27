@@ -3,6 +3,7 @@
 
 package ch.fhnw.lederer.virtualmachineFS2015;
 
+import ch.fhnw.lederer.virtualmachineFS2015.IInstructions.IInstr;
 import ch.fhnw.lederer.virtualmachineFS2015.IVirtualMachine.ExecutionError;
 
 // idea: the compiler should not need a reference to the VM object
@@ -15,8 +16,13 @@ public interface IInstructions {
     }
 
     // executable form of instructions
+    
+
     interface IExecInstr extends IInstr {
-        void execute() throws ExecutionError;
+    	
+
+    	
+		void execute() throws ExecutionError;
     }
 
     // stop instruction

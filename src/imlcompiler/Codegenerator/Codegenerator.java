@@ -1,35 +1,54 @@
 package imlcompiler.Codegenerator;
 
+import java.util.ArrayList;
+
 import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions;
+import ch.fhnw.lederer.virtualmachineFS2015.IInstructions.IInstr;
 import imlcompiler.Parser.ImlComponent;
 
 public class Codegenerator {
 
     ImlComponent ast;
     CodeArray codeArray;
-    int SIZE = 7;
+    int SIZE = 12;
 
     public Codegenerator (ImlComponent ast) throws ICodeArray.CodeTooSmallError {
         this.ast = ast;
-        this.codeArray = new CodeArray(SIZE);
 
-        codeArray.put(0, new IInstructions.LoadImInt(3));
+        ArrayList<IInstructions.IInstr> ar=new ArrayList<>();
+        
+        int i=0;
+        
+        
+        
+        
+        
+        
+        
+        ar.add( new IInstructions.LoadImInt(3));
+        ar.add( new IInstructions.LoadImInt(0));
+        ar.add( new IInstructions.LoadImInt(0));
+        ar.add( new IInstructions.Deref());
+        ar.add( new IInstructions.LoadImInt(1));
+        ar.add( new IInstructions.SubInt());
+        ar.add( new IInstructions.Store());        
+        ar.add( new IInstructions.LoadImInt(0));
+        ar.add( new IInstructions.Deref());
+        ar.add( new IInstructions.CondJump(11));
+        ar.add( new IInstructions.Call(1));
+        ar.add(  new IInstructions.Stop());
 
-        codeArray.put(1, new IInstructions.LoadImInt(7));
+        
+        
+        this.codeArray = new CodeArray(ar.size());
+        
+        for(IInstr a:ar) {
+        	codeArray.put(i++, a);        	
+        }
 
-        codeArray.put(2, new IInstructions.SubInt());
-
-        codeArray.put(3,  new IInstructions.AllocBlock(2));
-
-        codeArray.put(4, new IInstructions.Store());
-
-        codeArray.put(5, new IInstructions.OutputInt("test"));
-
-        codeArray.put(6,  new IInstructions.Stop());
-
-
+        
     }
 
     public CodeArray getCode(){

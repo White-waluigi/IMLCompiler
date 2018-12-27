@@ -4,6 +4,9 @@ import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.IVirtualMachine;
 import ch.fhnw.lederer.virtualmachineFS2015.VirtualMachine;
+import debugger.Debugger;
+import debugger.Debugger.MemoryCell;
+import debugger.Debugger.MemoryView;
 import imlcompiler.Codegenerator.Codegenerator;
 import imlcompiler.Parser.CompositeIterator;
 import imlcompiler.Parser.ImlComponent;
@@ -40,7 +43,6 @@ public class Compiler {
         parse(file,true);
     }
     public static void parse(String file,boolean printtokenlist) {
-
 
         Scanner scanner = new Scanner(file);
 
@@ -114,7 +116,7 @@ public class Compiler {
 
         try {
 
-            VirtualMachine vm = new VirtualMachine(codeArray, storeSize);
+            VirtualMachine vm = new VirtualMachine(codeArray, storeSize,false);
 
         } catch (IVirtualMachine.ExecutionError executionError) {
             executionError.printStackTrace();

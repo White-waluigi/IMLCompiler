@@ -5,16 +5,16 @@ package ch.fhnw.lederer.virtualmachineFS2015;
 
 public class Data
 {
-    static interface IBaseData
+    public static interface IBaseData
     {
         IBaseData copy();
     }
 
-    static class IntData implements IBaseData
+    public static class IntData implements IBaseData
     {
         private int i;
         IntData(int i) { this.i= i; }
-        int getData() { return i; }
+        public int getData() { return i; }
         public IntData copy() { return intCopy(this); }
     }
 
@@ -146,4 +146,6 @@ public class Data
     {
         return boolNew(intGet(a) <= intGet(b));
     }
+    
+    
 }
