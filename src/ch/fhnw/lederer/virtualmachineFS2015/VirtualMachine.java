@@ -4,6 +4,7 @@
 package ch.fhnw.lederer.virtualmachineFS2015;
 
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions.*;
+import debugger.Debugger.MemoryCell;
 
 public class VirtualMachine implements IVirtualMachine {
 
@@ -32,7 +33,7 @@ public class VirtualMachine implements IVirtualMachine {
     // - stack: index 0 upto sp-1
     // - heap: index store.length - 1 downto hp+1
     private Data.IBaseData[] store;
-
+    private MemoryCell watchdog;
     // program counter
     private int pc;
 

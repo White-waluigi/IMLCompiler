@@ -25,20 +25,21 @@ public class Codegenerator {
         
         
         
-        
-        
-        ar.add( new IInstructions.LoadImInt(3));
-        ar.add( new IInstructions.LoadImInt(0));
-        ar.add( new IInstructions.LoadImInt(0));
-        ar.add( new IInstructions.Deref());
-        ar.add( new IInstructions.LoadImInt(1));
-        ar.add( new IInstructions.SubInt());
-        ar.add( new IInstructions.Store());        
-        ar.add( new IInstructions.LoadImInt(0));
-        ar.add( new IInstructions.Deref());
-        ar.add( new IInstructions.CondJump(11));
-        ar.add( new IInstructions.Call(1));
-        ar.add(  new IInstructions.Stop());
+        int r=0;
+        ar.add( new IInstructions.LoadImInt(3));		r++;        
+        ar.add( new IInstructions.Call(3));				r++;
+        ar.add( new IInstructions.Stop());        		r++;
+        ar.add( new IInstructions.LoadImInt(0));		r++;
+        ar.add( new IInstructions.LoadImInt(0));		r++;
+        ar.add( new IInstructions.Deref());				r++;
+        ar.add( new IInstructions.LoadImInt(1));		r++;
+        ar.add( new IInstructions.SubInt());			r++;
+        ar.add( new IInstructions.Store());        		r++;
+        ar.add( new IInstructions.LoadImInt(0));		r++;
+        ar.add( new IInstructions.Deref());				r++;
+        ar.add( new IInstructions.CondJump(r+2));		r++;
+        ar.add( new IInstructions.Call(3));				r++;
+        ar.add( new IInstructions.Return(0));			r++;
 
         
         
