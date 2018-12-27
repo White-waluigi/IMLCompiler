@@ -1,17 +1,5 @@
 package imlcompiler;
 
-<<<<<<< HEAD
-import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
-import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
-import ch.fhnw.lederer.virtualmachineFS2015.IVirtualMachine;
-import ch.fhnw.lederer.virtualmachineFS2015.VirtualMachine;
-import debugger.Debugger;
-import debugger.Debugger.MemoryCell;
-import debugger.Debugger.MemoryView;
-import imlcompiler.Codegenerator.Codegenerator;
-import imlcompiler.Parser.CompositeIterator;
-=======
->>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
 import imlcompiler.Parser.ImlComponent;
 import imlcompiler.Parser.Parser;
 import imlcompiler.Parser.treeVisualisation.Wrapper;
@@ -22,8 +10,6 @@ import java.util.Iterator;
 
 import imlcompiler.ScopeChecker.ScopeChecker;
 import imlcompiler.Symboltable.SymbolMap;
-
-import static java.lang.Thread.sleep;
 
 public class Compiler {
 
