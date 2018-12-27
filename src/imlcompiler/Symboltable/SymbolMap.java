@@ -29,7 +29,7 @@ public class SymbolMap {
 
     public void print(){
         System.out.println("Symboltable: " + tableName);
-        Comparator<Symbol> valueComparator = new Comparator<>() {
+        Comparator<Symbol> valueComparator = new Comparator<Symbol>() {
             @Override
             public int compare(Symbol e1, Symbol e2) {
                 int v1 = e1.location;

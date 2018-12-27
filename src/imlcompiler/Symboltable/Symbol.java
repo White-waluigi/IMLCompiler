@@ -1,5 +1,7 @@
 package imlcompiler.Symboltable;
 
+import java.util.ArrayList;
+
 public class Symbol {
 
     //public enum Type{ BOOL, INT32, TUP};
@@ -19,4 +21,5 @@ public class Symbol {
     public String toString(){
         return "{" + name + " , type: " + type + " , tupSize: " + tupSize + " , location: " + location + "}";
     }
+
 }
