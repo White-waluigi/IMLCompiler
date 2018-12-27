@@ -65,7 +65,7 @@ public class ImlComposite extends ImlComponent{
     public ImlComponent toAbstract(){
         
     	
-    	ImlComponent abstractComposite = new ImlComposite(null, wrapper);
+    	ImlComponent abstractComposite = new ImlComposite("comp", wrapper);
         Iterator<ImlComponent> iterator = this.createIterator();
         int ctr=0;
 

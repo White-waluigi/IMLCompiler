@@ -52,11 +52,11 @@ public class ImlItem extends ImlComponent{
           case LBRACK:
           case RBRACK:
           case ENDFUN:
-          case ENDPROC:
+          //case ENDPROC:
           case ENDPROGRAM:
           case ENDWHILE:
           case ENDIF:
-          case DO:
+          //case DO:
               return true;
           default: return false;
       }

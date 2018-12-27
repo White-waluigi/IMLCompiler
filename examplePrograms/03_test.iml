@@ -1,6 +1,10 @@
 program test()
     global
-        a : int32
+        var a : int32;
+        var b : bool;
+        var tup c:(int32, bool);
+        var d: int32;
+        var tup e:((bool, bool), bool)
     do
       debugout a + a
 endprogram

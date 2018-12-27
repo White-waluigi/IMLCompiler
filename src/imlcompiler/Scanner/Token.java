@@ -1,6 +1,5 @@
 package imlcompiler.Scanner;
 
-import com.sun.org.apache.bcel.internal.generic.Instruction;
 
 public class Token {
 	public static class Attribute{}
@@ -193,7 +192,7 @@ public class Token {
 
 	private boolean isPrefixOperator() {
 		switch (terminal) {
-		case TUP:
+		//case TUP:
 		case INIT:
 		case BECOMES:
 		case DEBUGIN:

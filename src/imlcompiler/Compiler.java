@@ -1,5 +1,6 @@
 package imlcompiler;
 
+<<<<<<< HEAD
 import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.IVirtualMachine;
@@ -9,20 +10,18 @@ import debugger.Debugger.MemoryCell;
 import debugger.Debugger.MemoryView;
 import imlcompiler.Codegenerator.Codegenerator;
 import imlcompiler.Parser.CompositeIterator;
+=======
+>>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
 import imlcompiler.Parser.ImlComponent;
-import imlcompiler.Parser.ImlComposite;
 import imlcompiler.Parser.Parser;
-import imlcompiler.Parser.treeVisualisation.Tree;
-import imlcompiler.Parser.treeVisualisation.TreeEditor;
 import imlcompiler.Parser.treeVisualisation.Wrapper;
 import imlcompiler.Scanner.Scanner;
 import imlcompiler.Scanner.TokenList;
 
-import java.awt.*;
 import java.util.Iterator;
 
-import TreeList.TreeList;
-import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
+import imlcompiler.ScopeChecker.ScopeChecker;
+import imlcompiler.Symboltable.SymbolMap;
 
 import static java.lang.Thread.sleep;
 
@@ -71,9 +70,11 @@ public class Compiler {
         f.setVisible(true);
         */
 
+        System.out.println("---> Converting to Abstract Syntax Tree");
         ImlComponent abstractSyntaxTree = concreteSyntaxTree.toAbstract();
-
-       TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
+        System.out.println("---> AST Done");
+        //new Visualization of Syntax Trees
+        //TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
         
         //Visualisation of Syntax Tree
 //        
@@ -96,13 +97,23 @@ public class Compiler {
 
         Iterator<ImlComponent> iterator2 = abstractSyntaxTree.createIterator();
 
-        System.out.println("---> Converting to Abstract Syntax Tree");
-        while (iterator2.hasNext()) {
+
+        /*while (iterator2.hasNext()) {
             ImlComponent imlComponent = iterator2.next();
             imlComponent.print();
+        }*/
+
+        //scope checking
+        SymbolMap symbolTables = new SymbolMap("global", null);
+        ScopeChecker scopeChecker = new ScopeChecker(iterator2, symbolTables);
+        try {
+            scopeChecker.check();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        symbolTables.print();
 
-
+        /*
         Codegenerator codegenerator = null;
         try {
             codegenerator = new Codegenerator(abstractSyntaxTree);
@@ -122,6 +133,6 @@ public class Compiler {
             executionError.printStackTrace();
         }
 
-
+        */
     }
 }
