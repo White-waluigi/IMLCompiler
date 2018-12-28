@@ -5,8 +5,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.CompilerException;
-
 import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions;
