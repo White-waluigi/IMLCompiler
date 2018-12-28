@@ -161,13 +161,18 @@ public class Codegenerator {
 
     
 	private void reserveSymbolTable() {
-    	int offset=currentst==globalst?0:3;
 
 		ar.add(new IInstructions.AllocBlock(currentst.getSize()));
+		
+		
+		if(currentst==globalst) {
+			return;
+		}
         for(int i=0;i<currentst.getSize();i++) {
-        	ar.add(new IInstructions.LoadAddrRel(currentst.get(i).location+offset));
+        	ar.add(new IInstructions.LoadAddrRel(currentst.get(i).location+3));
         	ar.add(new IInstructions.LoadAddrRel(i-currentst.getSize()));
         	ar.add(new IInstructions.Deref());
+        	ar.add(new IInstructions.Store());
         	
         }
     }
