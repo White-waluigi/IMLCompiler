@@ -67,7 +67,7 @@ public class ScopeChecker {
                         identifier = token.getDebugString();
                         if (previousToken == PROC || previousToken == FUN){
                             SymbolMap newMap = new SymbolMap(identifier, currentMap);
-                            //newMap.addGlobals(currentMap);
+                            newMap.addGlobals(currentMap);
                             currentMap.next.add(newMap);
                             currentMap = newMap;
                         }
