@@ -11,13 +11,15 @@ public class Symbol {
     public int tupSize;
     public int location;
     public boolean isRef;
+    public boolean isGlobal;
 
-    public Symbol(String name, String type, int tupSize, int location, boolean isRef) {
+    public Symbol(String name, String type, int tupSize, int location, boolean isRef, boolean isGlobal) {
         this.name = name;
         this.type = type;
         this.tupSize = tupSize;  //default: -1
         this.location = location;
         this.isRef = isRef;
+        this.isGlobal = isGlobal;
     }
 
     public String toString(){
