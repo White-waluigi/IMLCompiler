@@ -56,7 +56,11 @@ public class ScopeChecker {
                     case GLOBAL:
                         //currentMap = symbolTableGlobal;
                         if (isTuple && previousToken == TYPE ){
-                            currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef);
+                            if (currentMap.tableName.equals("global"))
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true);
+                            else
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false);
+
                             isTuple = false;
                             location += currentType.size();
                             currentType = null;
@@ -79,7 +83,10 @@ public class ScopeChecker {
                     case TYPE:
                         type = token.getDebugString();
                         if (!isTuple) {
-                            currentMap.addSymbol(identifier, type, tupSize, location++, isRef);
+                            if (currentMap.tableName.equals("global"))
+                                currentMap.addSymbol(identifier, type, tupSize, location++, isRef, true);
+                            else
+                                currentMap.addSymbol(identifier, type, tupSize, location++, isRef, false);
                             type = null;
                             isRef = false;
                         }
@@ -106,7 +113,10 @@ public class ScopeChecker {
                         break;
                     default:
                         if (isTuple && previousToken == TYPE && token.getTerminal() != TYPE){
-                            currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef);
+                            if (currentMap.tableName.equals("global"))
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true);
+                            else
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false);
                             isTuple = false;
                             location += currentType.size();
                             currentType = null;

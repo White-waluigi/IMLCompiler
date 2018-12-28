@@ -49,7 +49,7 @@ public class Debugger extends JFrame {
 			try {
 				int x = dvm.step();
 				if (x != 0)
-					throw new ExecutionError("End of Program reaced!");
+					throw new ExecutionError("End of Program reached!");
 
 			} catch (ExecutionError e) {
 				JOptionPane.showMessageDialog(null,

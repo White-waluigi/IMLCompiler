@@ -30,7 +30,7 @@ public class Codegenerator {
 
     Map<String, Integer> ProcAddr;
     long freeProcSpace=0;
-	private int curPrStart=-1;
+	private int curPrStart=1;
 	
     public Codegenerator(ImlComponent ast, SymbolMap symbolTables) throws ICodeArray.CodeTooSmallError {
         
