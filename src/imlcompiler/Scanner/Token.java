@@ -24,7 +24,7 @@ public class Token {
 		}
 	};
 	public static class OtherAttribute extends Attribute{
-		EnumAttribute value;
+		public EnumAttribute value;
 		public OtherAttribute(EnumAttribute value) {
 		
 			super();
@@ -208,6 +208,18 @@ public class Token {
 
 	public String toShortString() {
 		return terminal.toString();
+	}
+
+
+	public boolean isDecl() {
+		switch (terminal) {
+		case PROC:
+
+			
+		return true;
+
+		default:return false;
+		}
 	}
 
 }

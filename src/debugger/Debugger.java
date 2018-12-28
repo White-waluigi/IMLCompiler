@@ -124,6 +124,7 @@ public class Debugger extends JFrame {
 	private JLabel vall;
 	private int watchdog;
 	private String refCode;
+	private JTextArea outPut;
 
 	public Debugger(int memorySize, Codegenerator codegenerator, String code) {
 		super("Tupel Debugger");
@@ -144,7 +145,13 @@ public class Debugger extends JFrame {
 		}
 
 		try {
-			dvm = new VirtualMachine(codegenerator.getCode(), memorySize, true);
+			dvm = new VirtualMachine(codegenerator.getCode(), memorySize, true,new PrintDevice() {
+				
+				@Override
+				public void print(String s) {
+					outPut.setText(outPut.getText()+s+"\n");
+				}
+			});
 		} catch (ExecutionError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -208,7 +215,9 @@ public class Debugger extends JFrame {
 				stringBuffer.append(line+"\n");
 			}
 			DebugPanel.add(new JTextArea(new String(stringBuffer.toString())));
-
+			DebugPanel.add(new JLabel("Output:"));
+			outPut=new JTextArea(new String());
+			DebugPanel.add(outPut);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

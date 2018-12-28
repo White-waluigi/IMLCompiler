@@ -105,8 +105,6 @@ public class ImlComposite extends ImlComponent {
 		while (iterator.hasNext()) {
 			ImlComponent next = iterator.next();
 
-			if (next.getToken() != null && next.getToken().getTerminal() == Terminal.INIT)
-				System.out.println("faggot");
 
 			ImlComponent component = next.toAbstract();
 
@@ -123,7 +121,7 @@ public class ImlComposite extends ImlComponent {
         boolean merge=false;
         while(iterator.hasNext()) {
             ImlComponent c = iterator.next();
-            if(c instanceof ImlItem&& (((ImlItem)c).token.isOperator()  )   && (((ImlItem)c).token.getTerminal()!=Terminal.INIT)) {
+            if(c instanceof ImlItem&& (         ((ImlItem)c).token.isOperator()  ||((ImlItem)c).token.isDecl()      )   && (((ImlItem)c).token.getTerminal()!=Terminal.INIT)) {
             	((ImlComposite)abstractComposite).setName(((ImlItem)c).token.toShortString());
 //            	if(((ImlItem)c).token==null)
 //            		throw new ParserErrorException("missing Token");

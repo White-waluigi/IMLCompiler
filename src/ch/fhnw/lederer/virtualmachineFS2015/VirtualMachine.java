@@ -4,6 +4,7 @@
 package ch.fhnw.lederer.virtualmachineFS2015;
 
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions.*;
+import debugger.PrintDevice;
 import debugger.Debugger.MemoryCell;
 
 public class VirtualMachine implements IVirtualMachine {
@@ -55,9 +56,12 @@ public class VirtualMachine implements IVirtualMachine {
     // - provides a reference to each routine incarnation
     private int fp;
 
-    public VirtualMachine(ICodeArray code, int storeSize,boolean manual)
+	private PrintDevice printDevice;
+
+    public VirtualMachine(ICodeArray code, int storeSize,boolean manual,PrintDevice s)
             throws ExecutionError
     {
+    	printDevice=s;
         loadProgram(code);
         store= new Data.IBaseData[storeSize];
         if(!manual)
@@ -461,6 +465,8 @@ public class VirtualMachine implements IVirtualMachine {
             sp= sp - 1;
             boolean output= Data.boolGet(store[sp]);
             System.out.println("! " + indicator + " : bool = " + output);
+            if(printDevice!=null)
+            	printDevice.print("! " + indicator + " : bool = " + output);
             pc= pc + 1;
         }
     }
@@ -473,6 +479,8 @@ public class VirtualMachine implements IVirtualMachine {
             sp= sp - 1;
             int output= Data.intGet(store[sp]);
             System.out.println("! " + indicator + " : int = " + output);
+            if(printDevice!=null)
+            	printDevice.print("! " + indicator + " : int = " + output);
             pc= pc + 1;
         }
     }
