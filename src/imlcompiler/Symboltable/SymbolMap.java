@@ -1,5 +1,6 @@
 package imlcompiler.Symboltable;
 
+import imlcompiler.Codegenerator.CodeGenerationException;
 import imlcompiler.ScopeChecker.ScopeCheckerErrorException;
 
 import java.util.*;
@@ -38,13 +39,10 @@ public class SymbolMap {
     	return r;
     }
     public Symbol get(String s) {
-    	return hashMap.get(s);
+    	Symbol retval= hashMap.get(s);
+    	return retval;
     }
     public Symbol get(int s) {
-    	return (Symbol) hashMap.values().toArray()[s];
-    }
-    public void print(){
-        System.out.println("Symboltable: " + tableName);
         Comparator<Symbol> valueComparator = new Comparator<Symbol>() {
             @Override
             public int compare(Symbol e1, Symbol e2) {
@@ -55,7 +53,12 @@ public class SymbolMap {
         };
         List<Symbol> listOfEntries = new ArrayList<Symbol>(hashMap.values());
         Collections.sort(listOfEntries, valueComparator);
-        for(Symbol s : listOfEntries){
+        return listOfEntries.get(s);
+    }
+    public void print(){
+        System.out.println("Symboltable: " + tableName);
+        for(int i=0;i<getSize();i++){
+        	Symbol s = get(i);
             System.out.println("{ " + s.name + " :  type: " + s.type + ", tupelsize: " + s.tupSize
                     + " ,location:  " + s.location + ", isRef: " +s.isRef+" }");
         }
@@ -65,11 +68,29 @@ public class SymbolMap {
 
     public void addGlobals(SymbolMap symbolMap){
         for (Symbol s: symbolMap.getMap().values()){
-            this.hashMap.put(s.name + " (global)", s);
+            this.hashMap.put(s.name, s);
         }
     }
 
     private HashMap<String, Symbol> getMap(){
         return hashMap;
     }
+
+	public SymbolMap findTable(String value) {
+    	
+		SymbolMap retval = null;
+    	if(next.isEmpty())
+    		throw new CodeGenerationException("No Symboltables generated");
+    	
+    	for( SymbolMap a:next) {
+
+    		if(a.tableName.equals(value)) {
+    			retval=a;
+    		}
+    	}
+    	if(retval==null)
+    		throw new CodeGenerationException("Symboltable for: "+value +" not found");
+    	
+    	return retval;
+	}
 }

@@ -1,9 +1,16 @@
-program test1(a :int32)
+program test1(a :int32,b: int32,c:int32)
+
 global
   proc test(in aa:int32)
 	do  	
 		aa:=aa+1;		
 		debugout aa;
+		debugout a;
+		debugout b;
+		debugout c;
+		
+		debugout 100000;
+		
 		
 		call test(aa)
   endproc

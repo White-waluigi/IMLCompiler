@@ -1,6 +1,7 @@
 package imlcompiler;
 
-import imlcompiler.Codegenerator.Codegenerator;
+import imlcompiler.Codegenerator.CodeGenerator;
+import imlcompiler.Codegenerator.Codegenerator_old;
 import imlcompiler.Parser.ImlComponent;
 import imlcompiler.Parser.Parser;
 import imlcompiler.Parser.treeVisualisation.TreeEditor;
@@ -109,9 +110,9 @@ public class Compiler {
         symbolTables.print();
 
         
-        Codegenerator codegenerator = null;
+        CodeGenerator codegenerator = null;
         try {
-            codegenerator = new Codegenerator(abstractSyntaxTree,symbolTables);
+        	codegenerator = new CodeGenerator(abstractSyntaxTree,symbolTables);
         } catch (CodeArray.CodeTooSmallError codeTooSmallError) {
             codeTooSmallError.printStackTrace();
         }

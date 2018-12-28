@@ -19,7 +19,7 @@ import imlcompiler.Scanner.Token.Terminal;
 import imlcompiler.Symboltable.Symbol;
 import imlcompiler.Symboltable.SymbolMap;
 
-public class Codegenerator {
+public class Codegenerator_old {
 
     ImlComponent ast;
     CodeArray codeArray;
@@ -32,7 +32,7 @@ public class Codegenerator {
     long freeProcSpace=0;
 	private int curPrStart=1;
 	
-    public Codegenerator(ImlComponent ast, SymbolMap symbolTables) throws ICodeArray.CodeTooSmallError {
+    public Codegenerator_old(ImlComponent ast, SymbolMap symbolTables) throws ICodeArray.CodeTooSmallError {
         
     	ProcAddr=new HashMap<>();
     	
@@ -137,15 +137,28 @@ public class Codegenerator {
     private void genCallProc(ImlComposite g) {
     	
     	String procName=((IdentAttribute)g.getChild(Terminal.IDENT).getToken().getAttribute()).value;
+		 
+    	int offset=0;
+		 if(currentst!=globalst)
+			 offset=3;	
     	
     	
-    	
-    	
+    	for (int i = 0; i < currentst.getSize(); i++) {
+			 Symbol array_element = currentst.get(i);
+			 if(array_element.isGlobal) {
+				 ar.add(new IInstructions.LoadAddrRel( array_element.location  +offset));				 
+				 
+				 if(offset!=0)
+					 ar.add(new IInstructions.Deref());		 
+				 
+			 }
+		}    	
     	ImlComponent m = g.getChild("exprList");
     	for(int i=0;i<m.size();i++) {
     			genExpr(m.getChild(i));
     			
     	}
+
     	
     	
     	ar.add(new IInstructions.Call( ProcAddr.get(   procName  )  ));
@@ -291,7 +304,9 @@ public class Codegenerator {
     	int offset=currentst==globalst?0:3;
     	IdentAttribute x = ((Token.IdentAttribute) child.getToken().getAttribute());
     	String p = x.value;
-    	System.out.println("finding "+p);
+    	System.out.println("finding "+p+" in "+currentst.tableName);
+    	System.out.println( currentst.get(p));
+    	
     	return currentst.get(p).location+offset;
     }
 }

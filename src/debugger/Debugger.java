@@ -26,7 +26,8 @@ import ch.fhnw.lederer.virtualmachineFS2015.Data;
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions;
 import ch.fhnw.lederer.virtualmachineFS2015.IVirtualMachine.ExecutionError;
 import ch.fhnw.lederer.virtualmachineFS2015.VirtualMachine;
-import imlcompiler.Codegenerator.Codegenerator;
+import imlcompiler.Codegenerator.CodeGenerator;
+import imlcompiler.Codegenerator.Codegenerator_old;
 import imlcompiler.Scanner.Token;
 
 public class Debugger extends JFrame {
@@ -126,7 +127,7 @@ public class Debugger extends JFrame {
 	private String refCode;
 	private JTextArea outPut;
 
-	public Debugger(int memorySize, Codegenerator codegenerator, String code) {
+	public Debugger(int memorySize, CodeGenerator codegenerator, String code) {
 		super("Tupel Debugger");
 
 		this.setMinimumSize(new Dimension(1920, 1080));
