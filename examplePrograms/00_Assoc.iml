@@ -1,7 +1,8 @@
 program Assoc()
 global x:int32
 do
-  debugin x init ;
+  //debugin x init ;
+  x init := 1;
 
   debugout x - (x - x) ;
   debugout (x - x) - x ;
