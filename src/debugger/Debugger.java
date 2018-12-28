@@ -198,7 +198,19 @@ public class Debugger extends JFrame {
 		step = new JButton("Start");
 		step.addActionListener(new Step());
 
+		JButton runB = new JButton("Run");
+		runB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				Timer timer = new Timer(400, this);
+				timer.start();
+				step.doClick();
+			}
+		});
+
 		DebugPanel.add(step);
+		DebugPanel.add(runB);
 
 		this.jCode = new DefaultListModel<CodeLine>();
 		this.jAssembly = new DefaultListModel<IInstructions.IInstr>();
@@ -411,4 +423,5 @@ public class Debugger extends JFrame {
 
 		}
 	}
+
 }
