@@ -1,12 +1,12 @@
 package imlcompiler.Parser;
 
 import imlcompiler.Scanner.Token;
+import imlcompiler.Scanner.Token.Terminal;
 
 import java.util.Iterator;
 
 public class ImlItem extends ImlComponent{
 
-    Token token;
 
     Node<String, ImlComponent > element;
 
@@ -16,9 +16,7 @@ public class ImlItem extends ImlComponent{
         element = new Node(this.token.getTerminal().toString(), this.token);
     }
 
-    public Token getToken(){
-        return this.token;
-    }
+
 
     public void print(){
         System.out.println(token.getTerminal());
@@ -37,7 +35,7 @@ public class ImlItem extends ImlComponent{
     }
     public boolean destructable() {
         Token.Terminal _token = this.token.getTerminal();
-        
+
       if(token.isOperator()) {
       	return true;
       
@@ -52,11 +50,12 @@ public class ImlItem extends ImlComponent{
           case LBRACK:
           case RBRACK:
           case ENDFUN:
-          //case ENDPROC:
+          case ENDPROC:
           case ENDPROGRAM:
           case ENDWHILE:
           case ENDIF:
-          //case DO:
+          case DO:
+          case INIT:	  
               return true;
           default: return false;
       }

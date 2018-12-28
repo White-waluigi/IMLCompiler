@@ -1,12 +1,19 @@
 package imlcompiler.Parser;
 
 import imlcompiler.Parser.treeVisualisation.Tree;
+import imlcompiler.Scanner.Token;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public abstract class ImlComponent implements Tree {
 
+	Token token;
+    public Token getToken(){
+        return this.token;
+    }
+    
+    
     public void add(ImlComponent imlComponent){
         throw new UnsupportedOperationException();
     }
@@ -18,7 +25,10 @@ public abstract class ImlComponent implements Tree {
     public ImlComponent getChild(int i){
         throw new UnsupportedOperationException();
     }
-
+    public ImlComponent getChild(String n){
+        throw new UnsupportedOperationException();
+    }
+    
     public ImlComponent toAbstract() { throw new UnsupportedOperationException(); }
 
     public int size(){
@@ -82,6 +92,10 @@ public abstract class ImlComponent implements Tree {
         }
 
     }
+
+
+
+
 
 
 

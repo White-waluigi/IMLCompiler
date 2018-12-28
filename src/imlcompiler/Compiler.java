@@ -1,13 +1,22 @@
 package imlcompiler;
 
+import imlcompiler.Codegenerator.Codegenerator;
 import imlcompiler.Parser.ImlComponent;
 import imlcompiler.Parser.Parser;
+import imlcompiler.Parser.treeVisualisation.TreeEditor;
 import imlcompiler.Parser.treeVisualisation.Wrapper;
 import imlcompiler.Scanner.Scanner;
 import imlcompiler.Scanner.TokenList;
 
+import java.awt.Frame;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
+import TreeList.TreeList;
+import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
+import debugger.Debugger;
 import imlcompiler.ScopeChecker.ScopeChecker;
 import imlcompiler.Symboltable.SymbolMap;
 
@@ -21,7 +30,7 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/01_testTupel1.iml";
+        	file="examplePrograms/asm1.iml";
         }else {
         	file=args[0];
         }
@@ -50,17 +59,17 @@ public class Compiler {
         ImlComponent concreteSyntaxTree = parser.parse(wrapper);
 
         //Visualisation of Syntax Tree
-        /*
-        Frame f = new TreeEditor((Tree<String, ?>) concreteSyntaxTree, wrapper);
-        f.setSize(800, 800);
-        f.setVisible(true);
-        */
+        
+//        Frame f = new TreeEditor((Tree<String, ?>) concreteSyntaxTree, wrapper);
+//        f.setSize(800, 800);
+//        f.setVisible(true);
+        
 
         System.out.println("---> Converting to Abstract Syntax Tree");
         ImlComponent abstractSyntaxTree = concreteSyntaxTree.toAbstract();
         System.out.println("---> AST Done");
         //new Visualization of Syntax Trees
-        //TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
+        TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
         
         //Visualisation of Syntax Tree
 //        
@@ -99,26 +108,30 @@ public class Compiler {
         }
         symbolTables.print();
 
-        /*
+        
         Codegenerator codegenerator = null;
         try {
-            codegenerator = new Codegenerator(abstractSyntaxTree);
-        } catch (ICodeArray.CodeTooSmallError codeTooSmallError) {
+            codegenerator = new Codegenerator(abstractSyntaxTree,symbolTables);
+        } catch (CodeArray.CodeTooSmallError codeTooSmallError) {
             codeTooSmallError.printStackTrace();
         }
 
-        CodeArray codeArray = codegenerator.getCode();
+        //CodeArray codeArray = codegenerator.getCode();
 
-        int storeSize = codegenerator.getStoreSize();
+        
+//        int storeSize = codegenerator.getStoreSize();
+//
+//        try {
+//
+//            VirtualMachine vm = new VirtualMachine(codeArray, storeSize,false);
+//
+//        } catch (IVirtualMachine.ExecutionError executionError) {
+//            executionError.printStackTrace();
+//        }
 
-        try {
 
-            VirtualMachine vm = new VirtualMachine(codeArray, storeSize,false);
-
-        } catch (IVirtualMachine.ExecutionError executionError) {
-            executionError.printStackTrace();
-        }
-
-        */
+        Debugger d=new Debugger(512, codegenerator,file);
+        d.setVisible(true);
+        
     }
 }
