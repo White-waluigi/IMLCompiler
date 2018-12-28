@@ -69,7 +69,10 @@ public class Debugger extends JFrame {
 		int addr=0;
 		for (Data.IBaseData a : dvm.getStore()) {
 			MemoryCell ins = new MemoryCell(a);
-
+			if(dvm.getSp()<addr&&ins.state==State.RESERVED)
+				ins.state = State.FREED;
+					
+					
 			if(watchdog==addr)
 				vall.setText(ins.getValue());
 			addr++;
@@ -97,9 +100,10 @@ public class Debugger extends JFrame {
 		public String text = "";
 		Data.IBaseData parent;
 
+		
 		public MemoryCell(Data.IBaseData a) {
 			state = a != null ? State.RESERVED : State.UNTOUCHED;
-
+			
 			parent = a;
 
 		}
@@ -120,8 +124,9 @@ public class Debugger extends JFrame {
 	private JList jAssL;
 	private JLabel vall;
 	private int watchdog;
+	private String refCode;
 
-	public Debugger(int memorySize, Codegenerator codegenerator) {
+	public Debugger(int memorySize, Codegenerator codegenerator,String code) {
 		super("Tupel Debugger");
 		try {
 			this.setIconImage(ImageIO.read(new File("deb.png")));
@@ -129,6 +134,8 @@ public class Debugger extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		this.refCode=code;
 		memory = new ArrayList<MemoryCell>(memorySize);
 
 		initComponents();
@@ -193,7 +200,12 @@ public class Debugger extends JFrame {
 		DebugPanel.add(vall);
 		DebugPanel.add(jAssL);
 		DebugPanel.add(new JSeparator());
-
+		try {
+			DebugPanel.add(new JEditorPane("file://" + new File(refCode).getAbsolutePath()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
 		// DebugPanel.add(b);
 		// DebugPanel.add(new JSeparator());
 
@@ -249,7 +261,7 @@ public class Debugger extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					new Debugger(1024, new Codegenerator(null)).setVisible(true);
+					new Debugger(1024, new Codegenerator(null, null),"******").setVisible(true);
 				} catch (CodeTooSmallError e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -296,7 +308,7 @@ public class Debugger extends JFrame {
 
 			g.drawString("Memory", 20, 20);
 
-			g.setColor(Color.GREEN);
+			g.setColor(Color.BLUE);
 			g.drawString("Extreme Pointer", 20, 40);
 			g.setColor(Color.PINK);
 			g.drawString("Frame Pointer", 20, 60);
@@ -304,7 +316,7 @@ public class Debugger extends JFrame {
 			g.drawString("Stack Pointer", 20, 80);
 			g.setColor(Color.CYAN);
 			g.drawString("Heap Pointer", 200, 40);
-			g.setColor(Color.BLUE);
+			g.setColor(Color.GREEN);
 			g.drawString("Program Counter", 200, 60);
 
 			int offsetx = 1;
@@ -312,7 +324,7 @@ public class Debugger extends JFrame {
 			for (MemoryCell mc : memory) {
 				g.setColor(mc.state.col);
 				g.fillRect(offsetx * 20, 110 + offsety * 20, 19, 19);
-				g.setColor(Color.CYAN);
+				g.setColor(Color.GREEN);
 				g.drawString(mc.getValue(), offsetx * 20 + 5, (110 + offsety * 20) + 12);
 				offsetx += 1;
 
@@ -331,7 +343,7 @@ public class Debugger extends JFrame {
 			}
 
 			Point a = AddrToPos(dvm.getEp());
-			g.setColor(Color.GREEN);
+			g.setColor(Color.BLUE);
 			g.fillRect(a.x + 0, a.y, 5, 5);
 
 			a = AddrToPos(dvm.getFp());
@@ -347,7 +359,7 @@ public class Debugger extends JFrame {
 			g.fillRect(a.x + 15, a.y, 5, 5);
 
 			a = AddrToPos(dvm.getPc());
-			g.setColor(Color.BLUE);
+			g.setColor(Color.GREEN);
 			g.fillRect(a.x+5, a.y - 25, 6, 6);
 
 		}

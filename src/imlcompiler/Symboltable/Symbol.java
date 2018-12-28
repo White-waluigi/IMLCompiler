@@ -6,10 +6,10 @@ public class Symbol {
 
     //public enum Type{ BOOL, INT32, TUP};
 
-    String name;
-    String type;
-    int tupSize;
-    int location;
+    public String name;
+    public String type;
+    public int tupSize;
+    public int location;
 
     public Symbol(String name, String type, int tupSize, int location) {
         this.name = name;

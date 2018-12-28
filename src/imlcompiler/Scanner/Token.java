@@ -4,7 +4,7 @@ package imlcompiler.Scanner;
 public class Token {
 	public static class Attribute{}
 	public static class IdentAttribute extends Attribute{
-		String value;	
+		public String value;	
 		public IdentAttribute(String value) {
 			super();
 			this.value = value;
@@ -14,7 +14,7 @@ public class Token {
 		}
 	};
 	public static class IntAttribute extends Attribute{
-		int value;
+		public int value;
 		public IntAttribute(int value) {
 			super();
 			this.value = value;

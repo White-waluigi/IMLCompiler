@@ -26,7 +26,20 @@ public class SymbolMap {
         }
         else this.hashMap.put(name, new Symbol(name, type, tupSize, location));
     }
-
+    
+    public int getSize() {
+    	int r=0;
+        Iterator it = hashMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            r+=((Symbol)pair.getValue()).tupSize!=-1?((Symbol)pair.getValue()).tupSize:1;
+          
+        }
+    	return r;
+    }
+    public Symbol get(String s) {
+    	return hashMap.get(s);
+    }
     public void print(){
         System.out.println("Symboltable: " + tableName);
         Comparator<Symbol> valueComparator = new Comparator<Symbol>() {

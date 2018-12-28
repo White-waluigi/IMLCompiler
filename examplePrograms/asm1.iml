@@ -1,0 +1,5 @@
+program test1(a :int32,b :int32)
+  do
+    a init := 4 divE (4 divE 4);
+    b init := a * 3
+endprogram

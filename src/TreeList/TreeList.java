@@ -85,7 +85,7 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 	public Wrapper wrapper;
 	private JTree sree;
 
-	public TreeList(ImlComponent t,ImlComponent s, Wrapper wrapper,String file) {
+	public TreeList(ImlComponent t, ImlComponent s, Wrapper wrapper, String file) {
 
 		super(new GridLayout(1, 0));
 
@@ -95,7 +95,7 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 		list(top, t, 0);
 		DefaultMutableTreeNode sop = new DefaultMutableTreeNode("abstract (syntax)");
 		list(sop, s, 0);
-		
+
 		// Create a tree that allows one selection at a time.
 		tree = new JTree(top);
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -104,9 +104,9 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 
 		expandAllNodes(tree, 0, tree.getRowCount());
 		expandAllNodes(sree, 0, tree.getRowCount());
-		
+
 		// Listen for when the selection changes.
-		//tree.addTreeSelectionListener(this);
+		// tree.addTreeSelectionListener(this);
 
 		if (playWithLineStyle) {
 			System.out.println("line style = " + lineStyle);
@@ -117,12 +117,11 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 		JScrollPane treeView = new JScrollPane(tree);
 		JScrollPane sreeView = new JScrollPane(sree);
 
-		
 		// Create the HTML viewing pane.
 		try {
-	        File f = new File(file);
-	        System.out.println("file://"+f.getAbsolutePath());
-			htmlPane = new JEditorPane("file://"+f.getAbsolutePath());
+			File f = new File(file);
+			//System.out.println("file://" + f.getAbsolutePath());
+			htmlPane = new JEditorPane("file://" + f.getAbsolutePath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -135,22 +134,19 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setLeftComponent(treeView);
 		splitPane.setRightComponent(sreeView);
-		
-
 
 		Dimension minimumSize = new Dimension(100, 50);
 		htmlView.setMinimumSize(minimumSize);
 		treeView.setMinimumSize(minimumSize);
-		
-		//splitPane.setDividerLocation(200);
-		
-		//splitPane.setPreferredSize(new Dimension(500, 300));
 
-		
+		// splitPane.setDividerLocation(200);
+
+		// splitPane.setPreferredSize(new Dimension(500, 300));
+
 		JSplitPane mainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		mainPane.setTopComponent(splitPane);
 		mainPane.setBottomComponent(htmlView);
-		
+
 		// Add the split pane to this panel.
 		add(mainPane);
 	}
@@ -198,20 +194,16 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 
 	public void list(DefaultMutableTreeNode top, ImlComponent t, int depth) {
 		depth++;
-		String name=t.getName();
-		if(t instanceof ImlItem) {
-			if(((ImlItem)t).getToken().getAttribute()!=null) {
-				 name+=" "+((ImlItem) t).getToken().getAttribute().toString();
-			}
-		}
-			
+		String name = t.getName();
+		if ((t).getToken() != null)
+			name = "*" + (t).getToken();
+
 		DefaultMutableTreeNode category = new DefaultMutableTreeNode(name);
 		top.add(category);
 		if ((t instanceof ImlComposite)) {
 
-			for(ImlComponent a: ((ImlComposite)t).getImlComponents()) {
-			list(category, a, depth);
-
+			for (ImlComponent a : ((ImlComposite) t).getImlComponents()) {
+				list(category, a, depth);
 
 			}
 		}
@@ -222,7 +214,7 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 	 * Create the GUI and show it. For thread safety, this method should be invoked
 	 * from the event dispatch thread.
 	 */
-	private static void createAndShowGUI(ImlComponent t,ImlComponent s, Wrapper wrapper,String file) {
+	private static void createAndShowGUI(ImlComponent t, ImlComponent s, Wrapper wrapper, String file) {
 		if (useSystemLookAndFeel) {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -237,27 +229,29 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 		frame.setSize(1000, 1000);
 
 		// Add content to the window.
-		frame.add(new TreeList(t,s, wrapper,file));
+		frame.add(new TreeList(t, s, wrapper, file));
 
 		// Display the window.
-		//frame.pack();
+		// frame.pack();
 		frame.setVisible(true);
 	}
-	private void expandAllNodes(JTree tree, int startingIndex, int rowCount){
-	    for(int i=startingIndex;i<rowCount;++i){
-	        tree.expandRow(i);
-	    }
 
-	    if(tree.getRowCount()!=rowCount){
-	        expandAllNodes(tree, rowCount, tree.getRowCount());
-	    }
+	private void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
+		for (int i = startingIndex; i < rowCount; ++i) {
+			tree.expandRow(i);
+		}
+
+		if (tree.getRowCount() != rowCount) {
+			expandAllNodes(tree, rowCount, tree.getRowCount());
+		}
 	}
-	public static void startNew(ImlComponent t,ImlComponent s, Wrapper wrapper,String file) {
+
+	public static void startNew(ImlComponent t, ImlComponent s, Wrapper wrapper, String file) {
 		// Schedule a job for the event dispatch thread:
 		// creating and showing this application's GUI.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				createAndShowGUI(t,s, wrapper,file);
+				createAndShowGUI(t, s, wrapper, file);
 			}
 		});
 	}
