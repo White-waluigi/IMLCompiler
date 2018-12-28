@@ -1,4 +1,4 @@
-package testing;
+package fibbonacci;
 
 public class fibonacci{
 

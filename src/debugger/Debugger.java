@@ -138,11 +138,13 @@ public class Debugger extends JFrame {
 		this.refCode = code;
 		memory = new ArrayList<MemoryCell>(memorySize);
 
-		initComponents();
+		initComponents(codegenerator.getCode().getSize());
 
 		for (int i = 0; i < codegenerator.getCode().getSize(); i++) {
 			jAssembly.addElement(codegenerator.getCode().get(i));
 		}
+
+		//initComponents();
 
 		try {
 			dvm = new VirtualMachine(codegenerator.getCode(), memorySize, true,new PrintDevice() {
@@ -162,7 +164,7 @@ public class Debugger extends JFrame {
 
 	}
 
-	private void initComponents() {
+	private void initComponents(int numberOfInstr) {
 
 		// we want a custom Panel2, not a generic JPanel!
 		jPanel2 = new MemoryView();
@@ -199,12 +201,29 @@ public class Debugger extends JFrame {
 		this.jCode = new DefaultListModel<CodeLine>();
 		this.jAssembly = new DefaultListModel<IInstructions.IInstr>();
 
-		jAssL = new JList<>(jAssembly);
+		this.jAssL = new JList<>(this.jAssembly);
 		// JList<IInstructions.IInstr> b=new JList<>(jAssembly);
+
+		Integer[] numbers = new Integer[numberOfInstr];
+		for(int i = 0 ; i < numberOfInstr; i++){
+			numbers[i] = i;
+		}
+		DefaultListModel<Integer> integerDefaultListModel = new DefaultListModel<>();
+		for(Integer i : numbers) integerDefaultListModel.addElement(i);
+		JList<Integer> jList = new JList<>(integerDefaultListModel);
+		jList.setFixedCellWidth(20);
+
+		JPanel instructionPanel = new JPanel();
+		instructionPanel.setLayout(new BoxLayout(instructionPanel, BoxLayout.X_AXIS));
+		instructionPanel.add(jList);
+		instructionPanel.add(this.jAssL);
+
 
 		vall = new JLabel("None");
 		DebugPanel.add(vall);
-		DebugPanel.add(jAssL);
+		//DebugPanel.add(jAssL);
+		//DebugPanel.add(jList);
+		DebugPanel.add(instructionPanel);
 		DebugPanel.add(new JSeparator());
 
 		try (BufferedReader br = new BufferedReader(new FileReader(refCode))) {
@@ -290,6 +309,7 @@ public class Debugger extends JFrame {
 	private DefaultListModel<IInstructions.IInstr> jAssembly;
 	private DefaultListModel<CodeLine> jCode;
 	private JButton step;
+
 	// End of variables declaration
 
 	// This class name is very confusing, since it is also used as the
