@@ -1,0 +1,6 @@
+program test4()
+    global
+        x: int32
+    do
+        x:= 4
+endprogram

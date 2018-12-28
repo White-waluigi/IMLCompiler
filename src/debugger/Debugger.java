@@ -19,9 +19,6 @@ import javax.management.RuntimeErrorException;
 import javax.swing.*;
 import javax.swing.border.*;
 
-import com.sun.imageio.spi.InputStreamImageInputStreamSpi;
-import com.sun.org.apache.bcel.internal.generic.Instruction;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.IntData;
 
 import ch.fhnw.lederer.virtualmachineFS2015.Data.IBaseData;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray.CodeTooSmallError;
