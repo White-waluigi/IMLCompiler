@@ -59,4 +59,13 @@ public class SymbolMap {
             if(map != null) map.print();
     }
 
+    public void addGlobals(SymbolMap symbolMap){
+        for (Symbol s: symbolMap.getMap().values()){
+            this.hashMap.put(s.name + " (global)", s);
+        }
+    }
+
+    private HashMap<String, Symbol> getMap(){
+        return hashMap;
+    }
 }

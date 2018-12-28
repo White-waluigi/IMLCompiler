@@ -3,6 +3,7 @@ package imlcompiler.ScopeChecker;
 import imlcompiler.Parser.ImlComponent;
 import imlcompiler.Parser.ImlItem;
 import imlcompiler.Scanner.Token;
+import imlcompiler.Symboltable.Symbol;
 import imlcompiler.Symboltable.SymbolMap;
 import imlcompiler.Symboltable.Type;
 
@@ -65,6 +66,7 @@ public class ScopeChecker {
                         identifier = token.getDebugString();
                         if (previousToken == PROC || previousToken == FUN){
                             SymbolMap newMap = new SymbolMap(identifier, currentMap);
+                            newMap.addGlobals(currentMap);
                             currentMap.next.add(newMap);
                             currentMap = newMap;
                         }
