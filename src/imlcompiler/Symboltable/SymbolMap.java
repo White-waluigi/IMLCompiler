@@ -19,12 +19,12 @@ public class SymbolMap {
         this.next = new ArrayList<>();
     }
 
-    public void addSymbol(String name, String type, int tupSize, int location) {
+    public void addSymbol(String name, String type, int tupSize, int location, boolean isRef) {
         if (this.hashMap.containsKey(name)) {
             System.out.println("ERROR: " +  name + " already in Symboltable " + tableName );
             throw new ScopeCheckerErrorException(name + " already in Symboltable " + tableName);
         }
-        else this.hashMap.put(name, new Symbol(name, type, tupSize, location));
+        else this.hashMap.put(name, new Symbol(name, type, tupSize, location, isRef));
     }
     
     public int getSize() {
@@ -53,7 +53,8 @@ public class SymbolMap {
         List<Symbol> listOfEntries = new ArrayList<Symbol>(hashMap.values());
         Collections.sort(listOfEntries, valueComparator);
         for(Symbol s : listOfEntries){
-            System.out.println("{ " + s.name + " :  type: " + s.type + ", tupelsize: " + s.tupSize + " ,location:  " + s.location + " }");
+            System.out.println("{ " + s.name + " :  type: " + s.type + ", tupelsize: " + s.tupSize
+                    + " ,location:  " + s.location + ", isRef: " +s.isRef+" }");
         }
         for (SymbolMap map : next)
             if(map != null) map.print();
