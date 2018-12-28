@@ -10,12 +10,14 @@ public class Symbol {
     public String type;
     public int tupSize;
     public int location;
+    public boolean isRef;
 
-    public Symbol(String name, String type, int tupSize, int location) {
+    public Symbol(String name, String type, int tupSize, int location, boolean isRef) {
         this.name = name;
         this.type = type;
         this.tupSize = tupSize;  //default: -1
         this.location = location;
+        this.isRef = isRef;
     }
 
     public String toString(){

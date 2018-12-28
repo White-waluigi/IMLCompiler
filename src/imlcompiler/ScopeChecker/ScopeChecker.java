@@ -6,10 +6,10 @@ import imlcompiler.Scanner.Token;
 import imlcompiler.Symboltable.Symbol;
 import imlcompiler.Symboltable.SymbolMap;
 import imlcompiler.Symboltable.Type;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import static imlcompiler.Scanner.Token.EnumAttribute.REF;
 import static imlcompiler.Scanner.Token.Terminal.*;
 
 public class ScopeChecker {
@@ -37,6 +37,7 @@ public class ScopeChecker {
         int tupSize = - 1;
 
         Type currentType = null;
+        boolean isRef = false;
 
         while (iterator.hasNext()) {
 
@@ -55,7 +56,7 @@ public class ScopeChecker {
                     case GLOBAL:
                         //currentMap = symbolTableGlobal;
                         if (isTuple && previousToken == TYPE ){
-                            currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location);
+                            currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef);
                             isTuple = false;
                             location += currentType.size();
                             currentType = null;
@@ -66,7 +67,7 @@ public class ScopeChecker {
                         identifier = token.getDebugString();
                         if (previousToken == PROC || previousToken == FUN){
                             SymbolMap newMap = new SymbolMap(identifier, currentMap);
-                            newMap.addGlobals(currentMap);
+                            //newMap.addGlobals(currentMap);
                             currentMap.next.add(newMap);
                             currentMap = newMap;
                         }
@@ -78,8 +79,9 @@ public class ScopeChecker {
                     case TYPE:
                         type = token.getDebugString();
                         if (!isTuple) {
-                            currentMap.addSymbol(identifier, type, tupSize, location++);
+                            currentMap.addSymbol(identifier, type, tupSize, location++, isRef);
                             type = null;
+                            isRef = false;
                         }
                         else {
                             currentType.add(type);
@@ -97,12 +99,18 @@ public class ScopeChecker {
                         currentType = new Type();
                         previousToken = TUP;
                         break;
+                    case MECHMODE:
+                        if (((Token.OtherAttribute)token.getAttribute()).value == REF){
+                            isRef = true;
+                        }
+                        break;
                     default:
                         if (isTuple && previousToken == TYPE && token.getTerminal() != TYPE){
-                            currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location);
+                            currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef);
                             isTuple = false;
                             location += currentType.size();
                             currentType = null;
+                            isRef = false;
                         }
                         previousToken = token.getTerminal();
                         break;

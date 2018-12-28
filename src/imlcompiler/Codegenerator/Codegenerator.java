@@ -165,8 +165,8 @@ public class Codegenerator {
 
 		ar.add(new IInstructions.AllocBlock(currentst.getSize()));
         for(int i=0;i<currentst.getSize();i++) {
-        	ar.add(new IInstructions.LoadAddrRel(currentst.get(s)));
-        	ar.add(new IInstructions.LoadAddrRel(i-currentst.getSize()-3));
+        	ar.add(new IInstructions.LoadAddrRel(currentst.get(i).location+offset));
+        	ar.add(new IInstructions.LoadAddrRel(i-currentst.getSize()));
         	ar.add(new IInstructions.Deref());
         	
         }
