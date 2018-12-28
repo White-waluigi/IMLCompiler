@@ -5,6 +5,8 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.CompilerException;
+
 import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions;
@@ -16,6 +18,7 @@ import imlcompiler.Scanner.Token.EnumAttribute;
 import imlcompiler.Scanner.Token.IdentAttribute;
 import imlcompiler.Scanner.Token.OtherAttribute;
 import imlcompiler.Scanner.Token.Terminal;
+import imlcompiler.Symboltable.Symbol;
 import imlcompiler.Symboltable.SymbolMap;
 
 public class Codegenerator {
@@ -27,8 +30,10 @@ public class Codegenerator {
     private SymbolMap currentst;
     private SymbolMap globalst;
 
-    Map<String, Long> ProcAddr;
+    Map<String, Integer> ProcAddr;
     long freeProcSpace=0;
+	private int curPrStart=-1;
+	
     public Codegenerator(ImlComponent ast, SymbolMap symbolTables) throws ICodeArray.CodeTooSmallError {
         
     	ProcAddr=new HashMap<>();
@@ -37,6 +42,9 @@ public class Codegenerator {
         this.globalst = symbolTables;
 
         ar = new ArrayList<>();
+        
+        //PLACE HOLDER WILL BE DELETED
+        ar.add(new IInstructions.Stop());
 
         if (ast != null)
             genRoot(ast);
@@ -77,8 +85,10 @@ public class Codegenerator {
 
         }
 
-        this.codeArray = new CodeArray(ar.size());
+        ar.remove(0);
+        this.codeArray = new CodeArray(ar.size()+1);
         int i = 0;
+        codeArray.put(i++,new IInstructions.UncondJump(curPrStart));
         for (IInstr a : ar) {
             codeArray.put(i++, a);
         }
@@ -87,16 +97,21 @@ public class Codegenerator {
 
     private void genRoot(ImlComponent ast) {
     	currentst=globalst;
-    	genCpsCmd(ast);
-        ar.add(new IInstructions.Stop());
-        
-        
+
         for(int i=0;i<ast.size();i++) {
         	if(ast.getChild(i).getToken()!=null&&ast.getChild(i).getToken().getTerminal()==Terminal.PROC) {
         		genProc((ImlComposite) ast.getChild(i));
         	}
         	
         }
+        
+    	currentst=globalst;
+
+    	genCpsCmd(ast);
+        ar.add(new IInstructions.Stop());
+        
+        
+
 
     }
     private void genCpsCmd(ImlComponent ast) {
@@ -108,32 +123,68 @@ public class Codegenerator {
         ImlComposite g = null;
         for (int i = 0; i < m.size(); i++) {
             g = (ImlComposite) m.getChild(i);
-            if (g.getToken().getTerminal() == Terminal.BECOMES) {
+            if(g.getToken()==null) {
+            	throw new CodeGenerationException("empty command");
+            }else if (g.getToken().getTerminal() == Terminal.BECOMES) {
                 genAssign(g);
             }
             else if (g.getToken().getTerminal() == Terminal.DEBUGOUT) {
                 genDebugout(g);
+            }else if (g.getToken().getTerminal() == Terminal.CALL) {
+            	genCallProc(g);
             }
         }
     }
 
-    private void genDebugout(ImlComposite g) {
+    private void genCallProc(ImlComposite g) {
+    	
+    	String procName=((IdentAttribute)g.getChild(Terminal.IDENT).getToken().getAttribute()).value;
+    	
+    	
+    	
+    	
+    	ImlComponent m = g.getChild("exprList");
+    	for(int i=0;i<m.size();i++) {
+    			genExpr(m.getChild(i));
+    	}
+    	
+    	
+    	ar.add(new IInstructions.Call( ProcAddr.get(   procName  )  ));
+
+
+	}
+
+	private void genDebugout(ImlComposite g) {
         genExpr(g.getChild(0));
         ar.add(new IInstructions.OutputInt("Out:"));
 	}
 
     
 	private void reserveSymbolTable() {
-        ar.add(new IInstructions.AllocBlock(currentst.getSize()));
+    	int offset=currentst==globalst?0:3;
+
+		ar.add(new IInstructions.AllocBlock(currentst.getSize()));
+        for(int i=0;i<currentst.getSize();i++) {
+        	ar.add(new IInstructions.LoadAddrRel(currentst.get(s)));
+        	ar.add(new IInstructions.LoadAddrRel(i-currentst.getSize()-3));
+        	ar.add(new IInstructions.Deref());
+        	
+        }
     }
 
     private void genAssign(ImlComposite g) {
-        ar.add(new IInstructions.LoadAddrRel(
-                currentst.get(((IdentAttribute) g.getChild(0).getToken().getAttribute()).value).location));
+    	
+
+        ar.add(new IInstructions.LoadAddrRel(getLocation(g.getChild(0))));
         genExpr(g.getChild(1));
 
         ar.add(new IInstructions.Store());
     }
+    
+    
+    
+    
+    
 
     private void genExpr(ImlComponent child) {
         if (child instanceof ImlComposite)
@@ -147,11 +198,12 @@ public class Codegenerator {
     }
 
     private void genIdentLoad(ImlComponent child) {
-        ar.add(new IInstructions.LoadAddrRel(
-                currentst.get(((Token.IdentAttribute) child.getToken().getAttribute()).value).location));
+        ar.add(new IInstructions.LoadAddrRel(getLocation(child)));
         ar.add(new IInstructions.Deref());
     }
 
+    
+    
     private void genLiteral(ImlComponent child) {
         int val = ((Token.IntAttribute) child.getToken().getAttribute()).value;
         ar.add(new IInstructions.LoadImInt(val));
@@ -162,11 +214,11 @@ public class Codegenerator {
 
         IInstructions.IInstr in = null;
 
+        int parameterid=globalst.getSize();
         genExpr(child.getChild(0));
         for (int i = 1; i < child.size(); i++) {
             genExpr(child.getChild(i));
             genOperator(child);
-
         }
 
     }
@@ -195,7 +247,7 @@ public class Codegenerator {
 
     
     public void genProc(ImlComposite c) {
-    	String name=((IdentAttribute)c.getChild(0).getToken().getAttribute()).value;
+    	String name=((IdentAttribute)c.getChild(Terminal.IDENT).getToken().getAttribute()).value;
     	
     	ArrayList<SymbolMap> t = currentst.next;
     	currentst=null;
@@ -212,9 +264,13 @@ public class Codegenerator {
     	if(currentst==null)
     		throw new CodeGenerationException("Symboltable for: "+name +" not found");
     	
-    	ProcAddr.put(name, (long) ar.size());
+    	ProcAddr.put(name, (int) ar.size());
 
     	genCpsCmd(c);
+    	
+        ar.add(new IInstructions.Return(0));
+
+        curPrStart=ar.size();
     }
     
     public CodeArray getCode() {
@@ -225,4 +281,12 @@ public class Codegenerator {
         return 100;
     }
 
+    private int getLocation(ImlComponent child) {
+    	
+    	int offset=currentst==globalst?0:3;
+    	IdentAttribute x = ((Token.IdentAttribute) child.getToken().getAttribute());
+    	String p = x.value;
+    	System.out.println("finding "+p);
+    	return currentst.get(p).location+offset;
+    }
 }

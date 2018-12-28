@@ -70,7 +70,7 @@ public class Debugger extends JFrame {
 		int addr = 0;
 		for (Data.IBaseData a : dvm.getStore()) {
 			MemoryCell ins = new MemoryCell(a);
-			if (dvm.getSp() < addr && ins.state == State.RESERVED)
+			if (dvm.getSp() <= addr && ins.state == State.RESERVED)
 				ins.state = State.FREED;
 
 			if (watchdog == addr)

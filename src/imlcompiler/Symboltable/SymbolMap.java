@@ -40,6 +40,9 @@ public class SymbolMap {
     public Symbol get(String s) {
     	return hashMap.get(s);
     }
+    public Symbol get(int s) {
+    	return (Symbol) hashMap.values().toArray()[s];
+    }
     public void print(){
         System.out.println("Symboltable: " + tableName);
         Comparator<Symbol> valueComparator = new Comparator<Symbol>() {

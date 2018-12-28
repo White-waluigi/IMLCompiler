@@ -214,6 +214,7 @@ public class Token {
 	public boolean isDecl() {
 		switch (terminal) {
 		case PROC:
+		case CALL:
 
 			
 		return true;

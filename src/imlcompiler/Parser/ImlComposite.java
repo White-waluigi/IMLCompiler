@@ -42,6 +42,14 @@ public class ImlComposite extends ImlComponent {
 
 	public ImlComponent getChild(int i) {
 		return imlComponents.get(i);
+	}	
+	public ImlComponent getChild(Terminal t) {
+		for(ImlComponent x:imlComponents) {
+			if(x.getToken()!=null&& x.getToken().getTerminal()==t) {
+				return x;
+			}
+		}
+		throw new CodeGenerationException("Terminal "+t+" not found in "+getName());
 	}
 	public ImlComponent getChild(String s) {
 		for(ImlComponent a:imlComponents) {

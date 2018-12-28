@@ -54,7 +54,6 @@ public class ImlItem extends ImlComponent{
           case ENDPROGRAM:
           case ENDWHILE:
           case ENDIF:
-          case PROC:
           case DO:
           case INIT:	  
               return true;
