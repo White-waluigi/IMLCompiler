@@ -5,9 +5,13 @@ import java.awt.event.*;
 import java.awt.font.NumericShaper.Range;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -65,15 +69,14 @@ public class Debugger extends JFrame {
 
 	public void rebuildView() {
 		memory.clear();
-		
-		int addr=0;
+
+		int addr = 0;
 		for (Data.IBaseData a : dvm.getStore()) {
 			MemoryCell ins = new MemoryCell(a);
-			if(dvm.getSp()<addr&&ins.state==State.RESERVED)
+			if (dvm.getSp() < addr && ins.state == State.RESERVED)
 				ins.state = State.FREED;
-					
-					
-			if(watchdog==addr)
+
+			if (watchdog == addr)
 				vall.setText(ins.getValue());
 			addr++;
 			memory.add(ins);
@@ -100,10 +103,9 @@ public class Debugger extends JFrame {
 		public String text = "";
 		Data.IBaseData parent;
 
-		
 		public MemoryCell(Data.IBaseData a) {
 			state = a != null ? State.RESERVED : State.UNTOUCHED;
-			
+
 			parent = a;
 
 		}
@@ -126,7 +128,7 @@ public class Debugger extends JFrame {
 	private int watchdog;
 	private String refCode;
 
-	public Debugger(int memorySize, Codegenerator codegenerator,String code) {
+	public Debugger(int memorySize, Codegenerator codegenerator, String code) {
 		super("Tupel Debugger");
 		try {
 			this.setIconImage(ImageIO.read(new File("deb.png")));
@@ -134,8 +136,8 @@ public class Debugger extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		this.refCode=code;
+
+		this.refCode = code;
 		memory = new ArrayList<MemoryCell>(memorySize);
 
 		initComponents();
@@ -200,20 +202,27 @@ public class Debugger extends JFrame {
 		DebugPanel.add(vall);
 		DebugPanel.add(jAssL);
 		DebugPanel.add(new JSeparator());
-		try {
-			DebugPanel.add(new JEditorPane("file://" + new File(refCode).getAbsolutePath()));
+
+		try (BufferedReader br = new BufferedReader(new FileReader(refCode))) {
+			StringBuffer stringBuffer = new StringBuffer();
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				stringBuffer.append(line+"\n");
+			}
+			DebugPanel.add(new JTextArea(new String(stringBuffer.toString())));
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		// DebugPanel.add(b);
 		// DebugPanel.add(new JSeparator());
 
-		JPanel main = new JPanel();
-		main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
+		JSplitPane main = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
-		main.add(jPanel2);
-		main.add(DebugPanel);
+		main.setLeftComponent(jPanel2);
+		main.setRightComponent(DebugPanel);
 		this.add(main);
 
 		pack();
@@ -227,18 +236,18 @@ public class Debugger extends JFrame {
 		int offsetx = 1;
 		int offsety = 1;
 
-		int addr=0;
+		int addr = 0;
 		for (MemoryCell mc : memory) {
 			int ax = evt.getX() - offsetx * 20;
 			int ay = evt.getY() - (110 + offsety * 20);
 
 			if (0 <= ax && ax <= 20 && 0 <= ay && ay <= 20) {
 				this.vall.setText(mc.getValue());
-				watchdog=addr;
+				watchdog = addr;
 				// mc.state=State.FREED;
 			}
 			addr++;
-			
+
 			offsetx += 1;
 
 			if (offsetx > 40) {
@@ -256,19 +265,19 @@ public class Debugger extends JFrame {
 
 	}
 
-	// set ui visible//
-	public static void main(String args[]) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					new Debugger(1024, new Codegenerator(null, null),"******").setVisible(true);
-				} catch (CodeTooSmallError e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	// set ui visible//
+//	public static void main(String args[]) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					new Debugger(1024, new Codegenerator(null, null),"******").setVisible(true);
+//				} catch (CodeTooSmallError e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	// Variables declaration - do not modify
 	private JPanel jPanel2;
@@ -334,12 +343,12 @@ public class Debugger extends JFrame {
 				}
 			}
 			g.setColor(Color.BLACK);
-			for(int i=0;i< tableWidth;i++) {
-				g.drawString(""+(i-1), i * 20 + 5, (110 + 0 * 20) + 12);
+			for (int i = 0; i < tableWidth; i++) {
+				g.drawString("" + (i - 1), i * 20 + 5, (110 + 0 * 20) + 12);
 
 			}
-			for(int i=0;i< 1+memory.size()/tableWidth;i++) {
-				g.drawString(""+(i-1), 0 * 20 + 5, (110 + i * 20) + 12);
+			for (int i = 0; i < 1 + memory.size() / tableWidth; i++) {
+				g.drawString("" + (i - 1), 0 * 20 + 5, (110 + i * 20) + 12);
 			}
 
 			Point a = AddrToPos(dvm.getEp());
@@ -360,7 +369,7 @@ public class Debugger extends JFrame {
 
 			a = AddrToPos(dvm.getPc());
 			g.setColor(Color.GREEN);
-			g.fillRect(a.x+5, a.y - 25, 6, 6);
+			g.fillRect(a.x + 5, a.y - 25, 6, 6);
 
 		}
 	}
