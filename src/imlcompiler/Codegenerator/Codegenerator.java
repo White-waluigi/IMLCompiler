@@ -144,6 +144,7 @@ public class Codegenerator {
     	ImlComponent m = g.getChild("exprList");
     	for(int i=0;i<m.size();i++) {
     			genExpr(m.getChild(i));
+    			
     	}
     	
     	
@@ -167,8 +168,9 @@ public class Codegenerator {
 			return;
 		}
         for(int i=0;i<currentst.getSize();i++) {
+        	System.out.println("directing "+currentst.get(i).name);
         	ar.add(new IInstructions.LoadAddrRel(currentst.get(i).location+3));
-        	ar.add(new IInstructions.LoadAddrRel(i-currentst.getSize()));
+        	ar.add(new IInstructions.LoadAddrRel(currentst.get(i).location-currentst.getSize()));
         	ar.add(new IInstructions.Deref());
         	ar.add(new IInstructions.Store());
         	

@@ -128,6 +128,8 @@ public class Debugger extends JFrame {
 
 	public Debugger(int memorySize, Codegenerator codegenerator, String code) {
 		super("Tupel Debugger");
+
+		this.setMinimumSize(new Dimension(1920, 1080));
 		try {
 			this.setIconImage(ImageIO.read(new File("deb.png")));
 		} catch (IOException e1) {
@@ -226,6 +228,13 @@ public class Debugger extends JFrame {
 		DebugPanel.add(instructionPanel);
 		DebugPanel.add(new JSeparator());
 
+
+		// DebugPanel.add(b);
+		// DebugPanel.add(new JSeparator());
+
+		JPanel codeandoutput=new JPanel();
+		codeandoutput.setLayout(new BoxLayout(codeandoutput, BoxLayout.Y_AXIS));
+
 		try (BufferedReader br = new BufferedReader(new FileReader(refCode))) {
 			StringBuffer stringBuffer = new StringBuffer();
 
@@ -233,21 +242,24 @@ public class Debugger extends JFrame {
 			while ((line = br.readLine()) != null) {
 				stringBuffer.append(line+"\n");
 			}
-			DebugPanel.add(new JTextArea(new String(stringBuffer.toString())));
-			DebugPanel.add(new JLabel("Output:"));
+			codeandoutput.add(new JTextArea(new String(stringBuffer.toString())));
+			codeandoutput.add(new JLabel("Output:"));
 			outPut=new JTextArea(new String());
-			DebugPanel.add(outPut);
+			codeandoutput.add(outPut);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// DebugPanel.add(b);
-		// DebugPanel.add(new JSeparator());
-
+		
+		JSplitPane rmain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		
+		rmain.setRightComponent(codeandoutput);
+		rmain.setLeftComponent(DebugPanel);
+		
 		JSplitPane main = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
 		main.setLeftComponent(jPanel2);
-		main.setRightComponent(DebugPanel);
+		main.setRightComponent(rmain);
 		this.add(main);
 
 		pack();
@@ -325,7 +337,7 @@ public class Debugger extends JFrame {
 
 		public MemoryView() {
 			// set a preferred size for the custom panel.
-			setPreferredSize(new Dimension(450, 840));
+			setMinimumSize(new Dimension(800, 800));
 			setBorder(BorderFactory.createBevelBorder(2));
 		}
 

@@ -4,7 +4,9 @@ global
 	do  	
 		aa:=bb*12;
 		
-		debugout aa
+		debugout aa;
+		
+		call test(aa,bb)
   endproc
   do
     a init := 4 divE (4 divE 4);
