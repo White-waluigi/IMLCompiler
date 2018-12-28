@@ -1,18 +1,15 @@
-program test1(a :int32,b :int32)
+program test1(a :int32)
 global
-  proc test(in aa:int32,in bb:int32)
+  proc test(in aa:int32)
 	do  	
-		aa:=bb*12;
-		
+		aa:=aa+1;		
 		debugout aa;
 		
-		call test(aa,bb)
+		call test(aa)
   endproc
   do
-    a init := 4 divE (4 divE 4);
-    b init := a * 3;
-    
-    call test(a,b);
+	a:=0;
+    call test(a);
     
     debugout 1337
 endprogram

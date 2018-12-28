@@ -57,7 +57,7 @@ public class ImlComposite extends ImlComponent {
 				return a;
 			}
 		}
-		throw new CodeGenerationException(s+" not found in  coimpositor");
+		throw new CodeGenerationException(s+" not found in  composite "+getName());
 	}
 	public ArrayList<ImlComponent> getImlComponents() {
 		return imlComponents;
@@ -99,6 +99,7 @@ public class ImlComposite extends ImlComponent {
 
 		switch (getName()) {
 		case "cpsCmd":
+		case "exprList":	
 			return false;
 		}
 		return true;
