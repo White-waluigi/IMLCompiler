@@ -52,7 +52,7 @@ public class ImlItem extends ImlComponent{
           case ENDFUN:
           case ENDPROC:
           case ENDPROGRAM:
-          case ENDWHILE:
+          //case ENDWHILE:
           case ENDIF:
 
           //case PROC:

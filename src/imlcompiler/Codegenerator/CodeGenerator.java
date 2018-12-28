@@ -9,6 +9,7 @@ import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions;
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions.IInstr;
+import ch.fhnw.lederer.virtualmachineFS2015.IInstructions.UncondJump;
 import imlcompiler.Parser.ImlComponent;
 import imlcompiler.Parser.ImlComposite;
 import imlcompiler.Parser.ImlItem;
@@ -69,6 +70,7 @@ public class CodeGenerator {
 
 		genCpsCmd(ast.getChild("cpsCmd"));
 
+		ar.add(new IInstructions.Stop());
 	}
 
 	private void genCpsCmd(ImlComponent child) {
@@ -85,11 +87,59 @@ public class CodeGenerator {
 			case CALL:
 				genCall(a);
 				break;
+			case IF:
+				genIf(a);
+				break;
+			case WHILE:
+				genWhile(a);
+				break;
 			default:
 				throw new CodeGenerationException("terminal " + a.getToken().getTerminal() + " not valid command");
 
 			}
 		}
+	}
+
+	private void genWhile(ImlComposite a) {
+		int whilearpos=ar.size();
+		genEvalExpression(a.getChild(1));
+		
+		int skiparpos=ar.size();
+		//PLACEHOLDER; DO NOT DELETE!
+		ar.add(new IInstructions.Stop());
+		genCpsCmd(a.getChild(2));
+		
+		
+		ar.add(new UncondJump(whilearpos));
+
+		ar.set(skiparpos, new IInstructions.CondJump(ar.size()));
+		
+	}
+
+	private void genIf(ImlComposite a) {
+
+		
+		
+		genEvalExpression(a.getChild(1));
+		
+		int jumparpos=ar.size();
+		
+		//PLACEHOLDER; DO NOT DELETE!
+		ar.add(new IInstructions.Stop());
+		genCpsCmd(a.getChild(3));
+		
+		int skiparpos=ar.size();
+		
+		//PLACEHOLDER; DO NOT DELETE!
+		ar.add(new IInstructions.Stop());
+		ar.set(jumparpos, new IInstructions.CondJump(ar.size()));
+		
+		
+		genCpsCmd(a.getChild(5));
+		ar.set(skiparpos, new IInstructions.UncondJump(ar.size()));
+
+		
+		
 	}
 
 	private void genCall(ImlComposite a) {
@@ -220,7 +270,19 @@ public class CodeGenerator {
 	}
 
 	private void reserveSpaceGlobal(ImlComponent ast2) {
-		ar.add(new IInstructions.AllocBlock(currentst.getSize()));
+		//todo parameter übernehmen
+		//ar.add(new IInstructions.AllocBlock(currentst.getSize()));
+		for (int i = 0; i < currentst.getSize(); i++) {
+//			if(currentst.get(i).tupSize==-1) {
+				ar.add(new IInstructions.LoadImInt(0));
+//			}else {
+//				for (int j = 0; j < currentst.get(i).tupSize; j++) {
+//					 
+//					ar.add(new IInstructions.LoadImInt(0));
+//
+//				}
+//			}
+		}
 	}
 
 	private void genAllProcs(ImlComponent ast2) {
@@ -243,7 +305,8 @@ public class CodeGenerator {
 		this.ProcAddr.put(name, ar.size());
 
 		genCpsCmd(a.getChild("cpsCmd"));
-
+		ar.add(new IInstructions.Return(0));
+		
 		curPrStart = ar.size();
 	}
 

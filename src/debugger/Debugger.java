@@ -40,6 +40,20 @@ public class Debugger extends JFrame {
 	 */
 	static int ctr = 0;
 
+	
+	public void takestep() {
+		try {
+			int x = dvm.step();
+			if (x != 0)
+				throw new ExecutionError("End of Program reached!");
+
+		} catch (ExecutionError e) {
+			JOptionPane.showMessageDialog(null,
+					"Programm terminatet because:\n\"" + e.getMessage().toString() + "\"", "Done",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+
+	}
 	public class Step implements ActionListener {
 
 		@Override
@@ -47,17 +61,7 @@ public class Debugger extends JFrame {
 
 			step.setText("Step");
 
-			try {
-				int x = dvm.step();
-				if (x != 0)
-					throw new ExecutionError("End of Program reached!");
-
-			} catch (ExecutionError e) {
-				JOptionPane.showMessageDialog(null,
-						"Programm terminatet because:\n\"" + e.getMessage().toString() + "\"", "Done",
-						JOptionPane.INFORMATION_MESSAGE);
-			}
-
+			takestep();
 			rebuildView();
 			repaint();
 
@@ -86,11 +90,12 @@ public class Debugger extends JFrame {
 	}
 
 	public enum State {
-		UNTOUCHED(Color.GRAY), FREED(Color.WHITE), RESERVED(Color.BLACK);
+		UNTOUCHED(new Color(200, 200, 200)), FREED(Color.GRAY), RESERVED(Color.BLACK);
 
 		public Color col;
 
 		State(Color col) {
+			
 			this.col = col;
 		}
 
@@ -125,7 +130,7 @@ public class Debugger extends JFrame {
 	private JLabel vall;
 	private int watchdog;
 	private String refCode;
-	private JTextArea outPut;
+	private JTextArea console;
 
 	public Debugger(int memorySize, CodeGenerator codegenerator, String code) {
 		super("Tupel Debugger");
@@ -154,7 +159,7 @@ public class Debugger extends JFrame {
 				
 				@Override
 				public void print(String s) {
-					outPut.setText(outPut.getText()+s+"\n");
+					console.setText(s+"\n"+console.getText());
 				}
 			});
 		} catch (ExecutionError e) {
@@ -199,19 +204,60 @@ public class Debugger extends JFrame {
 		step = new JButton("Start");
 		step.addActionListener(new Step());
 
-		JButton runB = new JButton("Run");
+		JButton runB = new JButton("Walk");
 		runB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				Timer timer = new Timer(400, this);
+				final Timer timer =new Timer(400,null );
+				
+				timer.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						step.doClick();
+						if(dvm.getPc()==-1)
+							timer.stop();
+					}
+				});
+				timer.setRepeats(true);
 				timer.start();
-				step.doClick();
+			}
+		});
+		
+		JButton reset=new JButton("Reset");
+		reset.addActionListener(new ActionListener() {
+			int resets=0;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dvm.init();
+				console.setText("******RESET #"+resets+++"**********"+"\n"+console.getText());
+				rebuildView();
+				repaint();
 			}
 		});
 
+		JButton runF=new JButton("Run");
+		runF.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int overflow=1000000;
+				while(overflow>0&&dvm.getPc()!=-1) {
+					overflow--;
+					takestep();
+					
+				}
+				rebuildView();
+				repaint();
+			}
+		});
+
+		
 		DebugPanel.add(step);
 		DebugPanel.add(runB);
+		DebugPanel.add(runF);
+		DebugPanel.add(reset);
 
 		this.jCode = new DefaultListModel<CodeLine>();
 		this.jAssembly = new DefaultListModel<IInstructions.IInstr>();
@@ -257,8 +303,8 @@ public class Debugger extends JFrame {
 			}
 			codeandoutput.add(new JTextArea(new String(stringBuffer.toString())));
 			codeandoutput.add(new JLabel("Output:"));
-			outPut=new JTextArea(new String());
-			codeandoutput.add(outPut);
+			console=new JTextArea(new String());
+			codeandoutput.add(console);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -368,9 +414,9 @@ public class Debugger extends JFrame {
 
 			g.drawString("Memory", 20, 20);
 
-			g.setColor(Color.BLUE);
-			g.drawString("Extreme Pointer", 20, 40);
 			g.setColor(Color.PINK);
+			g.drawString("Extreme Pointer", 20, 40);
+			g.setColor(Color.BLUE);
 			g.drawString("Frame Pointer", 20, 60);
 			g.setColor(Color.RED);
 			g.drawString("Stack Pointer", 20, 80);
@@ -403,11 +449,11 @@ public class Debugger extends JFrame {
 			}
 
 			Point a = AddrToPos(dvm.getEp());
-			g.setColor(Color.BLUE);
+			g.setColor(Color.PINK);
 			g.fillRect(a.x + 0, a.y, 5, 5);
 
 			a = AddrToPos(dvm.getFp());
-			g.setColor(Color.PINK);
+			g.setColor(Color.BLUE);
 			g.fillRect(a.x + 5, a.y, 5, 5);
 
 			a = AddrToPos(dvm.getSp());

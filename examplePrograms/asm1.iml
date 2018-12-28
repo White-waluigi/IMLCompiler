@@ -1,22 +1,18 @@
-program test1(a :int32,b: int32,c:int32)
-
+program test1(a :int32,b: int32,c:int32,tup t:(int32,int32))
 global
   proc test(in aa:int32)
 	do  	
-		aa:=aa+1;		
-		debugout aa;
-		debugout a;
-		debugout b;
-		debugout c;
+		while a<999
+		do
+			a:=a*a 
+		endwhile;
 		
-		debugout 100000;
+		debugout a
 		
 		
-		call test(aa)
   endproc
   do
-	a:=0;
-    call test(a);
-    
-    debugout 1337
+	a:=2;
+    call test(a)
+
 endprogram

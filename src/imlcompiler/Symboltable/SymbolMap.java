@@ -57,7 +57,7 @@ public class SymbolMap {
     }
     public void print(){
         System.out.println("Symboltable: " + tableName);
-        for(int i=0;i<getSize();i++){
+        for(int i=0;i<hashMap.size();i++){
         	Symbol s = get(i);
             System.out.println("{ " + s.name + " :  type: " + s.type + ", tupelsize: " + s.tupSize
                     + " ,location:  " + s.location + ", isRef: " +s.isRef+" }");

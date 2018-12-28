@@ -215,6 +215,8 @@ public class Token {
 		switch (terminal) {
 		case PROC:
 		case CALL:
+		case IF:
+		case WHILE:
 
 			
 		return true;
