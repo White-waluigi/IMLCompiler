@@ -47,7 +47,7 @@ public class ImlItem extends ImlComponent{
           case COMMA:
           case SEMICOLON:
           case COLON:
-          case LBRACK:
+//          case LBRACK:
           case RBRACK:
           case ENDFUN:
           case ENDPROC:

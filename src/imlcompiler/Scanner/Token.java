@@ -179,6 +179,7 @@ public class Token {
 		case ADDOPR:
 		case RELOPR:
 		case BOOLOPR:
+		case LBRACK:
 			
 		return true;
 
@@ -217,6 +218,8 @@ public class Token {
 		case CALL:
 		case IF:
 		case WHILE:
+		case TUP:
+		
 
 			
 		return true;

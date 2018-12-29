@@ -1,18 +1,26 @@
-program test1(a :int32,b: int32,c:int32,tup t:(int32,int32))
+program test1(a :int32,b: int32,c:int32,   tup q:(int32, int32,int32))
 global
-  proc test(in aa:int32)
+
+  proc fib(in ref aa:int32,in s:int32, in t:int32)
 	do  	
-		while a<999
-		do
-			a:=a*a 
-		endwhile;
+		if aa = 0 || aa = 1
+		then 
+			aa:=1
+		else
+			s:=aa-1;
+			call fib(s,c,c);
+			t:=aa-2;
+			call fib(t,c,c);
+			aa:=t+s
+		endif
 		
-		debugout a
 		
 		
   endproc
   do
-	a:=2;
-    call test(a)
+  
+	q:=tup( 420, 8008, 234);
+	a:=0-(q[1]);
+	q:=tup( a, 222, 222222223)
 
 endprogram

@@ -93,4 +93,8 @@ public class SymbolMap {
     	
     	return retval;
 	}
+
+	public int getNum() {
+		return hashMap.size();
+	}
 }

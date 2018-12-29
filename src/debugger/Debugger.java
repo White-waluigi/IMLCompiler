@@ -39,20 +39,34 @@ public class Debugger extends JFrame {
 	 * 
 	 */
 	static int ctr = 0;
+	private int numSteps=0;
 
 	
-	public void takestep() {
+	public int takestep() {
+		this.numSteps++;
+
+
 		try {
 			int x = dvm.step();
 			if (x != 0)
 				throw new ExecutionError("End of Program reached!");
 
-		} catch (ExecutionError e) {
-			JOptionPane.showMessageDialog(null,
-					"Programm terminatet because:\n\"" + e.getMessage().toString() + "\"", "Done",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
+		} catch (Exception e) {
 
+			if(!"Execution error: End of Program reached!".equals(e.getMessage().toString())) {
+				JOptionPane.showMessageDialog(null,
+						"Programm terminated because:\n\"" + e.getMessage().toString() + "\"", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}else {
+				JOptionPane.showMessageDialog(null,
+						"Programm terminated successfully", "Success",
+						JOptionPane.INFORMATION_MESSAGE);
+				
+			}
+			return -1;
+		}
+		return 0;
 	}
 	public class Step implements ActionListener {
 
@@ -87,6 +101,7 @@ public class Debugger extends JFrame {
 		if (dvm.getPc() < dvm.getCodeParent().length && dvm.getPc() >= 0) {
 			jAssL.setSelectedValue(dvm.getCodeParent()[dvm.getPc()], true);
 		}
+		steps.setText(numSteps+"");
 	}
 
 	public enum State {
@@ -112,7 +127,12 @@ public class Debugger extends JFrame {
 			parent = a;
 
 		}
+		public int getIntValue() {
+			if (parent instanceof Data.IntData)
+				return ((Data.IntData) parent).getData();
 
+			return -1;
+		}
 		public String getValue() {
 			if (parent instanceof Data.IntData)
 				return "" + ((Data.IntData) parent).getData();
@@ -128,6 +148,7 @@ public class Debugger extends JFrame {
 	private VirtualMachine dvm;
 	private JList jAssL;
 	private JLabel vall;
+	private JLabel steps;
 	private int watchdog;
 	private String refCode;
 	private JTextArea console;
@@ -135,7 +156,7 @@ public class Debugger extends JFrame {
 	public Debugger(int memorySize, CodeGenerator codegenerator, String code) {
 		super("Tupel Debugger");
 
-		this.setMinimumSize(new Dimension(1920, 1080));
+		this.setMinimumSize(new Dimension(1900, 950));
 		try {
 			this.setIconImage(ImageIO.read(new File("deb.png")));
 		} catch (IOException e1) {
@@ -194,7 +215,12 @@ public class Debugger extends JFrame {
 				jPanel2MouseDragged(evt);
 			}
 		});
-
+		class SetableBoolean{
+			public boolean StopTheWatch=true;
+		}
+		SetableBoolean stopthewatch=new SetableBoolean();
+		
+		
 		// be nice to testers..
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -209,6 +235,14 @@ public class Debugger extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
+				
+				if(!stopthewatch.StopTheWatch) {
+					stopthewatch.StopTheWatch=true;
+					return;
+				}
+				stopthewatch.StopTheWatch=false;
+
+				
 				final Timer timer =new Timer(400,null );
 				
 				timer.addActionListener(new ActionListener() {
@@ -218,10 +252,15 @@ public class Debugger extends JFrame {
 						step.doClick();
 						if(dvm.getPc()==-1)
 							timer.stop();
+						
+						if(stopthewatch.StopTheWatch) {
+							timer.stop();
+						}
 					}
 				});
 				timer.setRepeats(true);
 				timer.start();
+
 			}
 		});
 		
@@ -242,12 +281,17 @@ public class Debugger extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int overflow=1000000;
-				while(overflow>0&&dvm.getPc()!=-1) {
-					overflow--;
-					takestep();
-					
+				int overflow=0;
+				int abort=0;
+				while(overflow<1000000000&&dvm.getPc()!=-1&&abort!=-1) {
+					overflow++;
+					abort=takestep();
+					if(overflow%1000==0) {
+						rebuildView();
+						repaint();
+					}
 				}
+				
 				rebuildView();
 				repaint();
 			}
@@ -261,8 +305,14 @@ public class Debugger extends JFrame {
 
 		this.jCode = new DefaultListModel<CodeLine>();
 		this.jAssembly = new DefaultListModel<IInstructions.IInstr>();
-
+		
 		this.jAssL = new JList<>(this.jAssembly);
+
+		
+
+		
+		
+		
 		// JList<IInstructions.IInstr> b=new JList<>(jAssembly);
 
 		Integer[] numbers = new Integer[numberOfInstr];
@@ -272,21 +322,33 @@ public class Debugger extends JFrame {
 		DefaultListModel<Integer> integerDefaultListModel = new DefaultListModel<>();
 		for(Integer i : numbers) integerDefaultListModel.addElement(i);
 		JList<Integer> jList = new JList<>(integerDefaultListModel);
-		jList.setFixedCellWidth(20);
+		jList.setFixedCellWidth(40);
 
 		JPanel instructionPanel = new JPanel();
 		instructionPanel.setLayout(new BoxLayout(instructionPanel, BoxLayout.X_AXIS));
 		instructionPanel.add(jList);
-		instructionPanel.add(this.jAssL);
+		instructionPanel.add(jAssL);
 
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setViewportView(instructionPanel);
+		
+		
 
+		
+		DebugPanel.add(new JLabel("Watchdog :"));
 		vall = new JLabel("None");
 		DebugPanel.add(vall);
+		
+		DebugPanel.add(new JLabel("Steps :"));		
+		steps = new JLabel("0");
+		DebugPanel.add(steps);
+
 		//DebugPanel.add(jAssL);
 		//DebugPanel.add(jList);
-		DebugPanel.add(instructionPanel);
+		DebugPanel.add(scrollPane);
 		DebugPanel.add(new JSeparator());
-
+		DebugPanel.setMinimumSize(new Dimension(180, 0));
 
 		// DebugPanel.add(b);
 		// DebugPanel.add(new JSeparator());
@@ -430,7 +492,15 @@ public class Debugger extends JFrame {
 			for (MemoryCell mc : memory) {
 				g.setColor(mc.state.col);
 				g.fillRect(offsetx * 20, 110 + offsety * 20, 19, 19);
-				g.setColor(Color.GREEN);
+				if(mc.getIntValue()>10000){
+					g.setColor(Color.RED);
+				}else if(Math.abs(mc.getIntValue())<100) {
+					g.setColor(Color.GREEN);
+				}else if(mc.getIntValue()>0){
+					g.setColor(Color.MAGENTA);
+				}else {
+					g.setColor(Color.ORANGE);
+				}
 				g.drawString(mc.getValue(), offsetx * 20 + 5, (110 + offsety * 20) + 12);
 				offsetx += 1;
 

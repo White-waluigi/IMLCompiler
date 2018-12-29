@@ -5,6 +5,8 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.org.apache.bcel.internal.classfile.CodeException;
+
 import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.IInstructions;
@@ -29,8 +31,15 @@ public class CodeGenerator {
 	ArrayList<IInstructions.IInstr> ar;
 	private SymbolMap currentst;
 	private SymbolMap globalst;
-
-	Map<String, Integer> ProcAddr;
+	public class ProcMeta{
+		public ProcMeta(int a, Symbol[] p) {
+			addr=a;
+			params=p;
+		}
+		public int addr;
+		public Symbol[] params;
+	}
+	Map<String, ProcMeta> ProcAddr;
 	long freeProcSpace = 0;
 	private int curPrStart = 1;
 
@@ -143,38 +152,109 @@ public class CodeGenerator {
 	}
 
 	private void genCall(ImlComposite a) {
-		ImlComponent b = a.getChild("exprList");
-		for (int i = 0; i < b.size(); i++) {
-			genEvalExpression(b.getChild(i));
-		}
-
 		String name = ((IdentAttribute) a.getChild(Terminal.IDENT).getToken().getAttribute()).value;
 
-		ar.add(new IInstructions.Call(this.ProcAddr.get(name)));
+		
+		ProcMeta as = this.ProcAddr.get(name);
+		
+		ImlComponent b = a.getChild("exprList");
+		
+		int paramsize=0;
+		int g=0;
+		for (int i = 0; i < b.size(); i++) {
+			if(as.params[g].isGlobal) {
+				i--;
+			}else if(as.params[g].isRef) {
+				genMakeRef(b.getChild(i));
+				paramsize++;
+			}else {
+				genEvalExpression(b.getChild(i));
+				paramsize+=as.params[g].tupSize==-1?1:as.params[g].tupSize;
+			}
+			
+			g++;
+		}
+		
+
+		
+		ar.add(new IInstructions.Call(this.ProcAddr.get(name).addr));
+		
+		//Clear stack paramters
+		ar.add(new IInstructions.LoadImInt(0));
+		for(int i=0;i<paramsize;i++) {
+			ar.add(new IInstructions.MultInt());
+		}
+		ar.add(new IInstructions.AddInt());
+	}
+
+	private void genMakeRef(ImlComponent child) {
+		Symbol x=getSymbole(child);
+		if(x.isGlobal) {
+			ar.add(new IInstructions.LoadAddrRel((x).location));
+		}else{
+			ar.add(new IInstructions.LoadAddrRel(getStackLocation(x)));
+			if(x.isRef) {
+				ar.add(new IInstructions.Deref());
+			}
+		}
+		
 	}
 
 	private void genDebugOut(ImlComposite a) {
 		genEvalExpression(a.getChild(0));
-		ar.add(new IInstructions.OutputInt(""));
+		String output="";
+		try {
+			output=getSymbole(a.getChild(0)).name;
+		}catch(Throwable x) {}
+		ar.add(new IInstructions.OutputInt(output));
 
 	}
 
 	private void genAssignment(ImlComposite a) {
-		genStackLocation(getSymbole(a.getChild(0)));
-		
-		genEvalExpression(a.getChild(1));
-        
-		ar.add(new IInstructions.Store());
-	}
+		Symbol symb = getSymbole(a.getChild(0));
 
-	private void genStackLocation(Symbol symbole) {
-		if(global(symbole)) {
-			ar.add(new IInstructions.LoadImInt(symbole.location));
+		
+		if(symb.tupSize==-1) {
+			genStackLocation(symb);
+			genEvalExpression(a.getChild(1));
+			ar.add(new IInstructions.Store());
 		}else {
+			ImlComposite tail=(ImlComposite) a.getChild(1).getChild(1);
+
+			if(symb.tupSize!=tail.size()) {
+				throw new CodeGenerationException("tup delcaration doesn't match tupel size");
+			}
+			for (int i = 0; i < symb.tupSize; i++) {
+				
+				if( (a.getChild(1).getToken()==null||a.getChild(1).getToken().getTerminal()!=Terminal.TUP)  && (a.getChild(1).getToken().getAttribute()==null || getSymbole(a.getChild(1)).tupSize!=-1  ))  {
+					throw new CodeGenerationException("Tup can  be only assigned new or other tuple, not "+a.getChild(1).getToken());
+				}
+				genStackLocation(symb,i);
+
+				genEvalExpression(tail.getChild(i));
+				ar.add(new IInstructions.Store());
+			}
+		}
+	}
+	private void genStackLocation(Symbol symbole) {
+		genStackLocation(symbole,0);
+	}
+	private void genStackLocation(Symbol symbole, int i) {
+		if(global(symbole)) {
+			ar.add(new IInstructions.LoadImInt(symbole.location+i));
+		}else {
+			int offset=0;
+			if(!symbole.isRef)
+				offset=i;
+			
 			int x=getStackLocation(symbole);
-			ar.add(new IInstructions.LoadAddrRel(x));
+			ar.add(new IInstructions.LoadAddrRel(x+i));
 			if(symbole.isRef) {
 				ar.add(new IInstructions.Deref());
+				if(offset!=0) {
+					ar.add(new IInstructions.LoadImInt(offset));
+					ar.add(new IInstructions.AddInt());
+				}
 			}
 		}
 	}
@@ -183,8 +263,10 @@ public class CodeGenerator {
 	}
 
 	private void genEvalExpression(ImlComponent imlComponent) {
-		if (imlComponent.getToken().getTerminal() == Terminal.IDENT) {
-			genEvalIdent((ImlItem) imlComponent);
+		if (imlComponent instanceof ImlComposite &&imlComponent.getToken()==null&&  imlComponent.getChild(1).getToken().getTerminal() == Terminal.LBRACK) {
+			genIndexTup((ImlComposite) imlComponent);
+		}else if (imlComponent.getToken().getTerminal() == Terminal.IDENT) {
+			genEvalIdent((ImlItem) imlComponent,0);
 		} else if (imlComponent.getToken().getTerminal() == Terminal.LITERAL) {
 			genEvalLiteral((ImlItem) imlComponent);
 		} else if (imlComponent.getToken().isOperator()) {
@@ -195,24 +277,35 @@ public class CodeGenerator {
 
 	}
 
-	private void genEvalIdent(ImlItem a) {
-		Symbol o = getSymbole(a);
-		genEvalSymbol(o);
+	private void genIndexTup(ImlComposite imlComponent) {
+		Token index = ((ImlComposite)imlComponent.getChild(1)).getChild(Terminal.LITERAL).getToken();
+		genEvalIdent((ImlItem) imlComponent.getChild(0),(     (Token.IntAttribute)index.getAttribute()).value    );
 	}
-
+	
+	private void genEvalIdent(ImlItem a,int offset) {
+		Symbol o = getSymbole(a);
+		genEvalSymbol(o,offset);
+	}
 	private void genEvalSymbol(Symbol o) {
+		genEvalSymbol(o,0);
+	}
+	private void genEvalSymbol(Symbol o,int offset) {
 		if (o.isGlobal||currentst==globalst) {
-			ar.add(new IInstructions.LoadImInt(o.location));
+			ar.add(new IInstructions.LoadImInt(o.location+offset));
 			ar.add(new IInstructions.Deref());
 
 		} else if (o.isRef) {
 			int l = getStackLocation(o);
 			ar.add(new IInstructions.LoadAddrRel(l));
 			ar.add(new IInstructions.Deref());
+			if(offset!=0) {
+				ar.add(new IInstructions.LoadImInt(offset));
+				ar.add(new IInstructions.AddInt());
+			}
 			ar.add(new IInstructions.Deref());
 		} else {
 			int l = getStackLocation(o);
-			ar.add(new IInstructions.LoadAddrRel(l));
+			ar.add(new IInstructions.LoadAddrRel(l+offset));
 			ar.add(new IInstructions.Deref());
 
 		}
@@ -264,8 +357,21 @@ public class CodeGenerator {
 				ar.add(new IInstructions.GtInt());
 			else
 				throw new CodeGenerationException("unexpected operator " + a);
+		} else if (a.getToken().getTerminal() == Terminal.BOOLOPR) {
+			if (a.getToken().has(EnumAttribute.AND)) {
+				ar.add(new IInstructions.AddInt());
+				ar.add(new IInstructions.LoadImInt(2));	
+				ar.add(new IInstructions.EqInt());
+			}
+			else if (a.getToken().has(EnumAttribute.OR)) {
+				ar.add(new IInstructions.AddInt());
+				ar.add(new IInstructions.LoadImInt(0));	
+				ar.add(new IInstructions.NeInt());
+			}
+			else
+				throw new CodeGenerationException("unexpected operator " + a);
 		} else {
-			throw new CodeGenerationException("unexpected operator " + a);
+			throw new CodeGenerationException("unexpected operator " + a.getToken().getTerminal());
 		}
 	}
 
@@ -302,7 +408,12 @@ public class CodeGenerator {
 		String name = ((IdentAttribute) a.getChild(Terminal.IDENT).getToken().getAttribute()).value;
 		currentst = globalst.findTable(name);
 
-		this.ProcAddr.put(name, ar.size());
+		Symbol[] p=new Symbol[currentst.getNum()];
+		
+		for(int i=0;i<currentst.getNum();i++) {
+			p[i]=currentst.get(i);
+		}
+		this.ProcAddr.put(name,new ProcMeta(ar.size(),p));
 
 		genCpsCmd(a.getChild("cpsCmd"));
 		ar.add(new IInstructions.Return(0));

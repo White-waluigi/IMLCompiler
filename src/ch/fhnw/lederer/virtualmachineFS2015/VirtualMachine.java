@@ -220,8 +220,8 @@ public class VirtualMachine implements IVirtualMachine {
 
         public void execute() throws ExecutionError
         {
-            // remove following check if use ep
-            if (sp + 2 > hp) { throw new ExecutionError(SP_OVER_HP); }
+        // remove following check if use ep
+        if (sp + 2 > hp) { throw new ExecutionError(SP_OVER_HP); }
             store[sp]= Data.intNew(fp);
             store[sp + 1]= Data.intNew(ep);
             store[sp + 2]= Data.intNew(pc);
