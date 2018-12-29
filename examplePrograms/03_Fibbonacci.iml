@@ -1,17 +1,17 @@
-program fibbonacci(inout var x: int32)
+program fibbonacci()
     global
-    fun recurse(in var y: int32) returns z: int32
-        do
-            debugout y;
-            if y > 1000
-                then x := 0
-            else
-                z init := x + y;
-                x := y;
-                call recurse(z)
-            endif
-    endfun
+        x: int32;
+        y: int32;
+        tmp: int32
     do
         x init := 1;
-        call recurse(1)
+        y init := 1;
+        tmp init := 0;
+        while x < 1000
+            do
+            debugout x;
+            tmp := x;
+            x := x + y;
+            y := tmp
+        endwhile
 endprogram
