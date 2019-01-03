@@ -1,13 +1,13 @@
 program intDivTupel(in tup m:(int32,  int32), out tup q:(int32, int32))
 global
- proc divide(in copy const tup m:(int32, int32),
-             out ref var tup q:(int32, int32))
+ proc divide(in copy const tup n:(int32, int32),
+             out ref var tup r:(int32, int32))
  do
-   q init := tup(0, m[0]);
+   r init := tup(0, n[0]);
 
-   while q[1] >= n do
-     q[0] := q[0] + 1 ;
-     q[1] := q[1] - m[1]
+   while r[1] >= n do
+     r[0] := r[0] + 1 ;
+     r[1] := r[1] - n[1]
    endwhile
  endproc
 do

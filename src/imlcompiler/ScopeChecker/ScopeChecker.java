@@ -64,6 +64,7 @@ public class ScopeChecker {
                             isTuple = false;
                             location += currentType.size();
                             currentType = null;
+                           //System.out.println("--->" + token.getTerminal());
                         }
                         previousToken = GLOBAL;
                         break;
@@ -75,9 +76,9 @@ public class ScopeChecker {
                             currentMap.next.add(newMap);
                             currentMap = newMap;
                         }
-                        if (previousToken == TUP){
+                        /*if (previousToken == TUP){
                             isTuple = true;
-                        }
+                        }*/
                         previousToken = IDENT;
                         break;
                     case TYPE:
@@ -111,16 +112,30 @@ public class ScopeChecker {
                             isRef = true;
                         }
                         break;
+                    case DO:
+                        if (isTuple && previousToken == TYPE ){
+                            if (currentMap.tableName.equals("global"))
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true);
+                            else
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false);
+
+                            isTuple = false;
+                            location += currentType.size();
+                            currentType = null;
+                            //System.out.println("--->" + token.getTerminal());
+                        }
                     default:
                         if (isTuple && previousToken == TYPE && token.getTerminal() != TYPE){
                             if (currentMap.tableName.equals("global"))
                                 currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true);
                             else
                                 currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false);
-                            isTuple = false;
+
                             location += currentType.size();
                             currentType = null;
                             isRef = false;
+                            isTuple = false;
+                            //System.out.println("******>" + token.getTerminal());
                         }
                         previousToken = token.getTerminal();
                         break;
@@ -132,5 +147,6 @@ public class ScopeChecker {
             System.out.println(t.toString());
         }
     }
+
 
 }

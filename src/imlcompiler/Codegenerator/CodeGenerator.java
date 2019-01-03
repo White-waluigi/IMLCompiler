@@ -5,7 +5,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.org.apache.bcel.internal.classfile.CodeException;
+//import com.sun.org.apache.bcel.internal.classfile.CodeException;
 
 import ch.fhnw.lederer.virtualmachineFS2015.CodeArray;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray;
@@ -169,7 +169,7 @@ public class CodeGenerator {
 				paramsize++;
 			}else {
 				genEvalExpression(b.getChild(i));
-				paramsize+=as.params[g].tupSize==-1?1:as.params[g].tupSize;
+				paramsize += as.params[g].tupSize == -1 ? 1 : as.params[g].tupSize;
 			}
 			
 			g++;
@@ -222,12 +222,12 @@ public class CodeGenerator {
 			ImlComposite tail=(ImlComposite) a.getChild(1).getChild(1);
 
 			if(symb.tupSize!=tail.size()) {
-				throw new CodeGenerationException("tup delcaration doesn't match tupel size");
+				throw new CodeGenerationException("tupel declaration doesn't match tupel size");
 			}
 			for (int i = 0; i < symb.tupSize; i++) {
 				
 				if( (a.getChild(1).getToken()==null||a.getChild(1).getToken().getTerminal()!=Terminal.TUP)  && (a.getChild(1).getToken().getAttribute()==null || getSymbole(a.getChild(1)).tupSize!=-1  ))  {
-					throw new CodeGenerationException("Tup can  be only assigned new or other tuple, not "+a.getChild(1).getToken());
+					throw new CodeGenerationException("Tupel can be only assigned to new or other tuple, not "+a.getChild(1).getToken());
 				}
 				genStackLocation(symb,i);
 

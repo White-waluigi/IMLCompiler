@@ -1,0 +1,15 @@
+program tupleTest(var tup a:(int32, int32, int32), var b: int32)
+    global
+        proc test(var tup g:(int32,int32, int32), var h: int32)
+            do
+            if h < 100 then
+                  debugout g[0];
+                  h := h + 1;
+                  call test (g, h)
+            else h:= 101 endif
+        endproc
+    do
+        a init := tup(56,23,77);
+        b init := 99;
+        call test(a, b)
+endprogram

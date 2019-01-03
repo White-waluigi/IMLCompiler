@@ -57,8 +57,9 @@ public class ImlItem extends ImlComponent{
 
           //case PROC:
 
-          case DO:
-          case INIT:	  
+          //case DO:
+
+          case INIT:
               return true;
           default: return false;
       }

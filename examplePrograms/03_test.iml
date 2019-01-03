@@ -2,9 +2,16 @@ program test()
     global
         var a : int32;
         var b : bool;
-        //var tup c:(int32, bool);
-        var d: int32
-        //var tup e:((bool, bool), bool)
+        var tup c:(int32, int32);
+        var d: int32;
+        var tup e:((bool, bool), bool)
     do
-      debugout a + a
+      a init := 3;
+      c init := tup(11, 13);
+      if a * a > 5
+      then
+          debugout c[0]
+      else
+          debugout a
+      endif
 endprogram
