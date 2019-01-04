@@ -348,7 +348,7 @@ public class Debugger extends JFrame {
 		//DebugPanel.add(jList);
 		DebugPanel.add(scrollPane);
 		DebugPanel.add(new JSeparator());
-		DebugPanel.setMinimumSize(new Dimension(180, 0));
+		DebugPanel.setMinimumSize(new Dimension(230, 0));
 
 		// DebugPanel.add(b);
 		// DebugPanel.add(new JSeparator());

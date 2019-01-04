@@ -21,6 +21,7 @@ global
   
 	q:=tup( 420, 8008, 234);
 	a:=0-(q[1]);
-	q:=tup( a, 222, 222222223)
+	q:=tup( a, 222, 222222223);
+	debugout a[0]
 
 endprogram
