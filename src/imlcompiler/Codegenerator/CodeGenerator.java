@@ -93,6 +93,9 @@ public class CodeGenerator {
 			case DEBUGOUT:
 				genDebugOut(a);
 				break;
+			case DEBUGIN:
+				genDebugIn(a);
+				break;
 			case CALL:
 				genCall(a);
 				break;
@@ -175,7 +178,7 @@ public class CodeGenerator {
 			g++;
 		}
 		
-
+		System.out.println(this.ProcAddr.entrySet());
 		
 		ar.add(new IInstructions.Call(this.ProcAddr.get(name).addr));
 		
@@ -208,6 +211,22 @@ public class CodeGenerator {
 		}catch(Throwable x) {}
 		ar.add(new IInstructions.OutputInt(output));
 
+	}
+
+	private void genDebugIn(ImlComposite a){
+		Symbol symbol = getSymbole(a.getChild(0));
+		if (symbol.isGlobal) {
+			ar.add(new IInstructions.LoadImInt(symbol.location));
+		}
+		else {
+			throw new CodeGenerationException("not yet implemented");
+		}
+
+		String identifier = "";
+		try {
+			identifier=getSymbole(a.getChild(0)).name;
+		}catch(Throwable x) {}
+		ar.add(new IInstructions.InputInt(identifier));
 	}
 
 	private void genAssignment(ImlComposite a) {
