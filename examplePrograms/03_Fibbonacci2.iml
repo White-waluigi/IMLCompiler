@@ -4,7 +4,11 @@ program fibbonacci()
         do
             debugout y;
             y := y + x;
-            call recurse(y , x)
+            if x < 1000 then
+                call recurse(y , x)
+            else
+                skip
+            endif
     endproc
     do
         call recurse(1,1)
