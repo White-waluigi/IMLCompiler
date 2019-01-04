@@ -16,4 +16,5 @@ public class Type{
     public int size(){
         return typeList.size();
     }
+    public String get(int i) {return typeList.get(i);};
 }

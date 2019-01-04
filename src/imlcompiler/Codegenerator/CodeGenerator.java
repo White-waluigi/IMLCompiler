@@ -314,7 +314,6 @@ public class CodeGenerator {
 
 	private void genEvalLiteral(ImlItem a) {
 		ar.add((new IInstructions.LoadImInt(((Token.IntAttribute) a.getToken().getAttribute()).value)));
-
 	}
 
 	private void genOperation(ImlComposite a) {

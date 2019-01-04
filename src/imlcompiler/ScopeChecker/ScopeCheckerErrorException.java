@@ -1,6 +1,6 @@
 package imlcompiler.ScopeChecker;
 
-public class ScopeCheckerErrorException extends RuntimeException {
+public class ScopeCheckerErrorException extends Exception {
 
 	/**
 	 *

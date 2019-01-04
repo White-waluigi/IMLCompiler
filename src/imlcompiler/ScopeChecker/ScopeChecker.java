@@ -24,7 +24,7 @@ public class ScopeChecker {
         this.tokenList = new ArrayList<>();
     }
 
-    public void check(){
+    public void check() throws TypeCheckerException, ScopeCheckerErrorException {
 
         int location = 0;
         String identifier = null;
@@ -57,9 +57,9 @@ public class ScopeChecker {
                         //currentMap = symbolTableGlobal;
                         if (isTuple && previousToken == TYPE ){
                             if (currentMap.tableName.equals("global"))
-                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true);
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true, currentType);
                             else
-                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false);
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false, currentType);
 
                             isTuple = false;
                             location += currentType.size();
@@ -85,16 +85,45 @@ public class ScopeChecker {
                         type = token.getDebugString();
                         if (!isTuple) {
                             if (currentMap.tableName.equals("global"))
-                                currentMap.addSymbol(identifier, type, tupSize, location++, isRef, true);
+                                currentMap.addSymbol(identifier, type, tupSize, location++, isRef, true, currentType);
                             else
-                                currentMap.addSymbol(identifier, type, tupSize, location++, isRef, false);
+                                currentMap.addSymbol(identifier, type, tupSize, location++, isRef, false, currentType);
                             type = null;
                             isRef = false;
                         }
                         else {
                             currentType.add(type);
                         }
+                        Symbol s = currentMap.get(identifier);
+                        if (s==null && !isTuple){
+                            throw new ScopeCheckerErrorException("identifier: "+ identifier + " not in scope");
+                        }
                         previousToken = TYPE;
+                        break;
+                    case LITERAL:
+                        Symbol sym = currentMap.get(identifier);
+                        boolean IsBool = false;
+                        if (token.has(Token.EnumAttribute.FALSE) || token.has(Token.EnumAttribute.TRUE)){
+                            IsBool = true;
+                            if (isTuple) currentType.add("bool");
+                        }
+                        boolean isInt = false;
+                        if (token.getAttribute() instanceof Token.IntAttribute){
+                            isInt = true;
+                            if (isTuple) currentType.add("int32");
+                        }
+                        if (currentType != null) System.out.println(currentType.toString());
+
+                        if (sym.type.equals("bool") && IsBool || sym.type.equals("int32") && isInt ){
+                            // type ok for not-tuples
+                        }
+
+                        else if(isTuple && currentType.get(currentType.size()-1).equals(sym.tupelTypes.get(currentType.size()-1))){
+                            // type ok for tuples
+                        }
+                        else {
+                            throw new TypeCheckerException("identifier: " + identifier + " has wrong type");
+                        }
                         break;
                     case PROC:
                         previousToken = PROC;
@@ -103,8 +132,8 @@ public class ScopeChecker {
                         previousToken = FUN;
                         break;
                     case TUP:
+                        if (!isTuple) currentType = new Type();
                         isTuple = true;
-                        currentType = new Type();
                         previousToken = TUP;
                         break;
                     case MECHMODE:
@@ -115,9 +144,9 @@ public class ScopeChecker {
                     case DO:
                         if (isTuple && previousToken == TYPE ){
                             if (currentMap.tableName.equals("global"))
-                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true);
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true, currentType);
                             else
-                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false);
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false ,currentType);
 
                             isTuple = false;
                             location += currentType.size();
@@ -127,9 +156,9 @@ public class ScopeChecker {
                     default:
                         if (isTuple && previousToken == TYPE && token.getTerminal() != TYPE){
                             if (currentMap.tableName.equals("global"))
-                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true);
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true, currentType);
                             else
-                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false);
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false, currentType);
 
                             location += currentType.size();
                             currentType = null;

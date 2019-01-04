@@ -57,6 +57,7 @@ public class Compiler {
 
         Wrapper wrapper = new Wrapper();
 
+        //parsing
         ImlComponent concreteSyntaxTree = parser.parse(wrapper);
 
         //Visualisation of Syntax Tree
@@ -69,67 +70,34 @@ public class Compiler {
         System.out.println("---> Converting to Abstract Syntax Tree");
         ImlComponent abstractSyntaxTree = concreteSyntaxTree.toAbstract();
         System.out.println("---> AST Done");
-        //new Visualization of Syntax Trees
-        TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
+        //new Visualization of Syntax Trees by Marvin
+        //TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
         
-        //Visualisation of Syntax Tree
-//        
+        //Visualisation of Syntax Tree by Andreas
 //        Frame f = new TreeEditor((Tree<String, ?>) abstractSyntaxTree, wrapper);
 //        f.setSize(800, 800);
 //        f.setVisible(true);
-        
-        /*
-        Iterator<ImlComponent> iterator = concreteSyntaxTree.createIterator();
-
-        while (iterator.hasNext()) {
-            ImlComponent imlComponent = iterator.next().toAbstract();
-            //imlComponent.print();
-            if (imlComponent != null) {
-                abstractSyntaxTree.add(imlComponent);
-            }
-        }
-
-        */
 
         Iterator<ImlComponent> iterator2 = abstractSyntaxTree.createIterator();
 
-
-        /*while (iterator2.hasNext()) {
-            ImlComponent imlComponent = iterator2.next();
-            imlComponent.print();
-        }*/
-
-        //scope checking
+        //scope and type checking
         SymbolMap symbolTables = new SymbolMap("global", null);
         ScopeChecker scopeChecker = new ScopeChecker(iterator2, symbolTables);
         try {
             scopeChecker.check();
         } catch (Exception e) {
             e.printStackTrace();
+            return; //exit
         }
+
         symbolTables.print();
 
-        
         CodeGenerator codegenerator = null;
         try {
         	codegenerator = new CodeGenerator(abstractSyntaxTree,symbolTables);
         } catch (CodeArray.CodeTooSmallError codeTooSmallError) {
             codeTooSmallError.printStackTrace();
         }
-
-        //CodeArray codeArray = codegenerator.getCode();
-
-        
-//        int storeSize = codegenerator.getStoreSize();
-//
-//        try {
-//
-//            VirtualMachine vm = new VirtualMachine(codeArray, storeSize,false);
-//
-//        } catch (IVirtualMachine.ExecutionError executionError) {
-//            executionError.printStackTrace();
-//        }
-
 
         Debugger d=new Debugger(512, codegenerator,file);
         d.setVisible(true);

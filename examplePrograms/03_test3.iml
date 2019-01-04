@@ -1,0 +1,6 @@
+program typeTest()
+    global
+      var tup a: (int32, int32)
+    do
+      a init := tup(22, 45)
+endprogram
