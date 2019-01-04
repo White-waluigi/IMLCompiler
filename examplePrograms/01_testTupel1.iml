@@ -1,4 +1,6 @@
-program test1(out tup t:(int32, int32))
+program test1(out tup t:(int32, int32), var tup s: (int32, bool))
+  global
+    b: int32
   do
     s init := tup(1, true);
     t init := s;

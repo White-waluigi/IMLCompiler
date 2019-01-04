@@ -1,6 +1,6 @@
 program tupleTest(var tup a:(int32, int32, int32), var b: int32)
     global
-        proc test(var tup g:(int32,int32, int32), var h: int32)
+        proc test(var tup g:(int32, int32, int32), var h: int32)
             do
             if h < 100 then
                   debugout g[0];

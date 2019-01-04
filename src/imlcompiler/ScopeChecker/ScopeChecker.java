@@ -101,6 +101,7 @@ public class ScopeChecker {
                         previousToken = TYPE;
                         break;
                     case LITERAL:
+
                         Symbol sym = currentMap.get(identifier);
                         boolean IsBool = false;
                         if (token.has(Token.EnumAttribute.FALSE) || token.has(Token.EnumAttribute.TRUE)){
@@ -112,7 +113,10 @@ public class ScopeChecker {
                             isInt = true;
                             if (isTuple) currentType.add("int32");
                         }
-                        if (currentType != null) System.out.println(currentType.toString());
+                        //if (currentType != null) System.out.println(currentType.toString());
+                        if (identifier.equals(currentMap.tableName)){
+                            continue;
+                        }
 
                         if (sym.type.equals("bool") && IsBool || sym.type.equals("int32") && isInt ){
                             // type ok for not-tuples
@@ -120,10 +124,15 @@ public class ScopeChecker {
 
                         else if(isTuple && currentType.get(currentType.size()-1).equals(sym.tupelTypes.get(currentType.size()-1))){
                             // type ok for tuples
+                            if (currentType.size() == sym.tupelTypes.size()) currentType = new Type();
+                        }
+                        else if( !isTuple && currentType == null || !isTuple && currentType.size() == 0){
+                            //skip indexes of tuples
                         }
                         else {
                             throw new TypeCheckerException("identifier: " + identifier + " has wrong type");
                         }
+                        previousToken = LITERAL;
                         break;
                     case PROC:
                         previousToken = PROC;

@@ -1,4 +1,4 @@
-program test1(a :int32,b: int32,c:int32,   tup q:(int32, int32,int32))
+program test1(a :int32, b: int32, c:int32, tup q:(int32, int32,int32))
 global
 
   proc fib(in ref aa:int32,in s:int32, in t:int32)
@@ -13,9 +13,7 @@ global
 			call fib(t,c,c);
 			aa:=t+s
 		endif
-		
-		
-		
+
   endproc
   do
   
