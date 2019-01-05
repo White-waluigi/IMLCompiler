@@ -1,0 +1,7 @@
+program inputTest(a: int32, b:int32)
+    do
+        a := 42;
+        debugin b;
+        debugout a;
+        debugout b
+endprogram
