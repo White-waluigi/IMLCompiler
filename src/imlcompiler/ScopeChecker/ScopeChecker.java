@@ -122,9 +122,12 @@ public class ScopeChecker {
                             // type ok for not-tuples
                         }
 
-                        else if(isTuple && currentType.get(currentType.size()-1).equals(sym.tupelTypes.get(currentType.size()-1))){
+                        else if(currentType != null && isTuple && currentType.get(currentType.size()-1).equals(sym.tupelTypes.get(currentType.size()-1))){
                             // type ok for tuples
-                            if (currentType.size() == sym.tupelTypes.size()) currentType = new Type();
+                            if (currentType.size() == sym.tupelTypes.size()) {
+                                currentType = new Type();
+                                isTuple = false;
+                            }
                         }
                         else if( !isTuple && currentType == null || !isTuple && currentType.size() == 0){
                             //skip indexes of tuples
@@ -142,6 +145,16 @@ public class ScopeChecker {
                         break;
                     case TUP:
                         if (!isTuple) currentType = new Type();
+                        if (isTuple && previousToken == TYPE){
+                            if (currentMap.tableName.equals("global"))
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, true, currentType);
+                            else
+                                currentMap.addSymbol(identifier, currentType.toString(), currentType.size(), location, isRef, false, currentType);
+
+                            location += currentType.size();
+                            currentType = new Type();
+                            isRef = false;
+                        }
                         isTuple = true;
                         previousToken = TUP;
                         break;
