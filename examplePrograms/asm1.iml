@@ -1,6 +1,6 @@
-program test1(a :bool,b: int32,c:int32,   tup q:(int32, int32,int32))
+program test1(a :bool,b: int32,c:int32,   tup q:(int32, int32,int32), tup d:(int32,int32))
 global
-
+ 
   proc fib(in ref aa:int32,in s:int32, in t:int32)
 	do  	
 		if aa = 0 || aa = 1
@@ -16,9 +16,16 @@ global
 		
 		
 		
+  endproc;
+  proc test(out tup t:(int32,int32,int32))
+    do
+      debugout t[0]
   endproc
+  
+  
   do
-  	q:=tup( 420, 8008, 234);
-
-	a:=0
+  	d:=tup(1,5);
+	q:=tup(6756,234,466);
+	call test(q)
+	
 endprogram

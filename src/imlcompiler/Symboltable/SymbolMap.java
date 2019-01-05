@@ -82,12 +82,21 @@ public class SymbolMap {
     	if(next.isEmpty())
     		throw new CodeGenerationException("No Symboltables generated");
     	
-    	for( SymbolMap a:next) {
+    	ArrayList<SymbolMap> n=next;
+    	SymbolMap a=null;
+    	int i=0;
+    	while(a==null|| !a.next.isEmpty()) {
+    		a=n.get(0);
 
     		if(a.tableName.equals(value)) {
     			retval=a;
     		}
+    		System.out.println("not: "+a.tableName);
+    		n=a.next;
+    		
     	}
+
+    	
     	if(retval==null)
     		throw new CodeGenerationException("Symboltable for: "+value +" not found");
     	

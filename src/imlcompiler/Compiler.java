@@ -87,7 +87,7 @@ public class Compiler {
             scopeChecker.check();
         } catch (Exception e) {
             e.printStackTrace();
-            return; //exit
+            //return; //exit
         }
 
         symbolTables.print();

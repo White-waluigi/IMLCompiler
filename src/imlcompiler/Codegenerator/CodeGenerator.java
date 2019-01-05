@@ -72,7 +72,7 @@ public class CodeGenerator {
 	}
 
 	private void genRoot(ImlComponent ast) {
-		genAllProcs(ast);
+		genAllProcs(ast.getChild("cpsDecl"));
 
 		currentst=globalst;
 		reserveSpaceGlobal(ast);
@@ -208,7 +208,9 @@ public class CodeGenerator {
 		String output="";
 		try {
 			output=getSymbole(a.getChild(0)).name;
-		}catch(Throwable x) {}
+		}catch(Throwable x) {
+			output="expr";
+		}
 		ar.add(new IInstructions.OutputInt(output));
 
 	}
@@ -241,7 +243,7 @@ public class CodeGenerator {
 			ImlComposite tail=(ImlComposite) a.getChild(1).getChild(1);
 
 			if(symb.tupSize!=tail.size()) {
-				throw new CodeGenerationException("tupel declaration doesn't match tupel size");
+				throw new CodeGenerationException("tupel declaration doesn't match tupel size :"+symb.name+" "+symb.tupSize );
 			}
 			for (int i = 0; i < symb.tupSize; i++) {
 				
@@ -304,6 +306,7 @@ public class CodeGenerator {
 	private void genEvalIdent(ImlItem a,int offset) {
 		Symbol o = getSymbole(a);
 		genEvalSymbol(o,offset);
+
 	}
 	private void genEvalSymbol(Symbol o) {
 		genEvalSymbol(o,0);

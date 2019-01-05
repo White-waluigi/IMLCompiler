@@ -39,16 +39,22 @@ public class ScopeChecker {
         Type currentType = null;
         boolean isRef = false;
 
-        while (iterator.hasNext()) {
+        Iterator<ImlComponent> Tempiterator = null;
+
+        boolean directCpsDecl=false;
+        
+        
+        while (iterator.hasNext()|| directCpsDecl) {
 
             ImlComponent imlComponent = iterator.next();
 
             Token token = null;
+            
 
             if (imlComponent instanceof ImlItem) {
 
                 token = ((ImlItem) imlComponent).getToken();
-
+                
                 tokenList.add(token);
 
                 switch (token.getTerminal()) {

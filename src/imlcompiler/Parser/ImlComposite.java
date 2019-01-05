@@ -99,6 +99,7 @@ public class ImlComposite extends ImlComponent {
 
 		switch (getName()) {
 		case "cpsCmd":
+		case "cpsDecl":
 		case "exprList":	
 			return false;
 		}
