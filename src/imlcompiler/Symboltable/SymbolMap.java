@@ -47,6 +47,10 @@ public class SymbolMap {
             if(((Symbol)pair.getValue()).isGlobal) {
             	continue;
             }
+            if(((Symbol)pair.getValue()).isRef) {
+            	r++;
+            	continue;
+            }
             r+=((Symbol)pair.getValue()).tupSize!=-1?((Symbol)pair.getValue()).tupSize:1;
           
         }

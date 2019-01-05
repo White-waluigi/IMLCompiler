@@ -250,44 +250,43 @@ public class CodeGenerator {
 			genEvalExpression(a.getChild(1));
 			ar.add(new IInstructions.Store());
 		} else {
-			if( a.getChild(1) instanceof ImlItem) {
+			if (a.getChild(1) instanceof ImlItem) {
 				Symbol psymb = getSymbole(a.getChild(1));
-				
-				if (symb.tupSize !=psymb.tupSize) {
+
+				if (symb.tupSize != psymb.tupSize) {
 					throw new CodeGenerationException(
 							"tupel idenifier doesn't match tupel size :" + symb.name + " " + symb.tupSize);
 				}
-				
-				for(int i=0;i<symb.tupSize;i++) {
-					genStackLocation(symb);
-					ar.add(new IInstructions.LoadImInt(i));
-					ar.add(new IInstructions.AddInt());
-					
-					genEvalSymbol(psymb,i);
+
+				for (int i = 0; i < symb.tupSize; i++) {
+					genStackLocation(symb, i);
+
+					genEvalSymbol(psymb, i);
 					ar.add(new IInstructions.Store());
 
 				}
-			}else {
-			ImlComposite tail = (ImlComposite) a.getChild(1).getChild(1);
+			} else {
 
-			if (symb.tupSize != tail.size()) {
-				throw new CodeGenerationException(
-						"tupel declaration doesn't match tupel size :" + symb.name + " " + symb.tupSize);
-			}
-			for (int i = 0; i < symb.tupSize; i++) {
+				ImlComposite tail = (ImlComposite) a.getChild(1).getChild(1);
 
-				if ((a.getChild(1).getToken() == null || a.getChild(1).getToken().getTerminal() != Terminal.TUP)
-						&& (a.getChild(1).getToken().getAttribute() == null
-								|| getSymbole(a.getChild(1)).tupSize != -1)) {
+				if (symb.tupSize != tail.size()) {
 					throw new CodeGenerationException(
-							"Tupel can be only assigned to new or other tuple, not " + a.getChild(1).getToken());
+							"tupel declaration doesn't match tupel size :" + symb.name + " " + symb.tupSize);
 				}
-				genStackLocation(symb, i);
+				for (int i = 0; i < symb.tupSize; i++) {
 
-				genEvalExpression(tail.getChild(i));
-				ar.add(new IInstructions.Store());
-			}
-			
+					if ((a.getChild(1).getToken() == null || a.getChild(1).getToken().getTerminal() != Terminal.TUP)
+							&& (a.getChild(1).getToken().getAttribute() == null
+									|| getSymbole(a.getChild(1)).tupSize != -1)) {
+						throw new CodeGenerationException(
+								"Tupel can be only assigned to new or other tuple, not " + a.getChild(1).getToken());
+					}
+					genStackLocation(symb, i);
+
+					genEvalExpression(tail.getChild(i));
+					ar.add(new IInstructions.Store());
+				}
+
 			}
 		}
 	}
@@ -305,11 +304,11 @@ public class CodeGenerator {
 				offset = i;
 
 			int x = getStackLocation(symbole);
-			ar.add(new IInstructions.LoadAddrRel(x + i));
+			ar.add(new IInstructions.LoadAddrRel(x + offset));
 			if (symbole.isRef) {
 				ar.add(new IInstructions.Deref());
-				if (offset != 0) {
-					ar.add(new IInstructions.LoadImInt(offset));
+				if (i != 0) {
+					ar.add(new IInstructions.LoadImInt(i));
 					ar.add(new IInstructions.AddInt());
 				}
 			}
