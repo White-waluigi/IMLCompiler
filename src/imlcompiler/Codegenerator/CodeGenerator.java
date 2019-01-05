@@ -402,8 +402,9 @@ public class CodeGenerator {
 						ar.add(new IInstructions.EqInt());
 					}
 				}
+				return;
+
 			}
-			return;
 		} catch (CodeGenerationException e) {
 			throw e;
 		} catch (Exception e) {

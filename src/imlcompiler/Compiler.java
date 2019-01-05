@@ -31,7 +31,7 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-        	file="examplePrograms/asm1.iml";
+        	file="examplePrograms/FiboFinal.iml";
         }else {
         	file=args[0];
         }
