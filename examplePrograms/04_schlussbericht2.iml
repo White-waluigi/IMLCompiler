@@ -1,0 +1,15 @@
+program localVariable()
+    global
+        a: int32;
+    proc test()
+        local
+            b: int32;
+        do
+            b init := 1;
+            debugout b
+    endproc
+    do
+        a init := 2;
+        debugout a;
+        call test()
+endprogram

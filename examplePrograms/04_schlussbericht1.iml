@@ -1,0 +1,10 @@
+program test1()
+  global
+    var tup s:(int32, int32);
+    var tup t:(int32, int32)
+  do
+    s init := tup(1, 2);
+    t init := s;
+    debugout t[0];
+    debugout t[1]
+endprogram
