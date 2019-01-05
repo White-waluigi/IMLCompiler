@@ -68,7 +68,8 @@ public class SymbolMap {
 
     public void addGlobals(SymbolMap symbolMap){
         for (Symbol s: symbolMap.getMap().values()){
-            this.hashMap.put(s.name, s);
+            if (s.isGlobal)
+                this.hashMap.put(s.name, s);
         }
     }
 
