@@ -1,4 +1,4 @@
-program test1(a :bool,b: int32,c:int32,   tup q:(int32, int32,int32), tup d:(int32,int32))
+program test1(a :bool,b: int32,c:int32,   tup q:(int32, int32,int32), tup d:(int32,int32,int32))
 global
  
   proc fib(in ref aa:int32,in s:int32, in t:int32)
@@ -17,15 +17,21 @@ global
 		
 		
   endproc;
-  proc test(out tup t:(int32,int32,int32))
+  proc test(out tup t:(int32,int32,int32),in tup tt:(int32,int32,int32))
     do
-      debugout t[0]
+
+      if t>tt
+      then
+      	debugout 1337
+      else
+      	debugout 122
+      endif  
   endproc
   
   
   do
-  	d:=tup(1,5);
-	q:=tup(6756,234,466);
-	call test(q)
+  	d:=tup(6756,234,466);
+	q:=d;
+	call test(d,q)
 	
 endprogram

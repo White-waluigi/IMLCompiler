@@ -33,6 +33,20 @@ public class SymbolMap {
         Iterator it = hashMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
+
+            r+=((Symbol)pair.getValue()).tupSize!=-1?((Symbol)pair.getValue()).tupSize:1;
+          
+        }
+    	return r;
+    }
+    public int getParamSize() {
+    	int r=0;
+        Iterator it = hashMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            if(((Symbol)pair.getValue()).isGlobal) {
+            	continue;
+            }
             r+=((Symbol)pair.getValue()).tupSize!=-1?((Symbol)pair.getValue()).tupSize:1;
           
         }

@@ -52,8 +52,10 @@ public class Debugger extends JFrame {
 				throw new ExecutionError("End of Program reached!");
 
 		} catch (Exception e) {
-
-			if(!"Execution error: End of Program reached!".equals(e.getMessage().toString())) {
+			if(e.getMessage()==null) {
+				e.printStackTrace();
+			}
+			else if(!"Execution error: End of Program reached!".equals(e.getMessage().toString())) {
 				JOptionPane.showMessageDialog(null,
 						"Programm terminated because:\n\"" + e.getMessage().toString() + "\"", "Error",
 						JOptionPane.ERROR_MESSAGE);
