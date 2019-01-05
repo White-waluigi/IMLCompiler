@@ -20,7 +20,7 @@ global
   proc test(out tup t:(int32,int32,int32),in tup tt:(int32,int32,int32))
     do
 
-      if t>tt
+      if t>=tt
       then
       	debugout 1337
       else

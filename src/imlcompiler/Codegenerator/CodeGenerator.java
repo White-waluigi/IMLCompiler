@@ -250,6 +250,24 @@ public class CodeGenerator {
 			genEvalExpression(a.getChild(1));
 			ar.add(new IInstructions.Store());
 		} else {
+			if( a.getChild(1) instanceof ImlItem) {
+				Symbol psymb = getSymbole(a.getChild(1));
+				
+				if (symb.tupSize !=psymb.tupSize) {
+					throw new CodeGenerationException(
+							"tupel idenifier doesn't match tupel size :" + symb.name + " " + symb.tupSize);
+				}
+				
+				for(int i=0;i<symb.tupSize;i++) {
+					genStackLocation(symb);
+					ar.add(new IInstructions.LoadImInt(i));
+					ar.add(new IInstructions.AddInt());
+					
+					genEvalSymbol(psymb,i);
+					ar.add(new IInstructions.Store());
+
+				}
+			}else {
 			ImlComposite tail = (ImlComposite) a.getChild(1).getChild(1);
 
 			if (symb.tupSize != tail.size()) {
@@ -268,6 +286,8 @@ public class CodeGenerator {
 
 				genEvalExpression(tail.getChild(i));
 				ar.add(new IInstructions.Store());
+			}
+			
 			}
 		}
 	}
