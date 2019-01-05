@@ -71,7 +71,7 @@ public class Compiler {
         ImlComponent abstractSyntaxTree = concreteSyntaxTree.toAbstract();
         System.out.println("---> AST Done");
         //new Visualization of Syntax Trees by Marvin
-        //TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
+        TreeList.startNew(concreteSyntaxTree,abstractSyntaxTree, wrapper,file);
         
         //Visualisation of Syntax Tree by Andreas
 //        Frame f = new TreeEditor((Tree<String, ?>) abstractSyntaxTree, wrapper);

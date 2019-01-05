@@ -116,7 +116,7 @@ public class CodeGenerator {
 		int skiparpos=ar.size();
 		//PLACEHOLDER; DO NOT DELETE!
 		ar.add(new IInstructions.Stop());
-		genCpsCmd(a.getChild(2));
+		genCpsCmd(a.getChild("cpsCmd"));
 		
 		
 		ar.add(new UncondJump(whilearpos));
@@ -354,8 +354,10 @@ public class CodeGenerator {
 				ar.add(new IInstructions.GeInt());
 			else if (a.getToken().has(EnumAttribute.GT))
 				ar.add(new IInstructions.GtInt());
+			else if (a.getToken().has(EnumAttribute.NE))
+				ar.add(new IInstructions.NeInt());
 			else
-				throw new CodeGenerationException("unexpected operator " + a);
+				throw new CodeGenerationException("unexpected operator " + a.getToken());
 		} else if (a.getToken().getTerminal() == Terminal.BOOLOPR) {
 			if (a.getToken().has(EnumAttribute.AND)) {
 				ar.add(new IInstructions.AddInt());
