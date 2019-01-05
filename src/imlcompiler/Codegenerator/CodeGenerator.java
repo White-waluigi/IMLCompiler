@@ -23,6 +23,7 @@ import imlcompiler.Scanner.Token.OtherAttribute;
 import imlcompiler.Scanner.Token.Terminal;
 import imlcompiler.Symboltable.Symbol;
 import imlcompiler.Symboltable.SymbolMap;
+import sun.misc.ConditionLock;
 
 public class CodeGenerator {
 
@@ -125,7 +126,6 @@ public class CodeGenerator {
 		genCpsCmd(a.getChild("cpsCmd"));
 
 		ar.add(new UncondJump(whilearpos));
-
 		ar.set(skiparpos, new IInstructions.CondJump(ar.size()));
 
 	}
@@ -189,7 +189,10 @@ public class CodeGenerator {
 		for (int i = 0; i < paramsize; i++) {
 			ar.add(new IInstructions.MultInt());
 		}
+		ar.add(new IInstructions.LoadImInt(1));
 		ar.add(new IInstructions.AddInt());
+		ar.add(new IInstructions.CondJump(-2));
+		
 	}
 
 	private void genUnfoldTup(ImlComponent imlComponent) {

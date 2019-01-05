@@ -1,13 +1,15 @@
 program fibbonacci()
     global
+    ctr:int32;
     proc recurse(in var x: int32, in var y: int32)
         do
             debugout y;
             y := y + x;
-            if x < 1000 then
+            ctr:=ctr+1;
+            if ctr < 101 then
                 call recurse(y , x)
             else
-                skip
+                y:=9
             endif
     endproc
     do
