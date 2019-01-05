@@ -65,6 +65,7 @@ public class ScopeChecker {
                             location += currentType.size();
                             currentType = null;
                            //System.out.println("--->" + token.getTerminal());
+                            isRef = false;
                         }
                         previousToken = GLOBAL;
                         break;
@@ -174,6 +175,7 @@ public class ScopeChecker {
                             location += currentType.size();
                             currentType = null;
                             //System.out.println("--->" + token.getTerminal());
+                            isRef = false;
                         }
                     default:
                         if (isTuple && previousToken == TYPE && token.getTerminal() != TYPE){
