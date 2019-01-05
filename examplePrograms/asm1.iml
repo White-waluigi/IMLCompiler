@@ -32,6 +32,7 @@ global
   do
   	d:=tup(6756,234,466);
 	q:=d;
+	d:=tup(1,2,q[2]);
 	call test(d,q)
 	
 endprogram
