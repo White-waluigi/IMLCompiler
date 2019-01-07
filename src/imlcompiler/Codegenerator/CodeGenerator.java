@@ -179,6 +179,18 @@ public class CodeGenerator {
 
 			g++;
 		}
+		//local variables
+		for(int i=g;i<as.params.length;i++) {
+			if (as.params[i].tupSize == -1) {
+				ar.add(new IInstructions.LoadImInt(0));
+				paramsize++;
+			} else {
+				for(int ii=0;ii<as.params[i].tupSize;ii++ ) {
+					ar.add(new IInstructions.LoadImInt(0));
+					paramsize++;
+				}
+			}
+		}
 
 		System.out.println(this.ProcAddr.entrySet());
 
@@ -397,12 +409,19 @@ public class CodeGenerator {
 					genEvalSymbol(aa, i);
 					genEvalSymbol(bb, i);
 					genOperator(a);
+					
 
 					if (i != 0) {
-						// Makeshift and
-						ar.add(new IInstructions.AddInt());
-						ar.add(new IInstructions.LoadImInt(2));
-						ar.add(new IInstructions.EqInt());
+						if(a.getToken().has(EnumAttribute.NE)) {
+							ar.add(new IInstructions.AddInt());
+							ar.add(new IInstructions.LoadImInt(0));
+							ar.add(new IInstructions.NeInt());
+						}else {
+							// Makeshift and
+							ar.add(new IInstructions.AddInt());
+							ar.add(new IInstructions.LoadImInt(2));
+							ar.add(new IInstructions.EqInt());
+						}
 					}
 				}
 				return;

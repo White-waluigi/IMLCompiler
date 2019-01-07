@@ -1,15 +1,18 @@
 program test1(a :int32,b: int32,c:int32,tup q:(int32,int32,int32))
 global
-  proc fib(in ref aa:int32,in s:int32, in t:int32)
+  proc fib(in ref aa:int32)
+  	local
+  		t:int32;
+  		s:int32
 	do  	
 		if aa = 0 || aa = 1
 		then 
 			aa:=1
 		else
 			s:=aa-1;
-			call fib(s,c,c);
+			call fib(s);
 			t:=aa-2;
-			call fib(t,c,c);
+			call fib(t);
 			aa:=t+s
 		endif
 		
@@ -20,12 +23,12 @@ global
 	a:=0;
 	b:=0;
 	c:=0-1337;
-	while a<20
+	while a<25
 	do
 		b:=a;
 		a:=a+1;
 		
-		call fib(b,c,c);
+		call fib(b);
 		debugout b
 	endwhile
 		

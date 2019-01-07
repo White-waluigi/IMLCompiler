@@ -1,25 +1,31 @@
-program test1(a:int32,tup d:(int32,int32,int32),tup q:(int32,int32,int32))
+program wecker(a:int32,tup alarm:(int32,int32),tup time:(int32,int32))
 global
  
 
-  proc test(out ref tup t:(int32,int32,int32),out ref tup tt:(int32,int32,int32))
+  proc advance(out ref tup t:(int32,int32))
+  	local m:int32
     do
-
-	  t:=tup(1,1,t[2]);
-
-
-      if t=tt
-      then
-      	debugout 1337
-      else
-      	debugout 122
-      endif  
+		if t[1]=59
+		then
+			m:=t[0]+1;
+			t:=tup(m,0)
+		else
+			m:=t[1]+1;
+			t:=tup(t[0],m)
+		endif
+		
   endproc
   
   
   do
-    d:=tup(1,2,3);
-	q:=d;
-	call test(d,q)
-	
+  	time:=tup(0,0);
+  	alarm:=tup(6,0);
+	while time/=alarm
+	do
+		call advance(time);
+		a:=  10000+time[0]*100+time[1];
+		debugout a
+		
+	endwhile;
+	debugout 9999999
 endprogram

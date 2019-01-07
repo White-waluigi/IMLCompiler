@@ -182,7 +182,7 @@ public class Debugger extends JFrame {
 				
 				@Override
 				public void print(String s) {
-					console.setText(s+"\n"+console.getText());
+					console.setText(console.getText()+"\n"+s);
 				}
 			});
 		} catch (ExecutionError e) {
@@ -272,7 +272,7 @@ public class Debugger extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dvm.init();
-				console.setText("******RESET #"+resets+++"**********"+"\n"+console.getText());
+				console.setText(console.getText()+"\n"+"******RESET #"+resets+++"**********");
 				rebuildView();
 				repaint();
 			}
@@ -368,7 +368,12 @@ public class Debugger extends JFrame {
 			codeandoutput.add(new JTextArea(new String(stringBuffer.toString())));
 			codeandoutput.add(new JLabel("Output:"));
 			console=new JTextArea(new String());
-			codeandoutput.add(console);
+			
+			JScrollPane scroll = new JScrollPane(console);
+			scroll.setPreferredSize(new Dimension(800, 500));
+			//this.add(textArea); // get rid of this
+			
+			codeandoutput.add(scroll);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -512,11 +517,11 @@ public class Debugger extends JFrame {
 				}
 			}
 			g.setColor(Color.BLACK);
-			for (int i = 0; i < tableWidth; i++) {
+			for (int i = 0; i <= tableWidth; i++) {
 				g.drawString("" + (i - 1), i * 20 + 5, (110 + 0 * 20) + 12);
 
 			}
-			for (int i = 0; i < 1 + memory.size() / tableWidth; i++) {
+			for (int i = 0; i <= 1 + memory.size() / tableWidth; i++) {
 				g.drawString("" + (i - 1), 0 * 20 + 5, (110 + i * 20) + 12);
 			}
 

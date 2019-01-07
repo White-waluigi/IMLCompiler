@@ -44,14 +44,15 @@ public class SymbolMap {
         Iterator it = hashMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            if(((Symbol)pair.getValue()).isGlobal) {
+            Symbol p = ((Symbol)pair.getValue());
+            if(p.isGlobal) {
             	continue;
             }
-            if(((Symbol)pair.getValue()).isRef) {
+            if(p.isRef) {
             	r++;
             	continue;
             }
-            r+=((Symbol)pair.getValue()).tupSize!=-1?((Symbol)pair.getValue()).tupSize:1;
+            r+=(p).tupSize!=-1?(p).tupSize:1;
           
         }
     	return r;
