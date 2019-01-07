@@ -31,11 +31,7 @@ public class Compiler {
         String file;
         if (args.length < 1) {
         	System.out.println("No iml program provided");
-<<<<<<< HEAD
         	file="examplePrograms/03_FiboFinal.iml";
-=======
-        	file="examplePrograms/04_schlussbericht3.iml";
->>>>>>> branch 'master' of https://github.com/White-waluigi/IMLCompiler
         }else {
         	file=args[0];
         }
