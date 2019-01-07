@@ -23,7 +23,7 @@ import imlcompiler.Scanner.Token.OtherAttribute;
 import imlcompiler.Scanner.Token.Terminal;
 import imlcompiler.Symboltable.Symbol;
 import imlcompiler.Symboltable.SymbolMap;
-import sun.misc.ConditionLock;
+// import sun.misc.ConditionLock;
 
 public class CodeGenerator {
 

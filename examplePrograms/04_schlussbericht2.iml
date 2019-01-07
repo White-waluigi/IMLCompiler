@@ -1,4 +1,4 @@
-program lokaliVariable()
+program localVariable()
     global
         a: int32;
     proc test()

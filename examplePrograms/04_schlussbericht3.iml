@@ -6,7 +6,7 @@ program fibbonacci()
             debugout y;
             y := y + x;
             ctr:=ctr+1;
-            if ctr < 101 then
+            if ctr < 10 then
                 call recurse(y , x)
             else
                 y:=9
