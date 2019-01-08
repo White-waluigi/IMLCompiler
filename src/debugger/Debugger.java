@@ -19,7 +19,7 @@ import javax.management.RuntimeErrorException;
 import javax.swing.*;
 import javax.swing.border.*;
 
-
+import TreeList.TreeList;
 import ch.fhnw.lederer.virtualmachineFS2015.Data.IBaseData;
 import ch.fhnw.lederer.virtualmachineFS2015.ICodeArray.CodeTooSmallError;
 import ch.fhnw.lederer.virtualmachineFS2015.Data;
@@ -300,13 +300,30 @@ public class Debugger extends JFrame {
 				repaint();
 			}
 		});
+		JButton togglef=new JButton("View Tree");
+		togglef.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TreeList.frame.setVisible(true);
+			}
+		});
+		
+        JPanel boxpanel = new JPanel(new GridLayout(5,1));
+		
+
+
+		boxpanel.add(step);
+		boxpanel.add(runB);
+		boxpanel.add(runF);
+		boxpanel.add(reset);
+		boxpanel.add(togglef);
+		
+		DebugPanel.add(boxpanel);
+
+		DebugPanel.add(new JLabel("    "));
 
 		
-		DebugPanel.add(step);
-		DebugPanel.add(runB);
-		DebugPanel.add(runF);
-		DebugPanel.add(reset);
-
 		this.jCode = new DefaultListModel<CodeLine>();
 		this.jAssembly = new DefaultListModel<IInstructions.IInstr>();
 		
@@ -331,6 +348,7 @@ public class Debugger extends JFrame {
 		JPanel instructionPanel = new JPanel();
 		instructionPanel.setLayout(new BoxLayout(instructionPanel, BoxLayout.X_AXIS));
 		instructionPanel.add(jList);
+
 		instructionPanel.add(jAssL);
 
 		
@@ -339,7 +357,7 @@ public class Debugger extends JFrame {
 		
 		
 
-		
+
 		DebugPanel.add(new JLabel("Watchdog :"));
 		vall = new JLabel("None");
 		DebugPanel.add(vall);
@@ -347,6 +365,7 @@ public class Debugger extends JFrame {
 		DebugPanel.add(new JLabel("Steps :"));		
 		steps = new JLabel("0");
 		DebugPanel.add(steps);
+		DebugPanel.add(new JLabel("    "));
 
 		//DebugPanel.add(jAssL);
 		//DebugPanel.add(jList);

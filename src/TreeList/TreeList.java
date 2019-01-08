@@ -224,8 +224,8 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 		}
 
 		// Create and set up the window.
-		JFrame frame = new JFrame(file);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame = new JFrame(file);
+		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1000, 1000);
 
 		// Add content to the window.
@@ -233,7 +233,14 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 
 		// Display the window.
 		// frame.pack();
-		frame.setVisible(true);
+		frame.setVisible(false);
+		
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        TreeList.frame.setVisible(false);
+		    }
+		});
 	}
 
 	private void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
@@ -245,7 +252,7 @@ public class TreeList extends JPanel implements TreeSelectionListener {
 			expandAllNodes(tree, rowCount, tree.getRowCount());
 		}
 	}
-
+	public static JFrame frame;
 	public static void startNew(ImlComponent t, ImlComponent s, Wrapper wrapper, String file) {
 		// Schedule a job for the event dispatch thread:
 		// creating and showing this application's GUI.
