@@ -299,6 +299,9 @@ public class CodeGenerator {
 					genStackLocation(symb, i);
 
 					genEvalExpression(tail.getChild(i));
+				}
+				for (int i = 0; i < symb.tupSize; i++) {
+
 					ar.add(new IInstructions.Store());
 				}
 

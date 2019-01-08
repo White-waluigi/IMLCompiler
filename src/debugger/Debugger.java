@@ -272,6 +272,7 @@ public class Debugger extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dvm.init();
+				numSteps=0;
 				console.setText(console.getText()+"\n"+"******RESET #"+resets+++"**********");
 				rebuildView();
 				repaint();
