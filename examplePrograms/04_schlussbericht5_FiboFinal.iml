@@ -1,0 +1,29 @@
+program test1(a :int32,b: int32,c:int32,tup q:(int32,int32,int32))
+global
+  proc fib(in ref aa:int32,in s:int32, in t:int32)
+	do
+		if aa = 0 || aa = 1
+		then
+			aa:=1
+		else
+			s:=aa-1;
+			call fib(s,c,c);
+			t:=aa-2;
+			call fib(t,c,c);
+			aa:=t+s
+		endif
+  endproc
+  do
+	a:=0;
+	b:=0;
+	c:=0-1337;
+	while a<20
+	do
+		b:=a;
+		a:=a+1;
+
+		call fib(b,c,c);
+		debugout b
+	endwhile
+
+endprogram
