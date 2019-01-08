@@ -159,12 +159,13 @@ public class Debugger extends JFrame {
 		super("Tupel Debugger");
 
 		this.setMinimumSize(new Dimension(1900, 950));
-		try {
-			this.setIconImage(ImageIO.read(new File("deb.png")));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	    try {
+
+
+            setIconImage(ImageIO.read(Debugger.class.getResource("deb.png")));
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+    	}
 
 		this.refCode = code;
 		memory = new ArrayList<MemoryCell>(memorySize);
